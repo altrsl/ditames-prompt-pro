@@ -491,7 +491,7 @@ function Tecnologia() {
   const stack = [
     { icon: Plane, t: "Drones" },
     { icon: Satellite, t: "GPS RTK" },
-    { icon: Map, t: "SIG" },
+    { icon: MapIcon, t: "SIG" },
     { icon: Layers, t: "Geoprocessamento" },
     { icon: Brain, t: "Inteligência Territorial" },
     { icon: Cpu, t: "Modelagem Ambiental" },
