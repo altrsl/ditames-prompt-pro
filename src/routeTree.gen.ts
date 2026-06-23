@@ -9,12 +9,54 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SobreRouteImport } from './routes/sobre'
+import { Route as IaRouteImport } from './routes/ia'
+import { Route as CulturaRouteImport } from './routes/cultura'
+import { Route as ContatoRouteImport } from './routes/contato'
+import { Route as CasesRouteImport } from './routes/cases'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ServicosIndexRouteImport } from './routes/servicos.index'
+import { Route as ServicosSlugRouteImport } from './routes/servicos.$slug'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 
+const SobreRoute = SobreRouteImport.update({
+  id: '/sobre',
+  path: '/sobre',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IaRoute = IaRouteImport.update({
+  id: '/ia',
+  path: '/ia',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CulturaRoute = CulturaRouteImport.update({
+  id: '/cultura',
+  path: '/cultura',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContatoRoute = ContatoRouteImport.update({
+  id: '/contato',
+  path: '/contato',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CasesRoute = CasesRouteImport.update({
+  id: '/cases',
+  path: '/cases',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicosIndexRoute = ServicosIndexRouteImport.update({
+  id: '/servicos/',
+  path: '/servicos/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicosSlugRoute = ServicosSlugRouteImport.update({
+  id: '/servicos/$slug',
+  path: '/servicos/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiChatRoute = ApiChatRouteImport.update({
@@ -25,37 +67,142 @@ const ApiChatRoute = ApiChatRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/cases': typeof CasesRoute
+  '/contato': typeof ContatoRoute
+  '/cultura': typeof CulturaRoute
+  '/ia': typeof IaRoute
+  '/sobre': typeof SobreRoute
   '/api/chat': typeof ApiChatRoute
+  '/servicos/$slug': typeof ServicosSlugRoute
+  '/servicos/': typeof ServicosIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/cases': typeof CasesRoute
+  '/contato': typeof ContatoRoute
+  '/cultura': typeof CulturaRoute
+  '/ia': typeof IaRoute
+  '/sobre': typeof SobreRoute
   '/api/chat': typeof ApiChatRoute
+  '/servicos/$slug': typeof ServicosSlugRoute
+  '/servicos': typeof ServicosIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/cases': typeof CasesRoute
+  '/contato': typeof ContatoRoute
+  '/cultura': typeof CulturaRoute
+  '/ia': typeof IaRoute
+  '/sobre': typeof SobreRoute
   '/api/chat': typeof ApiChatRoute
+  '/servicos/$slug': typeof ServicosSlugRoute
+  '/servicos/': typeof ServicosIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/api/chat'
+  fullPaths:
+    | '/'
+    | '/cases'
+    | '/contato'
+    | '/cultura'
+    | '/ia'
+    | '/sobre'
+    | '/api/chat'
+    | '/servicos/$slug'
+    | '/servicos/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/api/chat'
-  id: '__root__' | '/' | '/api/chat'
+  to:
+    | '/'
+    | '/cases'
+    | '/contato'
+    | '/cultura'
+    | '/ia'
+    | '/sobre'
+    | '/api/chat'
+    | '/servicos/$slug'
+    | '/servicos'
+  id:
+    | '__root__'
+    | '/'
+    | '/cases'
+    | '/contato'
+    | '/cultura'
+    | '/ia'
+    | '/sobre'
+    | '/api/chat'
+    | '/servicos/$slug'
+    | '/servicos/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CasesRoute: typeof CasesRoute
+  ContatoRoute: typeof ContatoRoute
+  CulturaRoute: typeof CulturaRoute
+  IaRoute: typeof IaRoute
+  SobreRoute: typeof SobreRoute
   ApiChatRoute: typeof ApiChatRoute
+  ServicosSlugRoute: typeof ServicosSlugRoute
+  ServicosIndexRoute: typeof ServicosIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sobre': {
+      id: '/sobre'
+      path: '/sobre'
+      fullPath: '/sobre'
+      preLoaderRoute: typeof SobreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ia': {
+      id: '/ia'
+      path: '/ia'
+      fullPath: '/ia'
+      preLoaderRoute: typeof IaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cultura': {
+      id: '/cultura'
+      path: '/cultura'
+      fullPath: '/cultura'
+      preLoaderRoute: typeof CulturaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contato': {
+      id: '/contato'
+      path: '/contato'
+      fullPath: '/contato'
+      preLoaderRoute: typeof ContatoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cases': {
+      id: '/cases'
+      path: '/cases'
+      fullPath: '/cases'
+      preLoaderRoute: typeof CasesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/servicos/': {
+      id: '/servicos/'
+      path: '/servicos'
+      fullPath: '/servicos/'
+      preLoaderRoute: typeof ServicosIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/servicos/$slug': {
+      id: '/servicos/$slug'
+      path: '/servicos/$slug'
+      fullPath: '/servicos/$slug'
+      preLoaderRoute: typeof ServicosSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/chat': {
@@ -70,7 +217,14 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CasesRoute: CasesRoute,
+  ContatoRoute: ContatoRoute,
+  CulturaRoute: CulturaRoute,
+  IaRoute: IaRoute,
+  SobreRoute: SobreRoute,
   ApiChatRoute: ApiChatRoute,
+  ServicosSlugRoute: ServicosSlugRoute,
+  ServicosIndexRoute: ServicosIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
