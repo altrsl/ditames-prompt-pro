@@ -131,7 +131,7 @@ function Hero() {
         }}
       />
 
-      <Header />
+
 
       <div className="container-x relative z-10 flex min-h-[100svh] flex-col justify-center pt-32 pb-20 text-white">
         <span className="eyebrow text-secondary mb-6">Ditames Ambiental</span>
