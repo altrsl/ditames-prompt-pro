@@ -252,9 +252,9 @@ function Crescimento() {
             catarinenses, atendeu mais de 687 clientes e construiu uma rede com mais de 40
             profissionais e parceiros especializados.
           </p>
-          <a href="#quem-somos" className="btn-primary mt-8">
+          <Link to="/sobre" className="btn-primary mt-8">
             Conheça Nossa História <ArrowRight size={16} />
-          </a>
+          </Link>
         </div>
         <div className="relative">
           <div className="grid grid-cols-2 gap-4">
