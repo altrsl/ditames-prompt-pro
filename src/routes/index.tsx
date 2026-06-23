@@ -346,20 +346,6 @@ function QuemSomos() {
 }
 
 function Servicos() {
-  const services = [
-    { icon: FileCheck, title: "Licenciamento Ambiental" },
-    { icon: ScrollText, title: "Regularização Ambiental" },
-    { icon: Ruler, title: "Topografia" },
-    { icon: MapPin, title: "Georreferenciamento" },
-    { icon: Leaf, title: "Inventário Florestal" },
-    { icon: Scissors, title: "Supressão de Vegetação" },
-    { icon: Droplets, title: "Estudos Hidrológicos" },
-    { icon: Waves, title: "Estudos Hidrogeológicos" },
-    { icon: Layers, title: "Geoprocessamento" },
-    { icon: PencilRuler, title: "Projetos de Engenharia" },
-    { icon: LandPlot, title: "Loteamentos" },
-    { icon: Lightbulb, title: "Consultoria Ambiental" },
-  ];
   return (
     <section id="servicos" className="bg-surface py-24 md:py-32">
       <div className="container-x">
@@ -378,9 +364,10 @@ function Servicos() {
 
         <div className="mt-14 grid gap-px bg-border sm:grid-cols-2 lg:grid-cols-3 overflow-hidden rounded-xl">
           {services.map((s) => (
-            <a
-              key={s.title}
-              href="#contato"
+            <Link
+              key={s.slug}
+              to="/servicos/$slug"
+              params={{ slug: s.slug }}
               className="group relative flex flex-col gap-5 bg-card p-8 transition-all duration-300 hover:bg-secondary/60"
             >
               <div className="grid h-12 w-12 place-items-center rounded-lg border border-border text-primary transition-all group-hover:border-primary group-hover:bg-primary group-hover:text-primary-foreground">
@@ -390,8 +377,14 @@ function Servicos() {
               <span className="mt-auto inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-primary opacity-0 transition-opacity group-hover:opacity-100">
                 Saiba mais <ArrowRight size={14} />
               </span>
-            </a>
+            </Link>
           ))}
+        </div>
+
+        <div className="mt-10 text-center">
+          <Link to="/servicos" className="btn-outline">
+            Ver todos os serviços <ArrowRight size={14} />
+          </Link>
         </div>
       </div>
     </section>
