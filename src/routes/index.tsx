@@ -109,34 +109,8 @@ function Counter({ to, suffix = "", prefix = "" }: { to: number; suffix?: string
   );
 }
 
-/* ---------- header ---------- */
-
-function Header() {
-  return (
-    <header className="absolute top-0 left-0 right-0 z-30">
-      <div className="container-x flex items-center justify-between py-6">
-        <a href="#top" className="flex items-center gap-2.5 text-white">
-          <span className="grid h-10 w-10 place-items-center rounded-md bg-primary text-primary-foreground">
-            <Leaf size={20} />
-          </span>
-          <span className="font-display text-2xl tracking-wider">DITAMES</span>
-        </a>
-        <nav className="hidden items-center gap-8 text-sm font-medium text-white/85 md:flex">
-          <a href="#servicos" className="hover:text-white transition-colors">Serviços</a>
-          <a href="#metodo" className="hover:text-white transition-colors">Método</a>
-          <a href="#tecnologia" className="hover:text-white transition-colors">Tecnologia</a>
-          <a href="#quem-somos" className="hover:text-white transition-colors">Quem somos</a>
-          <a href="#cases" className="hover:text-white transition-colors">Cases</a>
-        </nav>
-        <a href="#contato" className="btn-primary hidden md:inline-flex">
-          Atendimento <ArrowRight size={16} />
-        </a>
-      </div>
-    </header>
-  );
-}
-
 /* ---------- sections ---------- */
+
 
 function Hero() {
   return (
