@@ -144,13 +144,14 @@ function Hero() {
           completas, promovendo segurança, conformidade legal e crescimento sustentável.
         </p>
         <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-          <a href="#contato" className="btn-primary">
+          <Link to="/contato" className="btn-primary">
             Solicitar Atendimento <ArrowRight size={16} />
-          </a>
-          <a href="#contato" className="btn-on-dark">
+          </Link>
+          <a href={WHATSAPP_URL} className="btn-on-dark">
             Falar com Especialista
           </a>
         </div>
+
 
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-[10px] tracking-[0.3em] text-white/60">
           ROLE PARA EXPLORAR
