@@ -1,28 +1,19 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import {
   ArrowRight,
   MessageCircle,
   Phone,
   Trees,
-  Building2,
   Factory,
   HardHat,
-  FileCheck,
-  ScrollText,
-  Ruler,
-  MapPin,
   Leaf,
-  Scissors,
-  Droplets,
-  Waves,
   Layers,
-  PencilRuler,
   LandPlot,
   Lightbulb,
   Plane,
   Satellite,
-  Map,
+  Map as MapIcon,
   Brain,
   Cpu,
   Sparkles,
@@ -37,6 +28,7 @@ import {
 import heroImg from "@/assets/hero-ditames.jpg";
 import quemSomosImg from "@/assets/quem-somos.jpg";
 import tecnologiaImg from "@/assets/tecnologia.jpg";
+import { services, WHATSAPP_URL } from "@/lib/services";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -117,34 +109,8 @@ function Counter({ to, suffix = "", prefix = "" }: { to: number; suffix?: string
   );
 }
 
-/* ---------- header ---------- */
-
-function Header() {
-  return (
-    <header className="absolute top-0 left-0 right-0 z-30">
-      <div className="container-x flex items-center justify-between py-6">
-        <a href="#top" className="flex items-center gap-2.5 text-white">
-          <span className="grid h-10 w-10 place-items-center rounded-md bg-primary text-primary-foreground">
-            <Leaf size={20} />
-          </span>
-          <span className="font-display text-2xl tracking-wider">DITAMES</span>
-        </a>
-        <nav className="hidden items-center gap-8 text-sm font-medium text-white/85 md:flex">
-          <a href="#servicos" className="hover:text-white transition-colors">Serviços</a>
-          <a href="#metodo" className="hover:text-white transition-colors">Método</a>
-          <a href="#tecnologia" className="hover:text-white transition-colors">Tecnologia</a>
-          <a href="#quem-somos" className="hover:text-white transition-colors">Quem somos</a>
-          <a href="#cases" className="hover:text-white transition-colors">Cases</a>
-        </nav>
-        <a href="#contato" className="btn-primary hidden md:inline-flex">
-          Atendimento <ArrowRight size={16} />
-        </a>
-      </div>
-    </header>
-  );
-}
-
 /* ---------- sections ---------- */
+
 
 function Hero() {
   return (
@@ -165,7 +131,7 @@ function Hero() {
         }}
       />
 
-      <Header />
+
 
       <div className="container-x relative z-10 flex min-h-[100svh] flex-col justify-center pt-32 pb-20 text-white">
         <span className="eyebrow text-secondary mb-6">Ditames Ambiental</span>
@@ -178,13 +144,14 @@ function Hero() {
           completas, promovendo segurança, conformidade legal e crescimento sustentável.
         </p>
         <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-          <a href="#contato" className="btn-primary">
+          <Link to="/contato" className="btn-primary">
             Solicitar Atendimento <ArrowRight size={16} />
-          </a>
-          <a href="#contato" className="btn-on-dark">
+          </Link>
+          <a href={WHATSAPP_URL} className="btn-on-dark">
             Falar com Especialista
           </a>
         </div>
+
 
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-[10px] tracking-[0.3em] text-white/60">
           ROLE PARA EXPLORAR
@@ -285,9 +252,9 @@ function Crescimento() {
             catarinenses, atendeu mais de 687 clientes e construiu uma rede com mais de 40
             profissionais e parceiros especializados.
           </p>
-          <a href="#quem-somos" className="btn-primary mt-8">
+          <Link to="/sobre" className="btn-primary mt-8">
             Conheça Nossa História <ArrowRight size={16} />
-          </a>
+          </Link>
         </div>
         <div className="relative">
           <div className="grid grid-cols-2 gap-4">
@@ -354,20 +321,6 @@ function QuemSomos() {
 }
 
 function Servicos() {
-  const services = [
-    { icon: FileCheck, title: "Licenciamento Ambiental" },
-    { icon: ScrollText, title: "Regularização Ambiental" },
-    { icon: Ruler, title: "Topografia" },
-    { icon: MapPin, title: "Georreferenciamento" },
-    { icon: Leaf, title: "Inventário Florestal" },
-    { icon: Scissors, title: "Supressão de Vegetação" },
-    { icon: Droplets, title: "Estudos Hidrológicos" },
-    { icon: Waves, title: "Estudos Hidrogeológicos" },
-    { icon: Layers, title: "Geoprocessamento" },
-    { icon: PencilRuler, title: "Projetos de Engenharia" },
-    { icon: LandPlot, title: "Loteamentos" },
-    { icon: Lightbulb, title: "Consultoria Ambiental" },
-  ];
   return (
     <section id="servicos" className="bg-surface py-24 md:py-32">
       <div className="container-x">
@@ -386,9 +339,10 @@ function Servicos() {
 
         <div className="mt-14 grid gap-px bg-border sm:grid-cols-2 lg:grid-cols-3 overflow-hidden rounded-xl">
           {services.map((s) => (
-            <a
-              key={s.title}
-              href="#contato"
+            <Link
+              key={s.slug}
+              to="/servicos/$slug"
+              params={{ slug: s.slug }}
               className="group relative flex flex-col gap-5 bg-card p-8 transition-all duration-300 hover:bg-secondary/60"
             >
               <div className="grid h-12 w-12 place-items-center rounded-lg border border-border text-primary transition-all group-hover:border-primary group-hover:bg-primary group-hover:text-primary-foreground">
@@ -398,8 +352,14 @@ function Servicos() {
               <span className="mt-auto inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-primary opacity-0 transition-opacity group-hover:opacity-100">
                 Saiba mais <ArrowRight size={14} />
               </span>
-            </a>
+            </Link>
           ))}
+        </div>
+
+        <div className="mt-10 text-center">
+          <Link to="/servicos" className="btn-outline">
+            Ver todos os serviços <ArrowRight size={14} />
+          </Link>
         </div>
       </div>
     </section>
@@ -506,7 +466,7 @@ function Tecnologia() {
   const stack = [
     { icon: Plane, t: "Drones" },
     { icon: Satellite, t: "GPS RTK" },
-    { icon: Map, t: "SIG" },
+    { icon: MapIcon, t: "SIG" },
     { icon: Layers, t: "Geoprocessamento" },
     { icon: Brain, t: "Inteligência Territorial" },
     { icon: Cpu, t: "Modelagem Ambiental" },
@@ -582,9 +542,9 @@ function IA() {
                 Assistente inteligente para direcionamento de soluções ambientais. Descreva sua
                 situação e receba o caminho técnico mais adequado.
               </p>
-              <a href="#contato" className="btn-primary mt-8">
+              <Link to="/ia" className="btn-primary mt-8">
                 <Sparkles size={16} /> Conversar com Assistente
-              </a>
+              </Link>
             </div>
             <div className="rounded-xl bg-white p-6 shadow-card">
               <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-muted-foreground">
@@ -659,9 +619,9 @@ function Cultura() {
           <p className="mt-6 text-muted-foreground max-w-lg">
             Excelência técnica e desenvolvimento humano caminham juntos na Ditames.
           </p>
-          <a href="#" className="btn-outline mt-8">
+          <Link to="/cultura" className="btn-outline mt-8">
             Conheça a Cultura Completa <ArrowRight size={16} />
-          </a>
+          </Link>
         </div>
         <ul className="grid gap-3">
           {pilares.map((p, i) => (
@@ -700,10 +660,10 @@ function CTAFinal() {
           Transformamos complexidade em soluções seguras e eficientes.
         </p>
         <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:justify-center">
-          <a href="#" className="btn-primary">
+          <Link to="/contato" className="btn-primary">
             <Phone size={16} /> Solicitar Atendimento
-          </a>
-          <a href="#" className="btn-on-dark">
+          </Link>
+          <a href={WHATSAPP_URL} className="btn-on-dark">
             <MessageCircle size={16} /> WhatsApp
           </a>
         </div>
@@ -712,64 +672,11 @@ function CTAFinal() {
   );
 }
 
-function Footer() {
-  return (
-    <footer className="bg-ink text-white/80" style={{ background: "oklch(0.20 0.025 140)" }}>
-      <div className="container-x py-16">
-        <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
-          <div>
-            <div className="flex items-center gap-2.5 text-white">
-              <span className="grid h-10 w-10 place-items-center rounded-md bg-primary text-primary-foreground">
-                <Leaf size={20} />
-              </span>
-              <span className="font-display text-2xl tracking-wider">DITAMES</span>
-            </div>
-            <p className="mt-5 text-sm leading-relaxed text-white/65 max-w-xs">
-              Fortalecemos pessoas, propriedades e empresas com soluções ambientais que unem
-              técnica, tecnologia e responsabilidade.
-            </p>
-          </div>
-          <div>
-            <h4 className="font-display uppercase text-sm tracking-widest text-white">Institucional</h4>
-            <ul className="mt-5 space-y-3 text-sm">
-              <li><a href="#quem-somos" className="hover:text-primary transition-colors">Quem somos</a></li>
-              <li><a href="#metodo" className="hover:text-primary transition-colors">Método</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Cultura</a></li>
-              <li><a href="#cases" className="hover:text-primary transition-colors">Cases</a></li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-display uppercase text-sm tracking-widest text-white">Serviços</h4>
-            <ul className="mt-5 space-y-3 text-sm">
-              <li><a href="#servicos" className="hover:text-primary transition-colors">Licenciamento</a></li>
-              <li><a href="#servicos" className="hover:text-primary transition-colors">Topografia</a></li>
-              <li><a href="#servicos" className="hover:text-primary transition-colors">Georreferenciamento</a></li>
-              <li><a href="#servicos" className="hover:text-primary transition-colors">Geoprocessamento</a></li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-display uppercase text-sm tracking-widest text-white">Contato</h4>
-            <ul className="mt-5 space-y-3 text-sm">
-              <li className="flex items-center gap-2"><Phone size={14} className="text-primary" /> +55 (47) 0000-0000</li>
-              <li className="flex items-center gap-2"><MessageCircle size={14} className="text-primary" /> WhatsApp</li>
-              <li className="flex items-center gap-2"><MapPin size={14} className="text-primary" /> Santa Catarina, Brasil</li>
-            </ul>
-          </div>
-        </div>
-        <div className="mt-14 flex flex-col items-start justify-between gap-3 border-t border-white/10 pt-6 text-xs text-white/50 md:flex-row md:items-center">
-          <p>© {new Date().getFullYear()} Ditames Ambiental. Todos os direitos reservados.</p>
-          <p>Engenharia · Meio Ambiente · Geotecnologia</p>
-        </div>
-      </div>
-    </footer>
-  );
-}
-
 /* ---------- page ---------- */
 
 function Home() {
   return (
-    <main className="bg-background">
+    <div className="bg-background">
       <Hero />
       <PublicoAlvo />
       <Numeros />
@@ -783,7 +690,6 @@ function Home() {
       <Cases />
       <Cultura />
       <CTAFinal />
-      <Footer />
-    </main>
+    </div>
   );
 }
