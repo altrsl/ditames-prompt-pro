@@ -1,28 +1,19 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import {
   ArrowRight,
   MessageCircle,
   Phone,
   Trees,
-  Building2,
   Factory,
   HardHat,
-  FileCheck,
-  ScrollText,
-  Ruler,
-  MapPin,
   Leaf,
-  Scissors,
-  Droplets,
-  Waves,
   Layers,
-  PencilRuler,
   LandPlot,
   Lightbulb,
   Plane,
   Satellite,
-  Map,
+  Map as MapIcon,
   Brain,
   Cpu,
   Sparkles,
@@ -37,6 +28,7 @@ import {
 import heroImg from "@/assets/hero-ditames.jpg";
 import quemSomosImg from "@/assets/quem-somos.jpg";
 import tecnologiaImg from "@/assets/tecnologia.jpg";
+import { services, WHATSAPP_URL } from "@/lib/services";
 
 export const Route = createFileRoute("/")({
   head: () => ({
