@@ -541,9 +541,9 @@ function IA() {
                 Assistente inteligente para direcionamento de soluções ambientais. Descreva sua
                 situação e receba o caminho técnico mais adequado.
               </p>
-              <a href="#contato" className="btn-primary mt-8">
+              <Link to="/ia" className="btn-primary mt-8">
                 <Sparkles size={16} /> Conversar com Assistente
-              </a>
+              </Link>
             </div>
             <div className="rounded-xl bg-white p-6 shadow-card">
               <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-muted-foreground">
@@ -618,9 +618,9 @@ function Cultura() {
           <p className="mt-6 text-muted-foreground max-w-lg">
             Excelência técnica e desenvolvimento humano caminham juntos na Ditames.
           </p>
-          <a href="#" className="btn-outline mt-8">
+          <Link to="/cultura" className="btn-outline mt-8">
             Conheça a Cultura Completa <ArrowRight size={16} />
-          </a>
+          </Link>
         </div>
         <ul className="grid gap-3">
           {pilares.map((p, i) => (
@@ -659,10 +659,10 @@ function CTAFinal() {
           Transformamos complexidade em soluções seguras e eficientes.
         </p>
         <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:justify-center">
-          <a href="#" className="btn-primary">
+          <Link to="/contato" className="btn-primary">
             <Phone size={16} /> Solicitar Atendimento
-          </a>
-          <a href="#" className="btn-on-dark">
+          </Link>
+          <a href={WHATSAPP_URL} className="btn-on-dark">
             <MessageCircle size={16} /> WhatsApp
           </a>
         </div>
