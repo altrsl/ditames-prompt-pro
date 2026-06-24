@@ -51,8 +51,6 @@ function IAPage() {
   return (
     <>
       <PageHero
-        eyebrow="Inteligência Ambiental"
-      <PageHero
         eyebrow="Recepcionista Ambiental"
         title={<>Precisa de ajuda para <span className="text-primary">entender seu caso?</span></>}
         subtitle="A recepcionista digital da Ditames conversa com você em linguagem simples, faz algumas perguntas e indica o caminho certo — sem juridiquês."
