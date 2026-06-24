@@ -62,7 +62,7 @@ function BlogPost() {
           <p className="mt-6 text-lg text-muted-foreground leading-relaxed">{post.excerpt}</p>
 
           <div className="mt-10 space-y-6 text-base text-foreground/85 leading-relaxed">
-            {post.body.map((p, i) => (
+            {post.body.map((p: string, i: number) => (
               <p key={i}>{p}</p>
             ))}
           </div>
