@@ -296,4 +296,4 @@ export function getServiceBySlug(slug: string) {
   return services.find((s) => s.slug === slug);
 }
 
-export const WHATSAPP_URL = "https://wa.me/5547999999999?text=Ol%C3%A1%2C%20vim%20pelo%20site%20da%20Ditames";
+export const WHATSAPP_URL = "https://wa.me/5547996910055?text=Ol%C3%A1%2C%20vim%20pelo%20site%20da%20Ditames";

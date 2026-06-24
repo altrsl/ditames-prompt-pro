@@ -6,8 +6,9 @@ const nav = [
   { to: "/", label: "Home" },
   { to: "/sobre", label: "Sobre" },
   { to: "/servicos", label: "Serviços" },
+  { to: "/blog", label: "Blog" },
+  { to: "/noticias", label: "Notícias" },
   { to: "/cases", label: "Cases" },
-  { to: "/cultura", label: "Cultura" },
   { to: "/ia", label: "IA" },
   { to: "/contato", label: "Contato" },
 ] as const;
@@ -43,7 +44,7 @@ export function Header() {
           <span className="font-display text-2xl tracking-wider">DITAMES</span>
         </Link>
 
-        <nav className="hidden lg:flex items-center gap-7 text-sm font-semibold">
+        <nav className="hidden xl:flex items-center gap-6 text-sm font-semibold">
           {nav.map((n) => (
             <Link
               key={n.to}
@@ -59,13 +60,13 @@ export function Header() {
           ))}
         </nav>
 
-        <Link to="/contato" className="btn-primary hidden lg:inline-flex">
+        <Link to="/contato" className="btn-primary hidden xl:inline-flex">
           Atendimento
         </Link>
 
         <button
           onClick={() => setOpen((v) => !v)}
-          className={`lg:hidden grid h-10 w-10 place-items-center rounded-md ${
+          className={`xl:hidden grid h-10 w-10 place-items-center rounded-md ${
             transparent ? "text-white" : "text-ink"
           }`}
           aria-label="Menu"
@@ -75,7 +76,7 @@ export function Header() {
       </div>
 
       {open && (
-        <div className="lg:hidden border-t border-border bg-white">
+        <div className="xl:hidden border-t border-border bg-white">
           <div className="container-x flex flex-col py-4 gap-1">
             {nav.map((n) => (
               <Link
