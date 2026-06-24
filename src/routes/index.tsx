@@ -29,6 +29,7 @@ import heroImg from "@/assets/hero-ditames.jpg";
 import quemSomosImg from "@/assets/quem-somos.jpg";
 import tecnologiaImg from "@/assets/tecnologia.jpg";
 import { services, WHATSAPP_URL } from "@/lib/services";
+import { blogPosts, newsPosts, formatDate } from "@/lib/content";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -332,26 +333,24 @@ function Servicos() {
             </h2>
           </div>
           <p className="max-w-md text-muted-foreground">
-            Doze áreas de atuação que cobrem todo o ciclo ambiental de um projeto — do diagnóstico
-            às aprovações finais.
+            Cobrimos todo o ciclo ambiental de um projeto — do diagnóstico às aprovações finais.
+            Nosso portfólio evolui continuamente para acompanhar novas demandas.
           </p>
         </div>
 
-        <div className="mt-14 grid gap-px bg-border sm:grid-cols-2 lg:grid-cols-3 overflow-hidden rounded-xl">
+        <div className="mt-12 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {services.map((s) => (
             <Link
               key={s.slug}
               to="/servicos/$slug"
               params={{ slug: s.slug }}
-              className="group relative flex flex-col gap-5 bg-card p-8 transition-all duration-300 hover:bg-secondary/60"
+              className="group flex items-center gap-4 rounded-lg border border-border bg-card p-4 transition-all hover:border-primary/50 hover:bg-secondary/30"
             >
-              <div className="grid h-12 w-12 place-items-center rounded-lg border border-border text-primary transition-all group-hover:border-primary group-hover:bg-primary group-hover:text-primary-foreground">
-                <s.icon size={22} strokeWidth={1.6} />
+              <div className="grid h-10 w-10 shrink-0 place-items-center rounded-md bg-secondary text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+                <s.icon size={18} strokeWidth={1.7} />
               </div>
-              <h3 className="font-display text-xl uppercase text-ink">{s.title}</h3>
-              <span className="mt-auto inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-primary opacity-0 transition-opacity group-hover:opacity-100">
-                Saiba mais <ArrowRight size={14} />
-              </span>
+              <span className="text-sm font-semibold text-ink flex-1">{s.title}</span>
+              <ArrowRight size={14} className="text-primary opacity-0 transition-opacity group-hover:opacity-100" />
             </Link>
           ))}
         </div>
@@ -522,11 +521,11 @@ function Tecnologia() {
 
 function IA() {
   const examples = [
-    "abrir indústria",
-    "regularizar imóvel rural",
-    "supressão vegetal",
-    "loteamento",
-    "nascente",
+    "Quero abrir uma indústria",
+    "Regularizar imóvel rural",
+    "Tenho uma nascente",
+    "Fazer um loteamento",
+    "Não sei o que preciso",
   ];
   return (
     <section className="bg-background py-20">
@@ -534,21 +533,21 @@ function IA() {
         <div className="relative overflow-hidden rounded-2xl topo-bg p-10 md:p-14" style={{ background: "var(--color-secondary)" }}>
           <div className="grid items-center gap-10 lg:grid-cols-[1.2fr_1fr]">
             <div>
-              <span className="eyebrow">Assistente Ditames</span>
+              <span className="eyebrow">Recepcionista Ambiental</span>
               <h2 className="mt-4 text-3xl md:text-5xl uppercase text-ink">
-                Não sabe qual serviço <span className="text-primary">você precisa?</span>
+                Precisa de ajuda para <span className="text-primary">entender seu caso?</span>
               </h2>
               <p className="mt-5 text-foreground/80 max-w-lg">
-                Assistente inteligente para direcionamento de soluções ambientais. Descreva sua
-                situação e receba o caminho técnico mais adequado.
+                Converse com a recepcionista digital da Ditames. Em linguagem simples, ela faz
+                algumas perguntas e direciona você para o serviço certo ou para um especialista.
               </p>
               <Link to="/ia" className="btn-primary mt-8">
-                <Sparkles size={16} /> Conversar com Assistente
+                <Sparkles size={16} /> Iniciar conversa
               </Link>
             </div>
             <div className="rounded-xl bg-white p-6 shadow-card">
               <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-muted-foreground">
-                <Brain size={14} className="text-primary" /> Exemplos
+                <Brain size={14} className="text-primary" /> Como posso ajudar?
               </div>
               <ul className="mt-4 space-y-2">
                 {examples.map((e) => (
@@ -556,11 +555,87 @@ function IA() {
                     key={e}
                     className="flex items-center justify-between rounded-lg border border-border bg-surface px-4 py-3 text-sm font-medium text-ink transition-colors hover:border-primary/60 hover:bg-secondary cursor-pointer"
                   >
-                    <span className="capitalize">{e}</span>
+                    <span>{e}</span>
                     <ArrowRight size={14} className="text-primary" />
                   </li>
                 ))}
               </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ConteudoAtualizacoes() {
+  const blog = blogPosts.slice(0, 3);
+  const noticias = newsPosts.slice(0, 3);
+  return (
+    <section className="bg-surface py-24">
+      <div className="container-x">
+        <div className="max-w-2xl">
+          <span className="eyebrow">Conteúdo e Atualizações</span>
+          <h2 className="mt-4 text-4xl md:text-5xl uppercase text-ink">
+            Conhecimento e <span className="text-primary">novidades</span> Ditames
+          </h2>
+          <p className="mt-5 text-muted-foreground">
+            Educação ambiental em linguagem clara no Blog. Marcos institucionais e projetos em Notícias.
+          </p>
+        </div>
+
+        <div className="mt-14 grid gap-12 lg:grid-cols-2">
+          <div>
+            <div className="flex items-end justify-between">
+              <h3 className="font-display text-2xl uppercase text-ink">Blog</h3>
+              <Link to="/blog" className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-widest text-primary hover:underline">
+                Ver todos <ArrowRight size={12} />
+              </Link>
+            </div>
+            <div className="mt-6 space-y-4">
+              {blog.map((p) => (
+                <Link
+                  key={p.slug}
+                  to="/blog/$slug"
+                  params={{ slug: p.slug }}
+                  className="group block rounded-xl border border-border bg-card p-5 transition-all hover:-translate-y-0.5 hover:shadow-card hover:border-primary/40"
+                >
+                  <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-primary">
+                    {p.category}
+                  </div>
+                  <div className="mt-2 font-display uppercase text-lg text-ink leading-tight">
+                    {p.title}
+                  </div>
+                  <div className="mt-2 text-xs text-muted-foreground">{formatDate(p.date)} · {p.readTime}</div>
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <div className="flex items-end justify-between">
+              <h3 className="font-display text-2xl uppercase text-ink">Notícias</h3>
+              <Link to="/noticias" className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-widest text-primary hover:underline">
+                Ver todas <ArrowRight size={12} />
+              </Link>
+            </div>
+            <div className="mt-6 space-y-4">
+              {noticias.map((p) => (
+                <Link
+                  key={p.slug}
+                  to="/noticias/$slug"
+                  params={{ slug: p.slug }}
+                  className="group block rounded-xl border border-border bg-card p-5 transition-all hover:-translate-y-0.5 hover:shadow-card hover:border-primary/40"
+                >
+                  <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-primary">
+                    {p.category}
+                  </div>
+                  <div className="mt-2 font-display uppercase text-lg text-ink leading-tight">
+                    {p.title}
+                  </div>
+                  <div className="mt-2 text-xs text-muted-foreground">{formatDate(p.date)} · {p.readTime}</div>
+                </Link>
+              ))}
             </div>
           </div>
         </div>
