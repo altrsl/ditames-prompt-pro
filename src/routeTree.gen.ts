@@ -16,7 +16,11 @@ import { Route as ContatoRouteImport } from './routes/contato'
 import { Route as CasesRouteImport } from './routes/cases'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ServicosIndexRouteImport } from './routes/servicos.index'
+import { Route as NoticiasIndexRouteImport } from './routes/noticias.index'
+import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as ServicosSlugRouteImport } from './routes/servicos.$slug'
+import { Route as NoticiasSlugRouteImport } from './routes/noticias.$slug'
+import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 
 const SobreRoute = SobreRouteImport.update({
@@ -54,9 +58,29 @@ const ServicosIndexRoute = ServicosIndexRouteImport.update({
   path: '/servicos/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const NoticiasIndexRoute = NoticiasIndexRouteImport.update({
+  id: '/noticias/',
+  path: '/noticias/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogIndexRoute = BlogIndexRouteImport.update({
+  id: '/blog/',
+  path: '/blog/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ServicosSlugRoute = ServicosSlugRouteImport.update({
   id: '/servicos/$slug',
   path: '/servicos/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NoticiasSlugRoute = NoticiasSlugRouteImport.update({
+  id: '/noticias/$slug',
+  path: '/noticias/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogSlugRoute = BlogSlugRouteImport.update({
+  id: '/blog/$slug',
+  path: '/blog/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiChatRoute = ApiChatRouteImport.update({
@@ -73,7 +97,11 @@ export interface FileRoutesByFullPath {
   '/ia': typeof IaRoute
   '/sobre': typeof SobreRoute
   '/api/chat': typeof ApiChatRoute
+  '/blog/$slug': typeof BlogSlugRoute
+  '/noticias/$slug': typeof NoticiasSlugRoute
   '/servicos/$slug': typeof ServicosSlugRoute
+  '/blog/': typeof BlogIndexRoute
+  '/noticias/': typeof NoticiasIndexRoute
   '/servicos/': typeof ServicosIndexRoute
 }
 export interface FileRoutesByTo {
@@ -84,7 +112,11 @@ export interface FileRoutesByTo {
   '/ia': typeof IaRoute
   '/sobre': typeof SobreRoute
   '/api/chat': typeof ApiChatRoute
+  '/blog/$slug': typeof BlogSlugRoute
+  '/noticias/$slug': typeof NoticiasSlugRoute
   '/servicos/$slug': typeof ServicosSlugRoute
+  '/blog': typeof BlogIndexRoute
+  '/noticias': typeof NoticiasIndexRoute
   '/servicos': typeof ServicosIndexRoute
 }
 export interface FileRoutesById {
@@ -96,7 +128,11 @@ export interface FileRoutesById {
   '/ia': typeof IaRoute
   '/sobre': typeof SobreRoute
   '/api/chat': typeof ApiChatRoute
+  '/blog/$slug': typeof BlogSlugRoute
+  '/noticias/$slug': typeof NoticiasSlugRoute
   '/servicos/$slug': typeof ServicosSlugRoute
+  '/blog/': typeof BlogIndexRoute
+  '/noticias/': typeof NoticiasIndexRoute
   '/servicos/': typeof ServicosIndexRoute
 }
 export interface FileRouteTypes {
@@ -109,7 +145,11 @@ export interface FileRouteTypes {
     | '/ia'
     | '/sobre'
     | '/api/chat'
+    | '/blog/$slug'
+    | '/noticias/$slug'
     | '/servicos/$slug'
+    | '/blog/'
+    | '/noticias/'
     | '/servicos/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -120,7 +160,11 @@ export interface FileRouteTypes {
     | '/ia'
     | '/sobre'
     | '/api/chat'
+    | '/blog/$slug'
+    | '/noticias/$slug'
     | '/servicos/$slug'
+    | '/blog'
+    | '/noticias'
     | '/servicos'
   id:
     | '__root__'
@@ -131,7 +175,11 @@ export interface FileRouteTypes {
     | '/ia'
     | '/sobre'
     | '/api/chat'
+    | '/blog/$slug'
+    | '/noticias/$slug'
     | '/servicos/$slug'
+    | '/blog/'
+    | '/noticias/'
     | '/servicos/'
   fileRoutesById: FileRoutesById
 }
@@ -143,7 +191,11 @@ export interface RootRouteChildren {
   IaRoute: typeof IaRoute
   SobreRoute: typeof SobreRoute
   ApiChatRoute: typeof ApiChatRoute
+  BlogSlugRoute: typeof BlogSlugRoute
+  NoticiasSlugRoute: typeof NoticiasSlugRoute
   ServicosSlugRoute: typeof ServicosSlugRoute
+  BlogIndexRoute: typeof BlogIndexRoute
+  NoticiasIndexRoute: typeof NoticiasIndexRoute
   ServicosIndexRoute: typeof ServicosIndexRoute
 }
 
@@ -198,11 +250,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServicosIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/noticias/': {
+      id: '/noticias/'
+      path: '/noticias'
+      fullPath: '/noticias/'
+      preLoaderRoute: typeof NoticiasIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog/': {
+      id: '/blog/'
+      path: '/blog'
+      fullPath: '/blog/'
+      preLoaderRoute: typeof BlogIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/servicos/$slug': {
       id: '/servicos/$slug'
       path: '/servicos/$slug'
       fullPath: '/servicos/$slug'
       preLoaderRoute: typeof ServicosSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/noticias/$slug': {
+      id: '/noticias/$slug'
+      path: '/noticias/$slug'
+      fullPath: '/noticias/$slug'
+      preLoaderRoute: typeof NoticiasSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog/$slug': {
+      id: '/blog/$slug'
+      path: '/blog/$slug'
+      fullPath: '/blog/$slug'
+      preLoaderRoute: typeof BlogSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/chat': {
@@ -223,7 +303,11 @@ const rootRouteChildren: RootRouteChildren = {
   IaRoute: IaRoute,
   SobreRoute: SobreRoute,
   ApiChatRoute: ApiChatRoute,
+  BlogSlugRoute: BlogSlugRoute,
+  NoticiasSlugRoute: NoticiasSlugRoute,
   ServicosSlugRoute: ServicosSlugRoute,
+  BlogIndexRoute: BlogIndexRoute,
+  NoticiasIndexRoute: NoticiasIndexRoute,
   ServicosIndexRoute: ServicosIndexRoute,
 }
 export const routeTree = rootRouteImport

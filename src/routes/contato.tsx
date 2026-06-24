@@ -51,18 +51,30 @@ function ContatoPage() {
             <div className="rounded-2xl border border-border bg-card p-7">
               <Phone size={22} className="text-primary" />
               <div className="mt-4 font-display uppercase text-lg text-ink">Telefone</div>
-              <div className="mt-1 text-sm text-muted-foreground">+55 (47) 9999-9999</div>
+              <div className="mt-1 text-sm text-muted-foreground">(47) 3300-3466</div>
+              <div className="text-sm text-muted-foreground">WhatsApp: (47) 9 9691-0055</div>
             </div>
             <div className="rounded-2xl border border-border bg-card p-7">
               <Mail size={22} className="text-primary" />
               <div className="mt-4 font-display uppercase text-lg text-ink">E-mail</div>
-              <div className="mt-1 text-sm text-muted-foreground">contato@ditames.com.br</div>
+              <a href="mailto:comercial@ditames.com.br" className="mt-1 block text-sm text-muted-foreground hover:text-primary">
+                comercial@ditames.com.br
+              </a>
             </div>
-            <div className="rounded-2xl border border-border bg-card p-7">
+            <a
+              href="https://www.google.com/maps/place/Ditames+Soluções+Ambientais/@-27.2309585,-49.6484217,97m"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block rounded-2xl border border-border bg-card p-7 transition-colors hover:border-primary/50"
+            >
               <MapPin size={22} className="text-primary" />
               <div className="mt-4 font-display uppercase text-lg text-ink">Sede</div>
-              <div className="mt-1 text-sm text-muted-foreground">Santa Catarina, Brasil</div>
-            </div>
+              <div className="mt-1 text-sm text-muted-foreground">
+                Rua Brasil, 22 — Sumaré<br />
+                Rio do Sul, SC — CEP 89165-613
+              </div>
+              <div className="mt-2 text-xs uppercase tracking-widest text-primary">Ver no Google Maps →</div>
+            </a>
           </div>
 
           <form
