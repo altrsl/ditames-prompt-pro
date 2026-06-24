@@ -763,6 +763,7 @@ function Home() {
       <Tecnologia />
       <IA />
       <Cases />
+      <ConteudoAtualizacoes />
       <Cultura />
       <CTAFinal />
     </div>

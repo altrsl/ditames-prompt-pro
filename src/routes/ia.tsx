@@ -9,10 +9,10 @@ import { WHATSAPP_URL } from "@/lib/services";
 export const Route = createFileRoute("/ia")({
   head: () => ({
     meta: [
-      { title: "Inteligência Ambiental — Assistente Ditames" },
-      { name: "description", content: "Não sabe qual serviço ambiental você precisa? Converse com a Inteligência Ambiental da Ditames e descubra o caminho técnico correto." },
-      { property: "og:title", content: "Inteligência Ambiental Ditames" },
-      { property: "og:description", content: "Triagem inteligente para soluções ambientais." },
+      { title: "Recepcionista Ambiental — Ditames" },
+      { name: "description", content: "Precisa de ajuda para entender seu caso ambiental? Converse com a recepcionista digital da Ditames e descubra o caminho técnico correto." },
+      { property: "og:title", content: "Recepcionista Ambiental Ditames" },
+      { property: "og:description", content: "Triagem em linguagem simples para encontrar o serviço certo." },
     ],
   }),
   component: IAPage,
