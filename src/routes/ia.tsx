@@ -52,8 +52,10 @@ function IAPage() {
     <>
       <PageHero
         eyebrow="Inteligência Ambiental"
-        title={<>Descubra o serviço <span className="text-primary">certo para você</span></>}
-        subtitle="Triagem inteligente da Ditames. Descreva sua situação em linguagem simples e receba o direcionamento técnico correto — sem juridiquês, sem rodeio."
+      <PageHero
+        eyebrow="Recepcionista Ambiental"
+        title={<>Precisa de ajuda para <span className="text-primary">entender seu caso?</span></>}
+        subtitle="A recepcionista digital da Ditames conversa com você em linguagem simples, faz algumas perguntas e indica o caminho certo — sem juridiquês."
       />
 
       <section className="bg-background pb-24">
@@ -85,7 +87,7 @@ function IAPage() {
               </div>
               <div>
                 <div className="font-display uppercase text-sm tracking-wider text-ink">
-                  Assistente Ditames
+                  Recepcionista Ditames
                 </div>
                 <div className="text-xs text-muted-foreground">
                   {status === "streaming" || status === "submitted" ? "Pensando..." : "Online"}
