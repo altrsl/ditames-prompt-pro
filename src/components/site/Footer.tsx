@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
-import { Leaf, Phone, MessageCircle, MapPin, Mail, Instagram, Linkedin, Clock } from "lucide-react";
+import { Phone, MessageCircle, MapPin, Mail, Instagram, Linkedin, Clock } from "lucide-react";
 import { services, WHATSAPP_URL } from "@/lib/services";
+import logoAsset from "@/assets/logo-ditames.asset.json";
 
 export function Footer() {
   return (
@@ -8,13 +9,17 @@ export function Footer() {
       <div className="container-x py-16">
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
           <div>
-            <div className="flex items-center gap-2.5 text-white">
-              <span className="grid h-10 w-10 place-items-center rounded-md bg-primary text-primary-foreground">
-                <Leaf size={20} />
-              </span>
-              <span className="font-display text-2xl tracking-wider">DITAMES</span>
-            </div>
+            <Link to="/" aria-label="Ditames Ambiental — Início" className="inline-block">
+              <img
+                src={logoAsset.url}
+                alt="Ditames Ambiental"
+                width={1280}
+                height={720}
+                className="h-12 w-auto object-contain"
+              />
+            </Link>
             <p className="mt-5 text-sm leading-relaxed text-white/65">
+
               Fortalecer clientes por meio de soluções ambientais integradas, unindo tecnologia,
               conhecimento técnico e desenvolvimento humano contínuo, para que cada desafio se
               torne um passo de evolução organizacional e pessoal, promovendo sustentabilidade,

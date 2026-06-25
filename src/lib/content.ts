@@ -8,10 +8,20 @@ export type Post = {
   body: string[]; // paragraphs
 };
 
-const fmt = (iso: string) =>
-  new Date(iso).toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" });
+const MESES = [
+  "janeiro", "fevereiro", "março", "abril", "maio", "junho",
+  "julho", "agosto", "setembro", "outubro", "novembro", "dezembro",
+];
+
+// Parses the ISO date as a calendar date (no timezone shift) to avoid
+// SSR/CSR hydration mismatches between UTC server and local client.
+const fmt = (iso: string) => {
+  const [y, m, d] = iso.split("-").map(Number);
+  return `${String(d).padStart(2, "0")} de ${MESES[m - 1]} de ${y}`;
+};
 
 export const formatDate = fmt;
+
 
 export const blogPosts: Post[] = [
   {
