@@ -38,7 +38,7 @@ function SobrePage() {
             </h2>
             <div className="mt-6 space-y-4 text-foreground/80 leading-relaxed">
               <p>
-                Fundada em 2021, a Ditames combinou engenharia, meio ambiente, geotecnologia e
+                Fundada em 16/08/2022, a Ditames combinou engenharia, meio ambiente, geotecnologia e
                 gestão num único interlocutor técnico. O propósito sempre foi claro: assumir
                 responsabilidade integral pelo projeto e devolver tempo, segurança e clareza
                 ao cliente.

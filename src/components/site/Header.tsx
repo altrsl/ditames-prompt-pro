@@ -1,6 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Leaf, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
+import logoAsset from "@/assets/logo-ditames.asset.json";
 
 const nav = [
   { to: "/", label: "Home" },
@@ -9,7 +10,7 @@ const nav = [
   { to: "/blog", label: "Blog" },
   { to: "/noticias", label: "Notícias" },
   { to: "/cases", label: "Cases" },
-  { to: "/ia", label: "IA" },
+  { to: "/ia", label: "Tire suas Dúvidas" },
   { to: "/contato", label: "Contato" },
 ] as const;
 
@@ -32,16 +33,21 @@ export function Header() {
     <header
       className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
         transparent
-          ? "bg-transparent"
+          ? "bg-black/30 backdrop-blur-sm"
           : "bg-white/95 backdrop-blur border-b border-border shadow-sm"
       }`}
     >
-      <div className="container-x flex items-center justify-between py-4">
-        <Link to="/" className={`flex items-center gap-2.5 ${transparent ? "text-white" : "text-ink"}`}>
-          <span className="grid h-10 w-10 place-items-center rounded-md bg-primary text-primary-foreground">
-            <Leaf size={20} />
-          </span>
-          <span className="font-display text-2xl tracking-wider">DITAMES</span>
+      <div className="container-x flex items-center justify-between py-3">
+        <Link to="/" aria-label="Ditames Ambiental — Início" className="flex items-center">
+          <img
+            src={logoAsset.url}
+            alt="Ditames Ambiental"
+            width={1280}
+            height={720}
+            className={`h-10 md:h-11 w-auto object-contain transition-all ${
+              transparent ? "" : "invert"
+            }`}
+          />
         </Link>
 
         <nav className="hidden xl:flex items-center gap-6 text-sm font-semibold">

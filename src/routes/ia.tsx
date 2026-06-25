@@ -51,10 +51,11 @@ function IAPage() {
   return (
     <>
       <PageHero
-        eyebrow="Recepcionista Ambiental"
-        title={<>Precisa de ajuda para <span className="text-primary">entender seu caso?</span></>}
-        subtitle="A recepcionista digital da Ditames conversa com você em linguagem simples, faz algumas perguntas e indica o caminho certo — sem juridiquês."
+        eyebrow="Recepcionista Digital"
+        title={<>Olá! Posso te ajudar a <span className="text-primary">entender seu caso?</span></>}
+        subtitle="Sou a recepcionista digital da Ditames. Te ouço em linguagem simples, ajudo a identificar a solução ambiental certa e te encaminho para um especialista da nossa equipe quando fizer sentido."
       />
+
 
       <section className="bg-background pb-24">
         <div className="container-x grid lg:grid-cols-[1fr_2fr] gap-8">
@@ -97,9 +98,11 @@ function IAPage() {
               {messages.length === 0 && (
                 <div className="space-y-5">
                   <div className="rounded-xl bg-secondary/50 p-4 text-sm text-ink leading-relaxed">
-                    Olá! Sou a Inteligência Ambiental da Ditames. Me conta o que está acontecendo
-                    no seu projeto que eu te indico o caminho certo.
+                    Olá! Sou a recepcionista digital da Ditames. Me conta o que está
+                    acontecendo no seu projeto que eu te oriento — e, se preciso, chamo
+                    um especialista da nossa equipe.
                   </div>
+
                   <div>
                     <p className="text-xs uppercase tracking-widest text-muted-foreground mb-3">
                       Sugestões
