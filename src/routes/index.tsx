@@ -533,16 +533,17 @@ function IA() {
         <div className="relative overflow-hidden rounded-2xl topo-bg p-10 md:p-14" style={{ background: "var(--color-secondary)" }}>
           <div className="grid items-center gap-10 lg:grid-cols-[1.2fr_1fr]">
             <div>
-              <span className="eyebrow">Recepcionista Ambiental</span>
+              <span className="eyebrow">Recepcionista Digital</span>
               <h2 className="mt-4 text-3xl md:text-5xl uppercase text-ink">
-                Precisa de ajuda para <span className="text-primary">entender seu caso?</span>
+                Olá! Posso te ajudar a <span className="text-primary">entender seu caso?</span>
               </h2>
               <p className="mt-5 text-foreground/80 max-w-lg">
-                Converse com a recepcionista digital da Ditames. Em linguagem simples, ela faz
-                algumas perguntas e direciona você para o serviço certo ou para um especialista.
+                Sou a recepcionista digital da Ditames. Em uma conversa simples, te ouço,
+                ajudo a identificar qual solução ambiental você precisa e, quando fizer
+                sentido, te encaminho para um especialista da nossa equipe.
               </p>
               <Link to="/ia" className="btn-primary mt-8">
-                <Sparkles size={16} /> Iniciar conversa
+                <Sparkles size={16} /> Conversar com a recepcionista
               </Link>
             </div>
             <div className="rounded-xl bg-white p-6 shadow-card">
@@ -567,6 +568,7 @@ function IA() {
     </section>
   );
 }
+
 
 function ConteudoAtualizacoes() {
   const blog = blogPosts.slice(0, 3);
@@ -654,26 +656,54 @@ function Cases() {
           <h2 className="mt-4 text-4xl md:text-5xl uppercase text-ink">
             Confiança construída <span className="text-primary">no campo</span>
           </h2>
+          <p className="mt-5 text-muted-foreground">
+            Empresas que escolheram a Ditames para conduzir seus desafios ambientais
+            com responsabilidade técnica.
+          </p>
         </div>
-        <div className="mt-12 grid gap-px bg-border overflow-hidden rounded-xl border border-border sm:grid-cols-2 lg:grid-cols-5">
+
+        <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
           {logos.map((l) => (
             <div
               key={l}
-              className="bg-card px-6 py-10 text-center transition-colors hover:bg-secondary/40"
+              className="group relative flex flex-col rounded-xl border border-border bg-card overflow-hidden transition-all hover:-translate-y-0.5 hover:border-primary/50 hover:shadow-card"
             >
-              <span className="font-display text-lg uppercase tracking-wider text-ink/80">
-                {l}
-              </span>
+              <div
+                className="relative aspect-[4/3] flex items-center justify-center border-b border-border bg-secondary/30"
+                aria-label={`Logo ${l}`}
+              >
+                <div
+                  className="absolute inset-0 opacity-40"
+                  style={{
+                    backgroundImage:
+                      "linear-gradient(rgba(96,148,48,.15) 1px, transparent 1px), linear-gradient(90deg, rgba(96,148,48,.15) 1px, transparent 1px)",
+                    backgroundSize: "22px 22px",
+                  }}
+                />
+                <span className="relative font-display text-2xl uppercase tracking-wider text-ink/70 text-center px-3 leading-tight">
+                  {l}
+                </span>
+              </div>
+              <div className="px-5 py-4">
+                <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-primary">
+                  Cliente Ditames
+                </div>
+                <div className="mt-1 text-sm font-semibold text-ink leading-tight">
+                  {l}
+                </div>
+              </div>
             </div>
           ))}
         </div>
-        <p className="mt-6 text-xs uppercase tracking-[0.2em] text-muted-foreground">
-          Empresas atendidas ao longo da trajetória da Ditames.
+
+        <p className="mt-8 text-xs uppercase tracking-[0.2em] text-muted-foreground">
+          Marcas exibidas em formato textual enquanto aguardamos a liberação oficial das logos pelos clientes.
         </p>
       </div>
     </section>
   );
 }
+
 
 function Cultura() {
   const pilares = [
@@ -732,8 +762,9 @@ function CTAFinal() {
           Tem um desafio <span className="text-secondary">ambiental?</span>
         </h2>
         <p className="mt-6 text-lg text-white/85 max-w-2xl mx-auto">
-          Transformamos complexidade em soluções seguras e eficientes.
+          Conte com uma equipe preparada para conduzir seu projeto com segurança, clareza e responsabilidade.
         </p>
+
         <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:justify-center">
           <Link to="/contato" className="btn-primary">
             <Phone size={16} /> Solicitar Atendimento
