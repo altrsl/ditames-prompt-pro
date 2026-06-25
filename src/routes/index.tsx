@@ -260,7 +260,7 @@ function Crescimento() {
         <div className="relative">
           <div className="grid grid-cols-2 gap-4">
             {[
-              { k: "2021", v: "Fundação" },
+              { k: "2022", v: "Fundação" },
               { k: "47", v: "Municípios SC" },
               { k: "687", v: "Clientes" },
               { k: "40+", v: "Especialistas" },

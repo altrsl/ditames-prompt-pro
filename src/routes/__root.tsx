@@ -89,6 +89,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:description", content: "Engenharia, meio ambiente e geotecnologia para licenciamento, regularização, topografia e georreferenciamento em todo o Brasil." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:image", content: logoAsset.url },
+      { name: "twitter:image", content: logoAsset.url },
+
     ],
     links: [
       { rel: "stylesheet", href: appCss },
