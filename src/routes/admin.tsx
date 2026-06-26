@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import {
   LayoutDashboard, FileText, Newspaper, Users, Settings,
   LogOut, ChevronRight, Menu, X, Shield, History,
-  Leaf, Instagram,
+  Leaf, Instagram, Link2,
 } from "lucide-react";
 import { getCurrentCmsUser, signOut, hasPermission } from "@/lib/admin";
 import type { CmsUserRow } from "@/lib/database.types";
@@ -18,13 +18,14 @@ export const Route = createFileRoute("/admin")({
 });
 
 const NAV_ITEMS = [
-  { label: "Dashboard",  to: "/admin",               icon: LayoutDashboard, permission: null },
-  { label: "Notícias",   to: "/admin/news",           icon: Newspaper,       permission: "create_edit_news" as const },
-  { label: "Blog",       to: "/admin/blog",           icon: FileText,        permission: "create_edit_blog" as const },
-  { label: "Cases",      to: "/admin/cases",          icon: Leaf,            permission: "edit_cases" as const },
-  { label: "Instagram",  to: "/admin/instagram",      icon: Instagram,       permission: "create_edit_news" as const },
-  { label: "Usuários",   to: "/admin/users",          icon: Users,           permission: "create_users" as const },
-  { label: "Audit Log",  to: "/admin/audit",          icon: History,         permission: "view_audit_log" as const },
+  { label: "Dashboard",      to: "/admin",             icon: LayoutDashboard, permission: null },
+  { label: "Notícias",       to: "/admin/news",        icon: Newspaper,       permission: "create_edit_news" as const },
+  { label: "Blog",           to: "/admin/blog",        icon: FileText,        permission: "create_edit_blog" as const },
+  { label: "Importar link",  to: "/admin/import",      icon: Link2,           permission: "create_edit_news" as const },
+  { label: "Cases",          to: "/admin/cases",       icon: Leaf,            permission: "edit_cases" as const },
+  { label: "Instagram",      to: "/admin/instagram",   icon: Instagram,       permission: "create_edit_news" as const },
+  { label: "Usuários",       to: "/admin/users",       icon: Users,           permission: "create_users" as const },
+  { label: "Audit Log",      to: "/admin/audit",       icon: History,         permission: "view_audit_log" as const },
 ];
 
 function AdminLayout() {
