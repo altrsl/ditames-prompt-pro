@@ -40,7 +40,7 @@ import { services, WHATSAPP_URL } from "@/lib/services";
 import { formatDate } from "@/lib/content";
 import { getCases, getFaq, getBlogPosts, getNewsPosts } from "@/lib/data";
 import type { NormalizedCase, NormalizedFaqItem, NormalizedPost } from "@/lib/data";
-import { InlineText } from "@/components/admin/InlineEditable";
+import { InlineText, InlineImage } from "@/components/admin/InlineEditable";
 import { supabase } from "@/lib/supabase";
 
 // Helper: salva texto na tabela homepage_content
@@ -140,13 +140,13 @@ function Counter({ to, suffix = "", prefix = "" }: { to: number; suffix?: string
 
 
 function Hero() {
+  const [bg, setBg] = useState(heroImg);
   return (
     <section id="top" className="relative min-h-[100svh] w-full overflow-hidden">
-      <img
-        src={heroImg}
+      <InlineImage
+        src={bg}
         alt="Drone sobrevoando área verde com equipe técnica em operação"
-        width={1920}
-        height={1280}
+        onSave={async (url) => { setBg(url); await supabase.from("homepage_content").upsert({ key: "hero_image", value: url, type: "image_id" }, { onConflict: "key" }); }}
         className="absolute inset-0 h-full w-full object-cover"
       />
       <div className="absolute inset-0 bg-gradient-to-b from-black/65 via-black/45 to-black/80" />
@@ -328,16 +328,15 @@ function Crescimento() {
 }
 
 function QuemSomos() {
+  const [img, setImg] = useState(quemSomosImg);
   return (
     <section id="quem-somos" className="bg-background py-24 md:py-32">
       <div className="container-x grid items-center gap-14 lg:grid-cols-2">
         <div className="relative">
-          <img
-            src={quemSomosImg}
+          <InlineImage
+            src={img}
             alt="Equipe técnica analisando mapas em campo"
-            width={1280}
-            height={960}
-            loading="lazy"
+            onSave={async (url) => { setImg(url); await supabase.from("homepage_content").upsert({ key: "quem_somos_image", value: url, type: "image_id" }, { onConflict: "key" }); }}
             className="rounded-xl object-cover w-full aspect-[4/3]"
           />
           <div className="absolute -bottom-6 -right-6 hidden md:block max-w-xs rounded-xl bg-primary p-6 text-primary-foreground shadow-glow">
@@ -510,6 +509,7 @@ function Diferenciais() {
 }
 
 function Tecnologia() {
+  const [img, setImg] = useState(tecnologiaImg);
   const stack = [
     { icon: Plane, t: "Drones" },
     { icon: Satellite, t: "GPS RTK" },
@@ -544,12 +544,10 @@ function Tecnologia() {
           </div>
         </div>
         <div className="relative">
-          <img
-            src={tecnologiaImg}
+          <InlineImage
+            src={img}
             alt="Drone e equipamento topográfico em campo"
-            width={1280}
-            height={960}
-            loading="lazy"
+            onSave={async (url) => { setImg(url); await supabase.from("homepage_content").upsert({ key: "tecnologia_image", value: url, type: "image_id" }, { onConflict: "key" }); }}
             className="rounded-xl object-cover w-full aspect-[4/3]"
           />
           <div
