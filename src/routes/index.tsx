@@ -24,6 +24,14 @@ import {
   FlaskConical,
   FileSignature,
   Repeat,
+  AlertTriangle,
+  ChevronDown,
+  ShieldCheck,
+  FileWarning,
+  Sprout,
+  Droplets,
+  Building,
+  HelpCircle,
 } from "lucide-react";
 import heroImg from "@/assets/hero-ditames.jpg";
 import quemSomosImg from "@/assets/quem-somos.jpg";
@@ -570,7 +578,142 @@ function IA() {
 }
 
 
-function ConteudoAtualizacoes() {
+function NotificacaoAmbiental() {
+  const cards = [
+    { icon: FileWarning, label: "Recebi uma multa ambiental" },
+    { icon: ShieldCheck, label: "Preciso regularizar uma área" },
+    { icon: Trees, label: "Tenho problemas com APP" },
+    { icon: AlertTriangle, label: "Preciso resolver uma exigência ambiental" },
+    { icon: Droplets, label: "Tenho dúvidas sobre uma nascente" },
+    { icon: HelpCircle, label: "Quero entender minha situação" },
+  ];
+  return (
+    <section className="bg-surface py-24 md:py-32">
+      <div className="container-x">
+        <div className="max-w-3xl mx-auto text-center">
+          <span className="eyebrow">Estamos aqui para ajudar</span>
+          <h2 className="mt-4 text-3xl md:text-5xl uppercase text-ink">
+            Recebeu uma notificação, multa ou{" "}
+            <span className="text-primary">exigência ambiental?</span>
+          </h2>
+          <p className="mt-6 text-base md:text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto">
+            Muitas pessoas procuram ajuda quando recebem uma multa ambiental, uma exigência de
+            regularização, uma notificação de órgão ambiental ou enfrentam dificuldades para
+            compreender suas obrigações ambientais. A Ditames auxilia na identificação da situação,
+            elaboração das soluções técnicas necessárias e condução dos processos de regularização.
+          </p>
+        </div>
+        <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {cards.map((c) => (
+            <Link
+              key={c.label}
+              to="/ia"
+              className="group flex items-center gap-4 rounded-xl border border-border bg-card p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-card hover:border-primary/50"
+            >
+              <div className="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-secondary text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+                <c.icon size={20} />
+              </div>
+              <span className="text-sm font-semibold text-ink flex-1 leading-snug">{c.label}</span>
+              <ArrowRight size={14} className="text-primary opacity-0 transition-opacity group-hover:opacity-100 shrink-0" />
+            </Link>
+          ))}
+        </div>
+        <div className="mt-10 text-center">
+          <Link to="/ia" className="btn-primary">
+            <Sparkles size={16} /> Falar com a Recepcionista Ambiental
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function FAQ() {
+  const [open, setOpen] = useState<number | null>(null);
+  const items = [
+    {
+      q: "Ganhei uma multa ambiental. O que devo fazer?",
+      a: "O primeiro passo é entender a origem e o embasamento legal da multa. A Ditames pode analisar o auto de infração, identificar as obrigações envolvidas e orientar sobre as possibilidades de defesa administrativa, regularização ou cumprimento de exigências. Cada situação é única e merece análise técnica especializada.",
+    },
+    {
+      q: "Como regularizar uma área rural?",
+      a: "A regularização de áreas rurais envolve etapas como Cadastro Ambiental Rural (CAR), georreferenciamento, identificação de Áreas de Preservação Permanente (APP), Reserva Legal e, quando necessário, Programa de Regularização Ambiental (PRA). A Ditames conduz todo esse processo de forma integrada.",
+    },
+    {
+      q: "O que acontece quando existe uma APP na propriedade?",
+      a: "Áreas de Preservação Permanente (APP) possuem restrições de uso estabelecidas pelo Código Florestal. Dependendo da situação — margem de rio, encosta, nascente — é necessário identificar as obrigações, avaliar passivos e, quando cabível, conduzir processos de recuperação ou regularização junto aos órgãos ambientais.",
+    },
+    {
+      q: "Como funciona um licenciamento ambiental?",
+      a: "O licenciamento ambiental é o processo pelo qual o poder público autoriza a instalação e operação de atividades potencialmente poluidoras. Dependendo da atividade e do porte, pode envolver Licença Prévia (LP), Licença de Instalação (LI) e Licença de Operação (LO). A Ditames elabora os estudos necessários e conduz todo o processo junto aos órgãos competentes.",
+    },
+    {
+      q: "Preciso de autorização para suprimir vegetação?",
+      a: "Sim, em grande parte dos casos. A supressão de vegetação nativa exige autorização do órgão ambiental estadual ou federal, dependendo do bioma e da área. A Ditames realiza o levantamento florístico, elabora o requerimento técnico e acompanha o processo de aprovação.",
+    },
+    {
+      q: "Tenho uma nascente na propriedade. O que fazer?",
+      a: "Nascentes são protegidas pelo Código Florestal e exigem manutenção de faixa de APP ao redor. É necessário identificá-las corretamente no Cadastro Ambiental Rural e, caso haja ocupação indevida, conduzir processo de regularização. A Ditames realiza o mapeamento e orienta sobre as obrigações legais.",
+    },
+    {
+      q: "Como regularizar um loteamento?",
+      a: "A regularização de loteamentos envolve aspectos fundiários, urbanísticos e ambientais. A Ditames apoia desde a elaboração de estudos ambientais e topográficos até a aprovação nos órgãos competentes, passando por licenciamento, elaboração de projetos de drenagem, arborização e demais exigências técnicas.",
+    },
+    {
+      q: "Como saber se minha atividade precisa de licenciamento?",
+      a: "A necessidade de licenciamento depende da natureza, porte e localização da atividade. A Ditames realiza o enquadramento da atividade na legislação estadual e federal e orienta sobre os procedimentos necessários, evitando surpresas e autuações futuras.",
+    },
+  ];
+
+  return (
+    <section className="bg-background py-24 md:py-32">
+      <div className="container-x">
+        <div className="max-w-3xl mx-auto">
+          <span className="eyebrow text-center block">Dúvidas Frequentes</span>
+          <h2 className="mt-4 text-3xl md:text-5xl uppercase text-ink text-center">
+            Respostas para quem{" "}
+            <span className="text-primary">não sabe por onde começar</span>
+          </h2>
+          <p className="mt-6 text-muted-foreground text-center">
+            Situações ambientais complexas explicadas em linguagem direta.
+          </p>
+
+          <div className="mt-12 space-y-3">
+            {items.map((item, i) => (
+              <div
+                key={i}
+                className="rounded-xl border border-border bg-card overflow-hidden"
+              >
+                <button
+                  onClick={() => setOpen(open === i ? null : i)}
+                  className="w-full flex items-center justify-between gap-4 px-6 py-5 text-left text-sm font-semibold text-ink hover:text-primary transition-colors"
+                >
+                  <span>{item.q}</span>
+                  <ChevronDown
+                    size={18}
+                    className={`shrink-0 text-primary transition-transform duration-300 ${open === i ? "rotate-180" : ""}`}
+                  />
+                </button>
+                {open === i && (
+                  <div className="px-6 pb-5 text-sm text-muted-foreground leading-relaxed border-t border-border pt-4">
+                    {item.a}
+                    <div className="mt-4">
+                      <Link to="/ia" className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline">
+                        <Sparkles size={12} /> Falar com a Recepcionista Ambiental <ArrowRight size={12} />
+                      </Link>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+
   const blog = blogPosts.slice(0, 3);
   const noticias = newsPosts.slice(0, 3);
   return (
@@ -647,7 +790,13 @@ function ConteudoAtualizacoes() {
 }
 
 function Cases() {
-  const logos = ["Madefrahm", "Metalúrgica Riosulense", "BIOCAL", "Elber", "Prefabricar"];
+  const items = [
+    { name: "Madefrahm", sector: "Indústria moveleira", desc: "Regularização ambiental de empreendimento industrial." },
+    { name: "Metalúrgica Riosulense", sector: "Metalurgia", desc: "Apoio contínuo em processos de licenciamento." },
+    { name: "BIOCAL", sector: "Insumos agrícolas", desc: "Estudos ambientais e suporte técnico." },
+    { name: "Elber", sector: "Refrigeração industrial", desc: "Gestão ambiental recorrente." },
+    { name: "Prefabricar", sector: "Construção", desc: "Licenciamento e regularização de canteiro de obras." },
+  ];
   return (
     <section id="cases" className="bg-surface py-24">
       <div className="container-x">
@@ -663,14 +812,16 @@ function Cases() {
         </div>
 
         <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-          {logos.map((l) => (
+          {items.map((c) => (
             <div
-              key={l}
+              key={c.name}
               className="group relative flex flex-col rounded-xl border border-border bg-card overflow-hidden transition-all hover:-translate-y-0.5 hover:border-primary/50 hover:shadow-card"
             >
+              {/* Área da logo */}
               <div
-                className="relative aspect-[4/3] flex items-center justify-center border-b border-border bg-secondary/30"
-                aria-label={`Logo ${l}`}
+                className="relative flex items-center justify-center border-b border-border bg-secondary/30 px-4 py-6"
+                style={{ minHeight: "96px" }}
+                aria-label={`Logo ${c.name}`}
               >
                 <div
                   className="absolute inset-0 opacity-40"
@@ -680,25 +831,41 @@ function Cases() {
                     backgroundSize: "22px 22px",
                   }}
                 />
-                <span className="relative font-display text-2xl uppercase tracking-wider text-ink/70 text-center px-3 leading-tight">
-                  {l}
+                <span className="relative font-display text-xl uppercase tracking-wider text-ink/70 text-center leading-tight">
+                  {c.name}
                 </span>
               </div>
-              <div className="px-5 py-4">
+
+              {/* Conteúdo */}
+              <div className="flex flex-col flex-1 px-5 py-4">
                 <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-primary">
-                  Cliente Ditames
+                  {c.sector}
                 </div>
                 <div className="mt-1 text-sm font-semibold text-ink leading-tight">
-                  {l}
+                  {c.name}
                 </div>
+                <p className="mt-2 text-xs text-muted-foreground leading-relaxed flex-1">
+                  {c.desc}
+                </p>
+                <Link
+                  to="/cases"
+                  className="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
+                >
+                  Saiba mais <ArrowRight size={11} />
+                </Link>
               </div>
             </div>
           ))}
         </div>
 
-        <p className="mt-8 text-xs uppercase tracking-[0.2em] text-muted-foreground">
-          Marcas exibidas em formato textual enquanto aguardamos a liberação oficial das logos pelos clientes.
-        </p>
+        <div className="mt-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
+            Marcas exibidas em formato textual enquanto aguardamos a liberação oficial das logos pelos clientes.
+          </p>
+          <Link to="/cases" className="btn-outline shrink-0">
+            Ver todos os cases <ArrowRight size={14} />
+          </Link>
+        </div>
       </div>
     </section>
   );
@@ -784,6 +951,7 @@ function Home() {
   return (
     <div className="bg-background">
       <Hero />
+      <NotificacaoAmbiental />
       <PublicoAlvo />
       <Numeros />
       <Crescimento />
@@ -793,6 +961,7 @@ function Home() {
       <Diferenciais />
       <Tecnologia />
       <IA />
+      <FAQ />
       <Cases />
       <ConteudoAtualizacoes />
       <Cultura />

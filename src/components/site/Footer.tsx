@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Phone, MessageCircle, MapPin, Mail, Instagram, Linkedin, Clock } from "lucide-react";
+import { Phone, MessageCircle, MapPin, Mail, Instagram, Linkedin, Clock, Sparkles } from "lucide-react";
 import { services, WHATSAPP_URL } from "@/lib/services";
 import logoAsset from "@/assets/logo-ditames.asset.json";
 
@@ -101,7 +101,26 @@ export function Footer() {
             </ul>
           </div>
         </div>
-        <div className="mt-14 flex flex-col items-start justify-between gap-3 border-t border-white/10 pt-6 text-xs text-white/50 md:flex-row md:items-center">
+        {/* Recepcionista Ambiental CTA */}
+        <div className="mt-12 rounded-xl border border-white/10 bg-white/5 p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2 text-white text-sm font-semibold">
+              <Sparkles size={16} className="text-primary" />
+              Recebeu uma exigência ambiental? Não sabe por onde começar?
+            </div>
+            <p className="mt-1 text-xs text-white/60">
+              Fale com a Recepcionista Ambiental e entenda sua situação.
+            </p>
+          </div>
+          <Link
+            to="/ia"
+            className="shrink-0 inline-flex items-center gap-2 rounded-lg border border-primary bg-primary/10 px-5 py-2.5 text-xs font-semibold uppercase tracking-widest text-primary transition-colors hover:bg-primary hover:text-white"
+          >
+            <Sparkles size={12} /> Falar com a Recepcionista
+          </Link>
+        </div>
+
+        <div className="mt-8 flex flex-col items-start justify-between gap-3 border-t border-white/10 pt-6 text-xs text-white/50 md:flex-row md:items-center">
           <p>© {new Date().getFullYear()} Ditames Ambiental. Todos os direitos reservados.</p>
           <p>Engenharia · Meio Ambiente · Geotecnologia · Desde 2022</p>
         </div>

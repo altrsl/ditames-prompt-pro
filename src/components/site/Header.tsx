@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Sparkles } from "lucide-react";
 import { useEffect, useState } from "react";
 import logoAsset from "@/assets/logo-ditames.asset.json";
 
@@ -66,9 +66,21 @@ export function Header() {
           ))}
         </nav>
 
-        <Link to="/contato" className="btn-primary hidden xl:inline-flex">
-          Atendimento
-        </Link>
+        <div className="hidden xl:flex items-center gap-3">
+          <Link
+            to="/ia"
+            className={`inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-widest transition-all ${
+              transparent
+                ? "border border-white/30 text-white hover:border-white hover:bg-white/10"
+                : "border border-primary/30 text-primary hover:border-primary hover:bg-primary/5"
+            }`}
+          >
+            <Sparkles size={12} /> Recepcionista Ambiental
+          </Link>
+          <Link to="/contato" className="btn-primary">
+            Atendimento
+          </Link>
+        </div>
 
         <button
           onClick={() => setOpen((v) => !v)}
@@ -96,6 +108,9 @@ export function Header() {
                 {n.label}
               </Link>
             ))}
+            <Link to="/ia" onClick={() => setOpen(false)} className="inline-flex items-center gap-2 py-3 text-sm font-semibold text-primary hover:text-primary/80">
+              <Sparkles size={14} /> Recepcionista Ambiental
+            </Link>
             <Link to="/contato" onClick={() => setOpen(false)} className="btn-primary mt-3">
               Atendimento
             </Link>

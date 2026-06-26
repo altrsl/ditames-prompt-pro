@@ -1,5 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
+import { ArrowRight, Sparkles } from "lucide-react";
 import { PageHero } from "@/components/site/PageHero";
 import { PostCard } from "@/components/site/PostCard";
 import { blogPosts } from "@/lib/content";
@@ -7,21 +8,30 @@ import { blogPosts } from "@/lib/content";
 export const Route = createFileRoute("/blog/")({
   head: () => ({
     meta: [
-      { title: "Blog Ditames Ambiental — Conteúdo técnico e educação ambiental" },
+      { title: "Blog Ditames Ambiental — Multas, Regularização e Legislação Ambiental" },
       {
         name: "description",
         content:
-          "Artigos sobre licenciamento, regularização, geotecnologia e legislação ambiental, explicados em linguagem clara pela equipe técnica da Ditames.",
+          "Entenda o que fazer ao receber uma multa ambiental, como regularizar uma propriedade rural, APP, licenciamento e mais. Conteúdo técnico em linguagem clara pela equipe Ditames.",
       },
       { property: "og:title", content: "Blog Ditames Ambiental" },
       {
         property: "og:description",
-        content: "Educação ambiental e conhecimento técnico aplicado.",
+        content: "Soluções para dúvidas reais sobre meio ambiente, regularização e licenciamento.",
       },
     ],
   }),
   component: BlogIndex,
 });
+
+const temasDestaque = [
+  "Ganhei uma multa ambiental. E agora?",
+  "APP: entenda suas obrigações",
+  "O que fazer ao receber uma exigência ambiental",
+  "Como regularizar um imóvel rural",
+  "Quando o licenciamento ambiental é obrigatório",
+  "Tenho uma nascente na propriedade. O que muda?",
+];
 
 function BlogIndex() {
   const categories = ["Todos", ...Array.from(new Set(blogPosts.map((p) => p.category)))];
@@ -40,6 +50,34 @@ function BlogIndex() {
         }
         subtitle="Artigos técnicos e educacionais sobre meio ambiente, regularização e geotecnologia — em linguagem direta."
       />
+
+      {/* Destaque: temas de captação */}
+      <section className="bg-surface py-14 border-b border-border">
+        <div className="container-x">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+            <div>
+              <span className="eyebrow">Em breve</span>
+              <h2 className="mt-2 text-2xl md:text-3xl uppercase text-ink">
+                Soluções para <span className="text-primary">dúvidas frequentes</span>
+              </h2>
+            </div>
+            <Link to="/ia" className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline shrink-0">
+              <Sparkles size={14} /> Tire sua dúvida agora com a Recepcionista <ArrowRight size={12} />
+            </Link>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {temasDestaque.map((tema) => (
+              <div
+                key={tema}
+                className="flex items-center gap-3 rounded-lg border border-border bg-card px-4 py-3 text-sm text-ink/60 italic"
+              >
+                <span className="text-[10px] font-bold uppercase tracking-widest text-primary/50 shrink-0">Em breve</span>
+                {tema}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       <section className="bg-background py-20 md:py-24">
         <div className="container-x">
