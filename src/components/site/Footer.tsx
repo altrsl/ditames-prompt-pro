@@ -1,9 +1,11 @@
 import { Link } from "@tanstack/react-router";
-import { Phone, MessageCircle, MapPin, Mail, Instagram, Linkedin, Clock, Sparkles } from "lucide-react";
+import { Phone, MessageCircle, MapPin, Mail, Instagram, Linkedin, Clock, Sparkles, LayoutDashboard } from "lucide-react";
 import { services, WHATSAPP_URL } from "@/lib/services";
 import logoAsset from "@/assets/logo-ditames.asset.json";
+import { useEditMode } from "@/lib/edit-mode";
 
 export function Footer() {
+  const { isAuthenticated } = useEditMode();
   return (
     <footer className="text-white/80" style={{ background: "oklch(0.20 0.025 140)" }}>
       <div className="container-x py-16">
@@ -122,9 +124,19 @@ export function Footer() {
 
         <div className="mt-8 flex flex-col items-start justify-between gap-3 border-t border-white/10 pt-6 text-xs text-white/50 md:flex-row md:items-center">
           <p>© {new Date().getFullYear()} Ditames Ambiental. Todos os direitos reservados.</p>
-          <Link to="/admin/login" className="text-white/15 hover:text-white/30 transition-colors text-[11px]">
-            Login
-          </Link>
+          <div className="flex items-center gap-3">
+            {isAuthenticated && (
+              <Link
+                to="/admin"
+                className="inline-flex items-center gap-1 text-white/30 hover:text-white/60 transition-colors text-[11px]"
+              >
+                <LayoutDashboard size={10} /> Dashboard
+              </Link>
+            )}
+            <Link to="/admin/login" className="text-white/15 hover:text-white/30 transition-colors text-[11px]">
+              Login
+            </Link>
+          </div>
           <p>Engenharia · Meio Ambiente · Geotecnologia · Desde 2022</p>
         </div>
       </div>

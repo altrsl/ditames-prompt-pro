@@ -15,6 +15,8 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppFab } from "@/components/site/WhatsAppFab";
+import { EditModeProvider } from "@/lib/edit-mode";
+import { EditModeToolbar } from "@/components/admin/EditModeToolbar";
 import logoAsset from "@/assets/logo-ditames.asset.json";
 
 
@@ -134,12 +136,15 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {!isAdmin && <Header />}
-      <main className={isAdmin ? "" : "min-h-screen bg-background"}>
-        <Outlet />
-      </main>
-      {!isAdmin && <Footer />}
-      {!isAdmin && <WhatsAppFab />}
+      <EditModeProvider>
+        {!isAdmin && <Header />}
+        {!isAdmin && <EditModeToolbar />}
+        <main className={isAdmin ? "" : "min-h-screen bg-background"}>
+          <Outlet />
+        </main>
+        {!isAdmin && <Footer />}
+        {!isAdmin && <WhatsAppFab />}
+      </EditModeProvider>
     </QueryClientProvider>
   );
 }

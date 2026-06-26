@@ -1,13 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { UserPlus, Shield, User, ToggleLeft, ToggleRight, ChevronDown, ChevronUp } from "lucide-react";
+import { UserPlus, Shield, ToggleLeft, ToggleRight, ChevronDown, ChevronUp } from "lucide-react";
 import {
   getCurrentCmsUser, listCmsUsers, createCmsUser,
-  updateCmsUser, deactivateCmsUser, hasPermission,
+  updateCmsUser, hasPermission,
   isDirector, PERMISSION_LABELS, PERMISSION_GROUPS, writeAuditLog,
 } from "@/lib/admin";
-import type { CmsUserRow, CmsPermissions } from "@/lib/database.types";
-import { DEFAULT_PERMISSIONS } from "@/lib/database.types";
+import type { CmsUserRow, CmsPermissions, CmsRole } from "@/lib/database.types";
+import { DEFAULT_PERMISSIONS, ROLE_DEFAULT_PERMISSIONS, ROLE_LABELS, ROLE_DESCRIPTIONS } from "@/lib/database.types";
 
 export const Route = createFileRoute("/admin/users")({
   component: AdminUsers,
@@ -24,9 +24,16 @@ function AdminUsers() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [selectedRole, setSelectedRole] = useState<CmsRole>("editor");
   const [permissions, setPermissions] = useState<CmsPermissions>({ ...DEFAULT_PERMISSIONS });
   const [formError, setFormError] = useState<string | null>(null);
   const [formLoading, setFormLoading] = useState(false);
+
+  // Atualiza permissões ao trocar role
+  const handleRoleChange = (role: CmsRole) => {
+    setSelectedRole(role);
+    setPermissions({ ...DEFAULT_PERMISSIONS, ...ROLE_DEFAULT_PERMISSIONS[role] });
+  };
 
   async function load() {
     const u = await getCurrentCmsUser();
@@ -142,6 +149,16 @@ function AdminUsers() {
               <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)}
                 className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white placeholder-white/20 focus:outline-none focus:border-primary/60"
                 placeholder="••••••••" minLength={6} />
+            </div>
+            <div>
+              <label className="block text-xs text-white/40 mb-1">Perfil</label>
+              <select value={selectedRole} onChange={(e) => handleRoleChange(e.target.value as CmsRole)}
+                className="w-full rounded-lg border border-white/10 bg-[#1a2118] px-3 py-2.5 text-sm text-white focus:outline-none focus:border-primary/60">
+                {(["editor", "moderator", "analyst", "dev"] as CmsRole[]).map((r) => (
+                  <option key={r} value={r}>{ROLE_LABELS[r]}</option>
+                ))}
+              </select>
+              <p className="text-[10px] text-white/30 mt-1">{ROLE_DESCRIPTIONS[selectedRole]}</p>
             </div>
           </div>
 

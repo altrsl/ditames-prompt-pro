@@ -219,7 +219,7 @@ export type ServiceRow = Database["public"]["Tables"]["services"]["Row"];
 export type HomepageContentRow = Database["public"]["Tables"]["homepage_content"]["Row"];
 
 // ─── TIPOS CMS ───────────────────────────────────────────────
-export type CmsRole = 'director' | 'dev';
+export type CmsRole = 'director' | 'dev' | 'editor' | 'moderator' | 'analyst';
 export type NewsStatus = 'published' | 'draft' | 'archived';
 export type NewsSource = 'manual' | 'instagram';
 
@@ -270,3 +270,70 @@ export interface NewsRow {
   seo_title: string | null;
   seo_description: string | null;
 }
+
+// ─── PERMISSÕES PADRÃO POR ROLE ──────────────────────────────
+export const ROLE_DEFAULT_PERMISSIONS: Record<CmsRole, Partial<CmsPermissions>> = {
+  director: Object.fromEntries(Object.keys(DEFAULT_PERMISSIONS).map((k) => [k, true])) as CmsPermissions,
+  dev: Object.fromEntries(Object.keys(DEFAULT_PERMISSIONS).map((k) => [k, true])) as CmsPermissions,
+  editor: {
+    edit_homepage: true,
+    edit_homepage_images: true,
+    edit_cases: true,
+    create_edit_news: true,
+    create_edit_blog: true,
+    create_edit_services: true,
+    edit_seo: true,
+    publish_archive_content: false,
+    create_users: false,
+    edit_users: false,
+    remove_users: false,
+    manage_permissions: false,
+    view_audit_log: false,
+  },
+  moderator: {
+    edit_homepage: false,
+    edit_homepage_images: false,
+    edit_cases: false,
+    create_edit_news: false,
+    create_edit_blog: false,
+    create_edit_services: false,
+    edit_seo: false,
+    publish_archive_content: true,
+    create_users: false,
+    edit_users: false,
+    remove_users: false,
+    manage_permissions: false,
+    view_audit_log: true,
+  },
+  analyst: {
+    edit_homepage: false,
+    edit_homepage_images: false,
+    edit_cases: false,
+    create_edit_news: false,
+    create_edit_blog: false,
+    create_edit_services: false,
+    edit_seo: false,
+    publish_archive_content: false,
+    create_users: false,
+    edit_users: false,
+    remove_users: false,
+    manage_permissions: false,
+    view_audit_log: true,
+  },
+};
+
+export const ROLE_LABELS: Record<CmsRole, string> = {
+  director: "Diretor",
+  dev: "Desenvolvedor",
+  editor: "Editor",
+  moderator: "Moderador",
+  analyst: "Analista",
+};
+
+export const ROLE_DESCRIPTIONS: Record<CmsRole, string> = {
+  director: "Acesso total ao sistema",
+  dev: "Acesso total ao sistema",
+  editor: "Cria e edita conteúdo, sem publicar ou gerenciar usuários",
+  moderator: "Revisa e publica conteúdos criados por editores",
+  analyst: "Somente leitura — métricas e audit log",
+};
