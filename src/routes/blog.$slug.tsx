@@ -1,14 +1,17 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowLeft, Calendar, MessageCircle } from "lucide-react";
-import { blogPosts, formatDate, getBlogPost } from "@/lib/content";
+import { getBlogPost, getBlogPosts } from "@/lib/data";
+import { formatDate } from "@/lib/content";
 import { PostCard } from "@/components/site/PostCard";
 import { WHATSAPP_URL } from "@/lib/services";
 
 export const Route = createFileRoute("/blog/$slug")({
-  loader: ({ params }) => {
-    const post = getBlogPost(params.slug);
+  loader: async ({ params }) => {
+    const post = await getBlogPost(params.slug);
     if (!post) throw notFound();
-    return { post };
+    const all = await getBlogPosts();
+    const related = all.filter((p) => p.slug !== post.slug).slice(0, 3);
+    return { post, related };
   },
   head: ({ loaderData }) =>
     loaderData
@@ -33,8 +36,7 @@ export const Route = createFileRoute("/blog/$slug")({
 });
 
 function BlogPost() {
-  const { post } = Route.useLoaderData();
-  const related = blogPosts.filter((p) => p.slug !== post.slug).slice(0, 3);
+  const { post, related } = Route.useLoaderData();
 
   return (
     <>

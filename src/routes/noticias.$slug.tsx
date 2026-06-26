@@ -1,14 +1,17 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowLeft, Calendar, MessageCircle } from "lucide-react";
-import { newsPosts, formatDate, getNewsPost } from "@/lib/content";
+import { getNewsPost, getNewsPosts } from "@/lib/data";
+import { formatDate } from "@/lib/content";
 import { PostCard } from "@/components/site/PostCard";
 import { WHATSAPP_URL } from "@/lib/services";
 
 export const Route = createFileRoute("/noticias/$slug")({
-  loader: ({ params }) => {
-    const post = getNewsPost(params.slug);
+  loader: async ({ params }) => {
+    const post = await getNewsPost(params.slug);
     if (!post) throw notFound();
-    return { post };
+    const all = await getNewsPosts();
+    const related = all.filter((p) => p.slug !== post.slug).slice(0, 3);
+    return { post, related };
   },
   head: ({ loaderData }) =>
     loaderData
@@ -33,8 +36,7 @@ export const Route = createFileRoute("/noticias/$slug")({
 });
 
 function NoticiaPost() {
-  const { post } = Route.useLoaderData();
-  const related = newsPosts.filter((p) => p.slug !== post.slug).slice(0, 3);
+  const { post, related } = Route.useLoaderData();
 
   return (
     <>

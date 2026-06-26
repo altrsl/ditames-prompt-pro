@@ -37,9 +37,20 @@ import heroImg from "@/assets/hero-ditames.jpg";
 import quemSomosImg from "@/assets/quem-somos.jpg";
 import tecnologiaImg from "@/assets/tecnologia.jpg";
 import { services, WHATSAPP_URL } from "@/lib/services";
-import { blogPosts, newsPosts, formatDate } from "@/lib/content";
+import { formatDate } from "@/lib/content";
+import { getCases, getFaq, getBlogPosts, getNewsPosts } from "@/lib/data";
+import type { NormalizedCase, NormalizedFaqItem, NormalizedPost } from "@/lib/data";
 
 export const Route = createFileRoute("/")({
+  loader: async () => {
+    const [cases, faq, blog, news] = await Promise.all([
+      getCases(),
+      getFaq(),
+      getBlogPosts(3),
+      getNewsPosts(3),
+    ]);
+    return { cases, faq, blog, news };
+  },
   head: () => ({
     meta: [
       { title: "Ditames Ambiental — Engenharia ambiental, geotecnologia e licenciamento" },
@@ -628,42 +639,8 @@ function NotificacaoAmbiental() {
   );
 }
 
-function FAQ() {
+function FAQ({ items }: { items: NormalizedFaqItem[] }) {
   const [open, setOpen] = useState<number | null>(null);
-  const items = [
-    {
-      q: "Ganhei uma multa ambiental. O que devo fazer?",
-      a: "O primeiro passo é entender a origem e o embasamento legal da multa. A Ditames pode analisar o auto de infração, identificar as obrigações envolvidas e orientar sobre as possibilidades de defesa administrativa, regularização ou cumprimento de exigências. Cada situação é única e merece análise técnica especializada.",
-    },
-    {
-      q: "Como regularizar uma área rural?",
-      a: "A regularização de áreas rurais envolve etapas como Cadastro Ambiental Rural (CAR), georreferenciamento, identificação de Áreas de Preservação Permanente (APP), Reserva Legal e, quando necessário, Programa de Regularização Ambiental (PRA). A Ditames conduz todo esse processo de forma integrada.",
-    },
-    {
-      q: "O que acontece quando existe uma APP na propriedade?",
-      a: "Áreas de Preservação Permanente (APP) possuem restrições de uso estabelecidas pelo Código Florestal. Dependendo da situação — margem de rio, encosta, nascente — é necessário identificar as obrigações, avaliar passivos e, quando cabível, conduzir processos de recuperação ou regularização junto aos órgãos ambientais.",
-    },
-    {
-      q: "Como funciona um licenciamento ambiental?",
-      a: "O licenciamento ambiental é o processo pelo qual o poder público autoriza a instalação e operação de atividades potencialmente poluidoras. Dependendo da atividade e do porte, pode envolver Licença Prévia (LP), Licença de Instalação (LI) e Licença de Operação (LO). A Ditames elabora os estudos necessários e conduz todo o processo junto aos órgãos competentes.",
-    },
-    {
-      q: "Preciso de autorização para suprimir vegetação?",
-      a: "Sim, em grande parte dos casos. A supressão de vegetação nativa exige autorização do órgão ambiental estadual ou federal, dependendo do bioma e da área. A Ditames realiza o levantamento florístico, elabora o requerimento técnico e acompanha o processo de aprovação.",
-    },
-    {
-      q: "Tenho uma nascente na propriedade. O que fazer?",
-      a: "Nascentes são protegidas pelo Código Florestal e exigem manutenção de faixa de APP ao redor. É necessário identificá-las corretamente no Cadastro Ambiental Rural e, caso haja ocupação indevida, conduzir processo de regularização. A Ditames realiza o mapeamento e orienta sobre as obrigações legais.",
-    },
-    {
-      q: "Como regularizar um loteamento?",
-      a: "A regularização de loteamentos envolve aspectos fundiários, urbanísticos e ambientais. A Ditames apoia desde a elaboração de estudos ambientais e topográficos até a aprovação nos órgãos competentes, passando por licenciamento, elaboração de projetos de drenagem, arborização e demais exigências técnicas.",
-    },
-    {
-      q: "Como saber se minha atividade precisa de licenciamento?",
-      a: "A necessidade de licenciamento depende da natureza, porte e localização da atividade. A Ditames realiza o enquadramento da atividade na legislação estadual e federal e orienta sobre os procedimentos necessários, evitando surpresas e autuações futuras.",
-    },
-  ];
 
   return (
     <section className="bg-background py-24 md:py-32">
@@ -681,14 +658,14 @@ function FAQ() {
           <div className="mt-12 space-y-3">
             {items.map((item, i) => (
               <div
-                key={i}
+                key={item.id}
                 className="rounded-xl border border-border bg-card overflow-hidden"
               >
                 <button
                   onClick={() => setOpen(open === i ? null : i)}
                   className="w-full flex items-center justify-between gap-4 px-6 py-5 text-left text-sm font-semibold text-ink hover:text-primary transition-colors"
                 >
-                  <span>{item.q}</span>
+                  <span>{item.question}</span>
                   <ChevronDown
                     size={18}
                     className={`shrink-0 text-primary transition-transform duration-300 ${open === i ? "rotate-180" : ""}`}
@@ -696,7 +673,7 @@ function FAQ() {
                 </button>
                 {open === i && (
                   <div className="px-6 pb-5 text-sm text-muted-foreground leading-relaxed border-t border-border pt-4">
-                    {item.a}
+                    {item.answer}
                     <div className="mt-4">
                       <Link to="/ia" className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline">
                         <Sparkles size={12} /> Falar com a Recepcionista Ambiental <ArrowRight size={12} />
@@ -713,9 +690,8 @@ function FAQ() {
   );
 }
 
-function ConteudoAtualizacoes() {
-  const blog = blogPosts.slice(0, 3);
-  const noticias = newsPosts.slice(0, 3);
+function ConteudoAtualizacoes({ blog, news }: { blog: NormalizedPost[]; news: NormalizedPost[] }) {
+  const noticias = news;
   return (
     <section className="bg-surface py-24">
       <div className="container-x">
@@ -789,14 +765,7 @@ function ConteudoAtualizacoes() {
   );
 }
 
-function Cases() {
-  const items = [
-    { name: "Madefrahm", sector: "Indústria moveleira", desc: "Regularização ambiental de empreendimento industrial." },
-    { name: "Metalúrgica Riosulense", sector: "Metalurgia", desc: "Apoio contínuo em processos de licenciamento." },
-    { name: "BIOCAL", sector: "Insumos agrícolas", desc: "Estudos ambientais e suporte técnico." },
-    { name: "Elber", sector: "Refrigeração industrial", desc: "Gestão ambiental recorrente." },
-    { name: "Prefabricar", sector: "Construção", desc: "Licenciamento e regularização de canteiro de obras." },
-  ];
+function Cases({ items }: { items: NormalizedCase[] }) {
   return (
     <section id="cases" className="bg-surface py-24">
       <div className="container-x">
@@ -814,7 +783,7 @@ function Cases() {
         <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
           {items.map((c) => (
             <div
-              key={c.name}
+              key={c.id}
               className="group relative flex flex-col rounded-xl border border-border bg-card overflow-hidden transition-all hover:-translate-y-0.5 hover:border-primary/50 hover:shadow-card"
             >
               {/* Área da logo */}
@@ -831,9 +800,17 @@ function Cases() {
                     backgroundSize: "22px 22px",
                   }}
                 />
-                <span className="relative font-display text-xl uppercase tracking-wider text-ink/70 text-center leading-tight">
-                  {c.name}
-                </span>
+                {c.logoUrl ? (
+                  <img
+                    src={c.logoUrl}
+                    alt={`Logo ${c.name}`}
+                    className="relative max-h-14 max-w-full object-contain"
+                  />
+                ) : (
+                  <span className="relative font-display text-xl uppercase tracking-wider text-ink/70 text-center leading-tight">
+                    {c.name}
+                  </span>
+                )}
               </div>
 
               {/* Conteúdo */}
@@ -948,6 +925,7 @@ function CTAFinal() {
 /* ---------- page ---------- */
 
 function Home() {
+  const { cases, faq, blog, news } = Route.useLoaderData();
   return (
     <div className="bg-background">
       <Hero />
@@ -961,9 +939,9 @@ function Home() {
       <Diferenciais />
       <Tecnologia />
       <IA />
-      <FAQ />
-      <Cases />
-      <ConteudoAtualizacoes />
+      <FAQ items={faq} />
+      <Cases items={cases} />
+      <ConteudoAtualizacoes blog={blog} news={news} />
       <Cultura />
       <CTAFinal />
     </div>

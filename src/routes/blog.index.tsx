@@ -3,9 +3,14 @@ import { useState } from "react";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { PageHero } from "@/components/site/PageHero";
 import { PostCard } from "@/components/site/PostCard";
-import { blogPosts } from "@/lib/content";
+import { getBlogPosts } from "@/lib/data";
+import type { NormalizedPost } from "@/lib/data";
 
 export const Route = createFileRoute("/blog/")({
+  loader: async () => {
+    const posts = await getBlogPosts();
+    return { posts };
+  },
   head: () => ({
     meta: [
       { title: "Blog Ditames Ambiental — Multas, Regularização e Legislação Ambiental" },
@@ -34,10 +39,11 @@ const temasDestaque = [
 ];
 
 function BlogIndex() {
-  const categories = ["Todos", ...Array.from(new Set(blogPosts.map((p) => p.category)))];
+  const { posts } = Route.useLoaderData();
+  const categories = ["Todos", ...Array.from(new Set(posts.map((p: NormalizedPost) => p.category)))];
   const [active, setActive] = useState("Todos");
   const filtered =
-    active === "Todos" ? blogPosts : blogPosts.filter((p) => p.category === active);
+    active === "Todos" ? posts : posts.filter((p: NormalizedPost) => p.category === active);
 
   return (
     <>

@@ -2,9 +2,14 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { PageHero } from "@/components/site/PageHero";
 import { PostCard } from "@/components/site/PostCard";
-import { newsPosts } from "@/lib/content";
+import { getNewsPosts } from "@/lib/data";
+import type { NormalizedPost } from "@/lib/data";
 
 export const Route = createFileRoute("/noticias/")({
+  loader: async () => {
+    const posts = await getNewsPosts();
+    return { posts };
+  },
   head: () => ({
     meta: [
       { title: "Notícias Ditames Ambiental — Atualizações institucionais" },
@@ -24,10 +29,11 @@ export const Route = createFileRoute("/noticias/")({
 });
 
 function NoticiasIndex() {
-  const categories = ["Todas", ...Array.from(new Set(newsPosts.map((p) => p.category)))];
+  const { posts } = Route.useLoaderData();
+  const categories = ["Todas", ...Array.from(new Set(posts.map((p: NormalizedPost) => p.category)))];
   const [active, setActive] = useState("Todas");
   const filtered =
-    active === "Todas" ? newsPosts : newsPosts.filter((p) => p.category === active);
+    active === "Todas" ? posts : posts.filter((p: NormalizedPost) => p.category === active);
 
   return (
     <>
