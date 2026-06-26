@@ -40,6 +40,13 @@ import { services, WHATSAPP_URL } from "@/lib/services";
 import { formatDate } from "@/lib/content";
 import { getCases, getFaq, getBlogPosts, getNewsPosts } from "@/lib/data";
 import type { NormalizedCase, NormalizedFaqItem, NormalizedPost } from "@/lib/data";
+import { InlineText } from "@/components/admin/InlineEditable";
+import { supabase } from "@/lib/supabase";
+
+// Helper: salva texto na tabela homepage_content
+async function saveHomepageText(key: string, value: string) {
+  await supabase.from("homepage_content").upsert({ key, value, type: "text" }, { onConflict: "key" });
+}
 
 export const Route = createFileRoute("/")({
   loader: async () => {
@@ -156,12 +163,19 @@ function Hero() {
       <div className="container-x relative z-10 flex min-h-[100svh] flex-col justify-center pt-32 pb-20 text-white">
         <span className="eyebrow text-secondary mb-6">Ditames Ambiental</span>
         <h1 className="font-display text-[clamp(2.5rem,6.5vw,5.75rem)] uppercase max-w-5xl">
-          Transformamos desafios ambientais em oportunidades de{" "}
-          <span className="text-secondary">crescimento, segurança</span> e desenvolvimento.
+          <InlineText
+            value="Transformamos desafios ambientais em oportunidades de crescimento, segurança e desenvolvimento."
+            onSave={(v) => saveHomepageText("hero_title", v)}
+            className="font-display text-[clamp(2.5rem,6.5vw,5.75rem)] uppercase"
+            multiline
+          />
         </h1>
         <p className="mt-8 max-w-2xl text-base md:text-lg text-white/85 leading-relaxed">
-          Fortalecemos pessoas, propriedades e empresas por meio de soluções ambientais
-          completas, promovendo segurança, conformidade legal e crescimento sustentável.
+          <InlineText
+            value="Fortalecemos pessoas, propriedades e empresas por meio de soluções ambientais completas, promovendo segurança, conformidade legal e crescimento sustentável."
+            onSave={(v) => saveHomepageText("hero_subtitle", v)}
+            multiline
+          />
         </p>
         <div className="mt-10 flex flex-col gap-3 sm:flex-row">
           <Link to="/contato" className="btn-primary">
@@ -195,11 +209,19 @@ function PublicoAlvo() {
         <div className="max-w-3xl">
           <span className="eyebrow">Para quem atuamos</span>
           <h2 className="mt-4 text-4xl md:text-5xl uppercase text-ink">
-            Soluções para quem precisa <span className="text-primary">crescer com segurança</span>
+            <InlineText
+              value="Soluções para quem precisa crescer com segurança"
+              onSave={(v) => saveHomepageText("publico_title", v)}
+              className="text-4xl md:text-5xl uppercase text-ink font-display"
+              multiline
+            />
           </h2>
           <p className="mt-6 text-base md:text-lg text-muted-foreground max-w-2xl">
-            Atendemos desde proprietários rurais até grandes empreendimentos industriais, oferecendo
-            soluções ambientais que unem técnica, estratégia e segurança para cada realidade.
+            <InlineText
+              value="Atendemos desde proprietários rurais até grandes empreendimentos industriais, oferecendo soluções ambientais que unem técnica, estratégia e segurança para cada realidade."
+              onSave={(v) => saveHomepageText("publico_desc", v)}
+              multiline
+            />
           </p>
         </div>
         <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
@@ -265,12 +287,19 @@ function Crescimento() {
         <div>
           <span className="eyebrow">Trajetória</span>
           <h2 className="mt-4 text-4xl md:text-5xl uppercase text-ink">
-            Crescimento que reflete <span className="text-primary">confiança</span>
+            <InlineText
+              value="Crescimento que reflete confiança"
+              onSave={(v) => saveHomepageText("crescimento_title", v)}
+              className="text-4xl md:text-5xl uppercase text-ink font-display"
+              multiline
+            />
           </h2>
           <p className="mt-6 text-base md:text-lg text-foreground/80 leading-relaxed max-w-xl">
-            Em apenas 4 anos de atuação, a Ditames consolidou sua presença em 47 municípios
-            catarinenses, atendeu mais de 687 clientes e construiu uma rede com mais de 40
-            profissionais e parceiros especializados.
+            <InlineText
+              value="Em apenas 4 anos de atuação, a Ditames consolidou sua presença em 47 municípios catarinenses, atendeu mais de 687 clientes e construiu uma rede com mais de 40 profissionais e parceiros especializados."
+              onSave={(v) => saveHomepageText("crescimento_desc", v)}
+              multiline
+            />
           </p>
           <Link to="/sobre" className="btn-primary mt-8">
             Conheça Nossa História <ArrowRight size={16} />

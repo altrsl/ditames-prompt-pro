@@ -2,6 +2,8 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { Menu, X, Sparkles } from "lucide-react";
 import { useEffect, useState } from "react";
 import logoAsset from "@/assets/logo-ditames.asset.json";
+import { useEditMode } from "@/lib/edit-mode";
+import { EDIT_TOOLBAR_HEIGHT } from "@/components/admin/EditModeToolbar";
 
 const nav = [
   { to: "/", label: "Home" },
@@ -18,6 +20,7 @@ export function Header() {
   const isHome = pathname === "/";
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const { editMode } = useEditMode();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 30);
@@ -30,7 +33,8 @@ export function Header() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
+      style={{ top: editMode ? EDIT_TOOLBAR_HEIGHT : 0 }}
+      className={`fixed left-0 right-0 z-40 transition-all duration-300 ${
         transparent
           ? "bg-black/30 backdrop-blur-sm"
           : "bg-white/95 backdrop-blur border-b border-border shadow-sm"
