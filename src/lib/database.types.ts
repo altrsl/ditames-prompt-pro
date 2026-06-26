@@ -9,6 +9,43 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[];
 
+// ─── PERMISSÕES CMS ──────────────────────────────────────────
+export interface CmsPermissions {
+  edit_homepage: boolean;
+  edit_homepage_images: boolean;
+  edit_cases: boolean;
+  create_edit_news: boolean;
+  create_edit_blog: boolean;
+  create_edit_services: boolean;
+  edit_seo: boolean;
+  create_users: boolean;
+  edit_users: boolean;
+  remove_users: boolean;
+  manage_permissions: boolean;
+  view_audit_log: boolean;
+  publish_archive_content: boolean;
+}
+
+export const DEFAULT_PERMISSIONS: CmsPermissions = {
+  edit_homepage: false,
+  edit_homepage_images: false,
+  edit_cases: false,
+  create_edit_news: false,
+  create_edit_blog: false,
+  create_edit_services: false,
+  edit_seo: false,
+  create_users: false,
+  edit_users: false,
+  remove_users: false,
+  manage_permissions: false,
+  view_audit_log: false,
+  publish_archive_content: false,
+};
+
+export const DIRECTOR_PERMISSIONS: CmsPermissions = Object.fromEntries(
+  Object.keys(DEFAULT_PERMISSIONS).map((k) => [k, true])
+) as CmsPermissions;
+
 export interface Database {
   public: {
     Tables: {
@@ -180,3 +217,56 @@ export type NewsPostRow = Database["public"]["Tables"]["news_posts"]["Row"];
 export type FaqRow = Database["public"]["Tables"]["faq"]["Row"];
 export type ServiceRow = Database["public"]["Tables"]["services"]["Row"];
 export type HomepageContentRow = Database["public"]["Tables"]["homepage_content"]["Row"];
+
+// ─── TIPOS CMS ───────────────────────────────────────────────
+export type CmsRole = 'director' | 'dev';
+export type NewsStatus = 'published' | 'draft' | 'archived';
+export type NewsSource = 'manual' | 'instagram';
+
+export interface CmsUserRow {
+  id: string;
+  created_at: string;
+  updated_at: string;
+  name: string;
+  email: string;
+  role: CmsRole;
+  status: 'active' | 'inactive';
+  permissions: CmsPermissions;
+}
+
+export interface AuditLogRow {
+  id: string;
+  created_at: string;
+  user_id: string | null;
+  user_name: string | null;
+  action: string;
+  module: string;
+  record_id: string | null;
+  field: string | null;
+  previous_value: string | null;
+  new_value: string | null;
+  metadata: Record<string, unknown>;
+}
+
+export interface NewsRow {
+  id: string;
+  created_at: string;
+  updated_at: string;
+  title: string;
+  content: string;
+  excerpt: string;
+  slug: string | null;
+  category: string;
+  cover_image: string | null;
+  images: string[];
+  source: NewsSource;
+  instagram_post_id: string | null;
+  instagram_url: string | null;
+  status: NewsStatus;
+  published_at: string | null;
+  read_time: string;
+  created_by: string | null;
+  updated_by: string | null;
+  seo_title: string | null;
+  seo_description: string | null;
+}

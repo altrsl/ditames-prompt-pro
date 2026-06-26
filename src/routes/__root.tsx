@@ -6,6 +6,7 @@ import {
   useRouter,
   HeadContent,
   Scripts,
+  useRouterState,
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
 
@@ -128,15 +129,17 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const routerState = useRouterState();
+  const isAdmin = routerState.location.pathname.startsWith("/admin");
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Header />
-      <main className="min-h-screen bg-background">
+      {!isAdmin && <Header />}
+      <main className={isAdmin ? "" : "min-h-screen bg-background"}>
         <Outlet />
       </main>
-      <Footer />
-      <WhatsAppFab />
+      {!isAdmin && <Footer />}
+      {!isAdmin && <WhatsAppFab />}
     </QueryClientProvider>
   );
 }
