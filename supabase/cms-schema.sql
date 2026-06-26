@@ -4,13 +4,22 @@
 -- ============================================================
 
 -- ─── ENUM: roles ─────────────────────────────────────────────
-create type cms_role as enum ('director', 'dev');
+do $$ begin
+  create type cms_role as enum ('director', 'dev');
+exception when duplicate_object then null;
+end $$;
 
 -- ─── ENUM: news status ───────────────────────────────────────
-create type news_status as enum ('published', 'draft', 'archived');
+do $$ begin
+  create type news_status as enum ('published', 'draft', 'archived');
+exception when duplicate_object then null;
+end $$;
 
 -- ─── ENUM: news source ───────────────────────────────────────
-create type news_source as enum ('manual', 'instagram');
+do $$ begin
+  create type news_source as enum ('manual', 'instagram');
+exception when duplicate_object then null;
+end $$;
 
 -- ─── TABELA: cms_users ───────────────────────────────────────
 -- Usuários do painel CMS (separado do auth.users do Supabase)
