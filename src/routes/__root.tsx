@@ -19,6 +19,9 @@ import { EditModeProvider } from "@/lib/edit-mode";
 import { EditModeToolbar } from "@/components/admin/EditModeToolbar";
 import logoAsset from "@/assets/logo-ditames.asset.json";
 
+// Logo do repositório — independente do Lovable
+const LOGO_URL = "/logo-ditames.png";
+
 
 function NotFoundComponent() {
   return (
@@ -92,14 +95,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:description", content: "Engenharia, meio ambiente e geotecnologia para licenciamento, regularização, topografia e georreferenciamento em todo o Brasil." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { property: "og:image", content: logoAsset.url },
-      { name: "twitter:image", content: logoAsset.url },
+      { property: "og:image", content: LOGO_URL },
+      { name: "twitter:image", content: LOGO_URL },
 
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "icon", type: "image/jpeg", href: logoAsset.url },
-      { rel: "apple-touch-icon", href: logoAsset.url },
+      { rel: "icon", type: "image/png", href: LOGO_URL },
+      { rel: "apple-touch-icon", href: LOGO_URL },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {

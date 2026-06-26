@@ -1,8 +1,10 @@
 import { Link } from "@tanstack/react-router";
 import { Phone, MessageCircle, MapPin, Mail, Instagram, Linkedin, Clock, Sparkles, LayoutDashboard } from "lucide-react";
 import { services, WHATSAPP_URL } from "@/lib/services";
-import logoAsset from "@/assets/logo-ditames.asset.json";
 import { useEditMode } from "@/lib/edit-mode";
+
+// Logo servida pelo repositório — independente do Lovable e Supabase
+const LOGO_URL = "/logo-ditames.png";
 
 export function Footer() {
   const { isAuthenticated } = useEditMode();
@@ -13,11 +15,9 @@ export function Footer() {
           <div>
             <Link to="/" aria-label="Ditames Ambiental — Início" className="inline-block">
               <img
-                src={logoAsset.url}
+                src={LOGO_URL}
                 alt="Ditames Ambiental"
-                width={1280}
-                height={720}
-                className="h-12 w-auto object-contain"
+                className="h-12 w-auto object-contain brightness-0 invert"
               />
             </Link>
             <p className="mt-5 text-sm leading-relaxed text-white/65">

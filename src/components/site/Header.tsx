@@ -1,9 +1,11 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { Menu, X, Sparkles } from "lucide-react";
 import { useEffect, useState } from "react";
-import logoAsset from "@/assets/logo-ditames.asset.json";
 import { useEditMode } from "@/lib/edit-mode";
 import { EDIT_TOOLBAR_HEIGHT } from "@/components/admin/EditModeToolbar";
+
+// Logo servida pelo próprio repositório — independente do Lovable e Supabase
+const LOGO_URL = "/logo-ditames.png";
 
 const nav = [
   { to: "/", label: "Home" },
@@ -43,12 +45,12 @@ export function Header() {
       <div className="container-x flex items-center justify-between py-3">
         <Link to="/" aria-label="Ditames Ambiental — Início" className="flex items-center">
           <img
-            src={logoAsset.url}
+            src={LOGO_URL}
             alt="Ditames Ambiental"
-            width={1280}
-            height={720}
-            className={`h-10 md:h-11 w-auto object-contain transition-all ${
-              transparent ? "" : "invert"
+            className={`h-10 md:h-11 w-auto object-contain transition-all duration-300 ${
+              transparent
+                ? "brightness-0 invert"
+                : "brightness-0"
             }`}
           />
         </Link>
