@@ -10,7 +10,8 @@ import type { CmsUserRow } from "@/lib/database.types";
 import { getSession } from "@/lib/admin";
 
 export const Route = createFileRoute("/admin")({
-  beforeLoad: async () => {
+  beforeLoad: async ({ location }) => {
+    if (location.pathname === "/admin/login") return;
     const session = await getSession();
     if (!session) throw redirect({ to: "/admin/login" });
   },
