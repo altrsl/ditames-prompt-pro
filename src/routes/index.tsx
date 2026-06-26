@@ -713,7 +713,7 @@ function FAQ() {
   );
 }
 
-
+function ConteudoAtualizacoes() {
   const blog = blogPosts.slice(0, 3);
   const noticias = newsPosts.slice(0, 3);
   return (
