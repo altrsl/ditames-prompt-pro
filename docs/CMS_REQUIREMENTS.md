@@ -1,66 +1,221 @@
-# CMS REQUIREMENTS — Ditames Ambiental
+# CMS_REQUIREMENTS.md
 
-## Objetivo
+# CMS DITAMES - REQUISITOS OFICIAIS
 
-Permitir que o usuário administrador (não-desenvolvedor) edite o conteúdo do site sem tocar em código.
+## OBJETIVO
 
-## O que deve ser editável
+Permitir que a Ditames mantenha e atualize integralmente o site sem necessidade de alterar código.
 
-| Conteúdo | Tabela Supabase | Prioridade |
-|---|---|---|
-| Cases: nome, setor, descrição, logo | `cases` + `media` | Alta |
-| Blog: artigos completos | `blog_posts` | Alta |
-| Notícias: posts institucionais | `news_posts` | Alta |
-| FAQ: perguntas e respostas | `faq` | Alta |
-| Imagens em geral | `media` (Storage) | Alta |
-| Serviços: títulos, descrições | `services` | Média |
-| Homepage: textos de números | `homepage_content` | Média |
-| Banners e imagens da homepage | `media` + `homepage_content` | Baixa |
+Todo conteúdo institucional deve ser gerenciável através do painel administrativo.
 
-## Arquitetura do CMS
+---
 
-O CMS será uma área protegida por autenticação (Supabase Auth) dentro do próprio site, na rota `/admin`.
+# PERFIL DE ACESSO
 
-### Fluxo de upload de imagens
+Inicialmente:
 
-```
-Admin faz upload → Supabase Storage (bucket "media")
-                 → URL pública gerada automaticamente
-                 → URL salva na tabela "media" com metadados
-                 → Vinculada ao conteúdo (case, post, etc.)
-```
+1 usuário administrador.
 
-### Estrutura planejada do painel
+Nome interno:
 
-```
-/admin
-  /admin/cases          → Gerenciar cases (CRUD + upload de logo)
-  /admin/blog           → Gerenciar artigos do blog
-  /admin/noticias       → Gerenciar notícias
-  /admin/faq            → Gerenciar perguntas frequentes
-  /admin/servicos       → Gerenciar serviços
-  /admin/media          → Biblioteca de imagens
-  /admin/homepage       → Textos editáveis da homepage
-```
+Desenvolvedor
 
-## Autenticação
+Este usuário possui acesso total.
 
-- Supabase Auth com email/senha
-- Apenas usuários autorizados acessam `/admin`
-- Row Level Security (RLS) no banco: SELECT público, INSERT/UPDATE/DELETE apenas autenticados
+---
 
-## Regras de design do CMS
+# AUTENTICAÇÃO
 
-- Pode ser mais simples visualmente (área interna)
-- Deve usar a mesma paleta e fontes do site
-- Interface clara, sem ambiguidade
-- Feedback visual em todas as ações (loading, sucesso, erro)
+Login seguro.
 
-## Estado atual
+Acesso protegido.
 
-- Schema do banco criado (`supabase/schema.sql`)
-- Tipos TypeScript gerados (`src/lib/database.types.ts`)
-- Cliente Supabase configurado (`src/lib/supabase.ts`)
-- Queries prontas (`src/lib/queries.ts`)
-- **Próximo passo:** conectar o frontend ao banco (substituir hardcoded)
-- **Depois:** criar painel `/admin` com autenticação e CRUD
+Preparado para futura implementação de:
+
+- múltiplos usuários;
+- níveis de permissão.
+
+---
+
+# HOMEPAGE
+
+O administrador deve conseguir editar:
+
+- títulos;
+- subtítulos;
+- textos;
+- imagens;
+- banners;
+- CTAs;
+- links;
+- seções.
+
+Sem necessidade de alterar código.
+
+---
+
+# SERVIÇOS
+
+Deve ser possível:
+
+- criar serviço;
+- editar serviço;
+- ocultar serviço;
+- excluir serviço;
+- alterar imagens;
+- alterar SEO.
+
+---
+
+# BLOG
+
+Deve ser possível:
+
+- criar artigo;
+- editar artigo;
+- programar publicação;
+- despublicar;
+- categorizar;
+- inserir imagens;
+- inserir vídeos;
+- editar SEO.
+
+---
+
+# INTEGRAÇÃO INSTAGRAM
+
+Objetivo futuro:
+
+Transformar publicações do Instagram em posts do Blog.
+
+Fluxo desejado:
+
+Instagram
+↓
+CMS
+↓
+Importação automática
+↓
+Post de Blog
+
+Importar:
+
+- imagens;
+- legenda;
+- data;
+- link original.
+
+O administrador poderá revisar antes da publicação.
+
+---
+
+# NOTÍCIAS
+
+Deve ser possível:
+
+- criar notícia;
+- editar notícia;
+- remover notícia;
+- destacar notícia.
+
+---
+
+# CASES
+
+Cada case deve permitir:
+
+- logo;
+- nome da empresa;
+- descrição;
+- imagens;
+- status (ativo/inativo).
+
+Preparado para futura página individual.
+
+---
+
+# FAQ
+
+Gerenciar:
+
+- perguntas;
+- respostas;
+- ordem de exibição.
+
+---
+
+# RECEPCIONISTA AMBIENTAL
+
+Configurações editáveis:
+
+- mensagens iniciais;
+- perguntas sugeridas;
+- fluxos de atendimento;
+- mensagens de encaminhamento.
+
+Sem necessidade de alterar código.
+
+---
+
+# SEO
+
+Todas as páginas devem permitir:
+
+- meta title;
+- meta description;
+- URL amigável;
+- Open Graph;
+- imagem de compartilhamento.
+
+---
+
+# MÍDIAS
+
+Biblioteca centralizada.
+
+Permitir:
+
+- upload;
+- substituição;
+- exclusão;
+- organização por categorias.
+
+---
+
+# FORMULÁRIOS
+
+Registrar todos os leads.
+
+Salvar:
+
+- nome;
+- telefone;
+- e-mail;
+- data;
+- origem.
+
+Enviar simultaneamente para:
+
+[comercial@ditames.com.br](mailto:comercial@ditames.com.br)
+
+---
+
+# DASHBOARD
+
+Tela inicial do administrador deve apresentar:
+
+- quantidade de leads;
+- artigos publicados;
+- notícias publicadas;
+- cases ativos;
+- mensagens recebidas.
+
+---
+
+# REGRA PRINCIPAL
+
+Nenhuma atualização institucional da Ditames deve depender de edição manual de código.
+
+O sistema deve permitir autonomia operacional completa para atualização do site.
+
+Todo novo recurso desenvolvido futuramente deve seguir esta mesma filosofia.

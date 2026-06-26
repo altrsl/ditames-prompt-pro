@@ -1,76 +1,101 @@
-# SITE ARCHITECTURE — Ditames Ambiental
+# SITE_ARCHITECTURE.md
 
-## Rotas existentes
+# ARQUITETURA OFICIAL DO SITE
 
-| Rota | Arquivo | Descrição |
-|---|---|---|
-| `/` | `routes/index.tsx` | Homepage principal |
-| `/sobre` | `routes/sobre.tsx` | Quem somos, missão, visão |
-| `/servicos` | `routes/servicos.index.tsx` | Lista de todos os serviços |
-| `/servicos/$slug` | `routes/servicos.$slug.tsx` | Página individual de serviço |
-| `/blog` | `routes/blog.index.tsx` | Listagem do blog |
-| `/blog/$slug` | `routes/blog.$slug.tsx` | Artigo individual |
-| `/noticias` | `routes/noticias.index.tsx` | Listagem de notícias |
-| `/noticias/$slug` | `routes/noticias.$slug.tsx` | Notícia individual |
-| `/cases` | `routes/cases.tsx` | Cases de clientes |
-| `/ia` | `routes/ia.tsx` | Recepcionista Ambiental (chat IA) |
-| `/cultura` | `routes/cultura.tsx` | Cultura organizacional |
-| `/contato` | `routes/contato.tsx` | Formulário de contato |
-| `/api/chat` | `routes/api/chat.ts` | API SSR para o chat da IA |
+## HOME
 
-## Estrutura da Homepage (ordem das seções)
+Estrutura atual deve ser preservada.
 
-1. **Hero** — imagem de fundo, headline, CTAs principais
-2. **NotificacaoAmbiental** — seção para quem recebeu multa/notificação + 6 cards → Recepcionista
-3. **PublicoAlvo** — 4 segmentos: Rural, Loteadores, Indústrias, Construtoras
-4. **Numeros** — 4 números animados (anos, clientes, municípios, profissionais)
-5. **Crescimento** — trajetória com cards de marcos
-6. **QuemSomos** — imagem + texto + diferenciais
-7. **Servicos** — grid com todos os serviços (links para páginas individuais)
-8. **Metodo** — 6 etapas do método Ditames (timeline)
-9. **Diferenciais** — 4 cards de diferenciais
-10. **Tecnologia** — stack técnico (drones, GPS RTK, SIG, etc.)
-11. **IA** — banner da Recepcionista Ambiental com exemplos
-12. **FAQ** — acordeão com 8 perguntas frequentes (SEO)
-13. **Cases** — cards de clientes com logo, setor, descrição, CTA
-14. **ConteudoAtualizacoes** — últimos posts do blog + notícias
-15. **Cultura** — pilares culturais
-16. **CTAFinal** — CTA de encerramento verde escuro
+Seções:
 
-## Componentes globais
+1. Hero
+2. Problemas Ambientais / Exigências Ambientais
+3. Público-Alvo
+4. Números
+5. Crescimento Ditames
+6. Quem Somos
+7. O Que Entregamos
+8. Método Ditames
+9. Diferenciais
+10. Tecnologia
+11. Recepcionista Ambiental
+12. Cases
+13. Blog e Notícias
+14. Cultura
+15. CTA Final
+16. Footer
 
-| Componente | Localização | Função |
-|---|---|---|
-| `Header` | `components/site/Header.tsx` | Fixo no topo, transparente na homepage, sólido ao rolar. Inclui botão Recepcionista Ambiental |
-| `Footer` | `components/site/Footer.tsx` | 4 colunas + CTA Recepcionista + copyright |
-| `PageHero` | `components/site/PageHero.tsx` | Hero das páginas internas (eyebrow + título + subtitle) |
-| `PostCard` | `components/site/PostCard.tsx` | Card de post reutilizado em blog e notícias |
-| `WhatsAppFab` | `components/site/WhatsAppFab.tsx` | Botão flutuante WhatsApp |
-| `ServiceTemplate` | `components/site/ServiceTemplate.tsx` | Template das páginas de serviço |
+---
 
-## Navegação principal (Header)
+# BLOG
 
-```
-Home | Sobre | Serviços | Blog | Notícias | Cases | Tire suas Dúvidas | Contato
-+ botão: [✨ Recepcionista Ambiental] [Atendimento →]
-```
+Objetivo:
 
-## SEO por página
+SEO e captação.
 
-Todas as páginas têm `head()` com:
-- `title` — título único por página
-- `meta description` — descrição otimizada
-- `og:title` e `og:description` — Open Graph
+Prioridade:
 
-Páginas que ainda precisam de schema markup: todas (implementação futura).
+Responder dúvidas reais.
 
-## Dados — estado atual
+Exemplos:
 
-| Dado | Onde está | Destino final |
-|---|---|---|
-| Serviços | `lib/services.ts` (hardcoded) | Tabela `services` no Supabase |
-| Blog posts | `lib/content.ts` (hardcoded) | Tabela `blog_posts` no Supabase |
-| Notícias | `lib/content.ts` (hardcoded) | Tabela `news_posts` no Supabase |
-| Cases | `routes/cases.tsx` (hardcoded) | Tabela `cases` no Supabase |
-| FAQ | `routes/index.tsx` (hardcoded) | Tabela `faq` no Supabase |
-| Imagens | Assets locais | Supabase Storage (bucket `media`) |
+- Ganhei uma multa ambiental
+- Como regularizar uma propriedade rural
+- O que fazer em APP
+- Como funciona o licenciamento
+
+---
+
+# NOTÍCIAS
+
+Objetivo:
+
+Autoridade institucional.
+
+Não misturar com Blog.
+
+---
+
+# CASES
+
+Cada case deve possuir:
+
+- Logo da empresa
+- Nome da empresa
+- Resumo do atendimento
+- Possível página individual futura
+
+Nunca inventar informações.
+
+---
+
+# RECEPCIONISTA AMBIENTAL
+
+Principal ferramenta de entrada do site.
+
+Usuário deve encontrá-la facilmente.
+
+Ela atua como recepcionista e direcionadora.
+
+Não como assistente técnica.
+
+---
+
+# SEO
+
+Toda página futura deve possuir:
+
+- URL amigável
+- Meta title
+- Meta description
+- Open Graph
+- Schema markup
+- Heading hierarchy correta
+
+---
+
+# CMS FUTURO
+
+Todo conteúdo deverá ser editável sem necessidade de código.
+
+O administrador deve conseguir alterar qualquer conteúdo institucional através do painel.

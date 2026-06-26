@@ -1,87 +1,122 @@
-# PROJECT CONTEXT — Ditames Ambiental
+# PROJECT_CONTEXT.md
 
-## Sobre a empresa
+# DITAMES AMBIENTAL - CONTEXTO OFICIAL DO PROJETO
 
-**Ditames Ambiental** é uma empresa de engenharia ambiental, geotecnologia e licenciamento fundada em 16/08/2022, com sede em Rio do Sul, SC.
+## IMPORTANTE
 
-- **Atuação:** 47 municípios em Santa Catarina
-- **Clientes atendidos:** 687+
-- **Equipe:** 40+ profissionais e parceiros
-- **Contato:** (47) 3300-3466 | (47) 9 9691-0055 (WhatsApp)
-- **E-mail:** comercial@ditames.com.br
-- **Endereço:** Rua Brasil, 22 — Sumaré, Rio do Sul, SC — CEP 89165-613
-- **Instagram:** @ditamesambiental
-- **LinkedIn:** /company/ditames-ambiental/
+Este projeto já possui identidade visual, estrutura e posicionamento definidos.
 
-## Missão
+Antes de realizar qualquer alteração:
 
-Fortalecer pessoas, propriedades e empresas com soluções ambientais completas que promovam segurança, conformidade e crescimento sustentável.
+* NÃO recriar páginas existentes.
+* NÃO alterar identidade visual sem solicitação explícita.
+* NÃO alterar a arquitetura principal do site.
+* NÃO modificar tom de comunicação.
+* NÃO substituir conteúdos institucionais por versões genéricas.
 
-## Visão
+A função do desenvolvedor é EVOLUIR o projeto existente, nunca reconstruí-lo.
 
-Ser a referência nacional em soluções ambientais integradas que aliam técnica, tecnologia e responsabilidade no menor caminho possível.
+---
 
-## Posicionamento estratégico
+# SOBRE A DITAMES
 
-A Ditames **não é um escritório jurídico**. É uma empresa de soluções ambientais técnicas que:
+A Ditames Ambiental é uma empresa especializada em soluções ambientais integradas.
 
-- Resolve problemas ambientais de forma prática
-- Auxilia quem recebeu exigências, multas ou notificações
-- Conduz regularizações do início ao fim
-- Atua de forma técnica e estratégica
-- Explica situações complexas em linguagem simples
-- É referência para quem não sabe por onde começar
+Seu propósito não é apenas executar serviços ambientais, mas fortalecer clientes através de conhecimento técnico, tecnologia e desenvolvimento humano.
 
-## Público-alvo principal
+A empresa nasceu com o propósito de aproximar pessoas e empresas das questões ambientais, transformando processos complexos em soluções compreensíveis e executáveis.
 
-1. **Proprietários rurais** — regularização fundiária e ambiental
-2. **Loteadores e incorporadoras** — estudos, projetos e aprovações
-3. **Indústrias** — licenciamento e gestão ambiental industrial
-4. **Construtoras** — apoio técnico e ambiental para obras
-5. **Pessoas com problemas ambientais** — multas, notificações, exigências de órgãos, APP, nascentes, embargos
+---
 
-## Stack técnico
+# MISSÃO
 
-- **Frontend:** React 19 + TypeScript + TanStack Start (SSR) + Vite
-- **Estilização:** Tailwind CSS v4 + shadcn/ui
-- **Roteamento:** TanStack Router (file-based)
-- **IA:** Vercel AI SDK + Lovable AI Gateway (Gemini 3 Flash)
-- **Banco de dados:** Supabase (PostgreSQL)
-- **Storage:** Supabase Storage (bucket `media`)
-- **Deploy:** Lovable (com sync via GitHub)
-- **Repositório:** https://github.com/altrsl/ditames-prompt-pro
+Fortalecer clientes por meio de soluções ambientais integradas, unindo tecnologia, conhecimento técnico e desenvolvimento humano contínuo, para que cada desafio se torne um passo de evolução organizacional e pessoal, promovendo sustentabilidade, responsabilidade e propósito em todas as entregas.
 
-## Estrutura de arquivos relevantes
+---
 
-```
-src/
-  routes/           # Páginas (file-based routing)
-    index.tsx       # Homepage
-    ia.tsx          # Recepcionista Ambiental
-    cases.tsx       # Cases
-    blog.index.tsx  # Blog
-    noticias.index.tsx
-    servicos/
-    sobre.tsx
-    cultura.tsx
-    contato.tsx
-  components/
-    site/           # Header, Footer, PageHero, PostCard, etc.
-    ui/             # shadcn/ui components
-  lib/
-    supabase.ts     # Cliente Supabase
-    database.types.ts
-    queries.ts      # Queries prontas
-    services.ts     # Dados de serviços (ainda hardcoded)
-    content.ts      # Blog/notícias (ainda hardcoded — migrar para Supabase)
-supabase/
-  schema.sql        # SQL completo para rodar no dashboard
-docs/               # Este diretório — documentação do projeto
-```
+# VISÃO
 
-## Estado atual do backend
+Ser reconhecida como a principal referência em soluções ambientais no Alto Vale do Itajaí, destacando-se pela excelência técnica, inovação, desenvolvimento humano e geração de resultados para clientes e sociedade.
 
-- Supabase configurado com URL e chave anon
-- Schema SQL criado (tabelas: media, cases, blog_posts, news_posts, faq, services, homepage_content)
-- Bucket `media` deve ser criado manualmente no Supabase Dashboard
-- **Frontend ainda usa dados hardcoded** — próximo passo é migrar para queries Supabase
+---
+
+# POSICIONAMENTO
+
+A Ditames não é apenas uma consultoria ambiental.
+
+A Ditames resolve desafios ambientais de ponta a ponta.
+
+O cliente não contrata apenas documentos.
+
+O cliente contrata direção, clareza, segurança e solução.
+
+---
+
+# PÚBLICO-ALVO
+
+* Proprietários Rurais
+* Loteadores
+* Incorporadoras
+* Indústrias
+* Construtoras
+
+---
+
+# DADOS OFICIAIS
+
+Fundação:
+16/08/2022
+
+Telefone:
+(47) 3300-3466
+
+WhatsApp:
+(47) 9 9691-0055
+
+E-mail:
+[comercial@ditames.com.br](mailto:comercial@ditames.com.br)
+
+Endereço:
+Rua Brasil, 22
+Bairro Sumaré
+Rio do Sul - SC
+CEP 89165-613
+
+---
+
+# NÚMEROS INSTITUCIONAIS
+
+* 4 anos de mercado
+* 687 clientes atendidos
+* 47 municípios atendidos
+* Mais de 40 profissionais e parceiros especializados
+
+Nunca inventar novos números.
+
+---
+
+# PRINCIPAIS PORTAS DE ENTRADA
+
+Grande parte dos clientes chega por:
+
+* multas ambientais
+* notificações ambientais
+* embargos
+* APP
+* nascentes
+* regularizações
+* licenciamento
+* exigências de órgãos ambientais
+* exigências do Ministério Público
+* exigências de cartório
+* loteamentos
+
+O site deve acolher esses usuários.
+
+---
+
+# REGRA PRINCIPAL
+
+Sempre assumir que o visitante não entende de meio ambiente.
+
+A comunicação deve ser simples, clara e orientada à solução.
