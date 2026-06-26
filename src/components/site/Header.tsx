@@ -10,7 +10,6 @@ const nav = [
   { to: "/blog", label: "Blog" },
   { to: "/noticias", label: "Notícias" },
   { to: "/cases", label: "Cases" },
-  { to: "/ia", label: "Tire suas Dúvidas" },
   { to: "/contato", label: "Contato" },
 ] as const;
 
@@ -69,16 +68,16 @@ export function Header() {
         <div className="hidden xl:flex items-center gap-3">
           <Link
             to="/ia"
-            className={`inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-widest transition-all ${
+            className={`inline-flex flex-col items-center gap-0 rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-widest transition-all ${
               transparent
                 ? "border border-white/30 text-white hover:border-white hover:bg-white/10"
                 : "border border-primary/30 text-primary hover:border-primary hover:bg-primary/5"
             }`}
           >
-            <Sparkles size={12} /> Recepcionista Ambiental
-          </Link>
-          <Link to="/contato" className="btn-primary">
-            Atendimento
+            <span className={`text-[9px] font-normal lowercase tracking-normal leading-none mb-0.5 ${transparent ? "text-white/50" : "text-ink/40"}`}>
+              Dúvidas?
+            </span>
+            <span className="flex items-center gap-1"><Sparkles size={11} /> Recepcionista Ambiental</span>
           </Link>
         </div>
 
@@ -109,10 +108,11 @@ export function Header() {
               </Link>
             ))}
             <Link to="/ia" onClick={() => setOpen(false)} className="inline-flex items-center gap-2 py-3 text-sm font-semibold text-primary hover:text-primary/80">
-              <Sparkles size={14} /> Recepcionista Ambiental
-            </Link>
-            <Link to="/contato" onClick={() => setOpen(false)} className="btn-primary mt-3">
-              Atendimento
+              <Sparkles size={14} />
+              <span className="flex flex-col leading-tight">
+                <span className="text-[10px] font-normal text-ink/40 lowercase">Dúvidas?</span>
+                Recepcionista Ambiental
+              </span>
             </Link>
           </div>
         </div>

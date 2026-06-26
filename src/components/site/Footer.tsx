@@ -122,6 +122,9 @@ export function Footer() {
 
         <div className="mt-8 flex flex-col items-start justify-between gap-3 border-t border-white/10 pt-6 text-xs text-white/50 md:flex-row md:items-center">
           <p>© {new Date().getFullYear()} Ditames Ambiental. Todos os direitos reservados.</p>
+          <Link to="/admin/login" className="text-white/15 hover:text-white/30 transition-colors text-[11px]">
+            Login
+          </Link>
           <p>Engenharia · Meio Ambiente · Geotecnologia · Desde 2022</p>
         </div>
       </div>
