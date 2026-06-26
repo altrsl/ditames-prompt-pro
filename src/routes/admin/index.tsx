@@ -103,12 +103,12 @@ function AdminDashboard() {
           </h1>
           <p className="text-sm text-white/40 mt-1">Painel de controle — Ditames Ambiental</p>
         </div>
-        <Link
-          to="/"
+        <a
+          href="/?edit=true"
           className="inline-flex items-center gap-2 rounded-lg border border-primary/30 bg-primary/5 px-4 py-2 text-sm font-semibold text-primary hover:bg-primary/10 transition-colors"
         >
           <Edit3 size={15} /> Navegar no site
-        </Link>
+        </a>
       </div>
 
       {/* Stats principais */}
