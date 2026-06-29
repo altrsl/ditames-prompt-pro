@@ -3,13 +3,13 @@ import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, Save, Upload, X, Eye, Loader2 } from "lucide-react";
 import { getCurrentCmsUser, writeAuditLog } from "@/lib/admin";
 import { supabase, storageUrl } from "@/lib/supabase";
+import { useToast, Alert } from "@/components/admin/Toast";
 import type { CmsUserRow, NewsStatus } from "@/lib/database.types";
 
 export const Route = createFileRoute("/admin/news/$id")({
   component: NewsEditor,
 });
 
-// Busca notícia diretamente — sem depender de lib/news.ts
 async function fetchNews(id: string) {
   const { data } = await supabase.from("news").select("*").eq("id", id).single();
   return data;
@@ -20,6 +20,7 @@ function NewsEditor() {
   const router = useRouter();
   const isNew = id === "new";
   const fileRef = useRef<HTMLInputElement>(null);
+  const { toast, ToastContainer } = useToast();
 
   const [user, setUser] = useState<CmsUserRow | null>(null);
   const [userLoaded, setUserLoaded] = useState(false);
@@ -34,18 +35,20 @@ function NewsEditor() {
   const [seoDesc, setSeoDesc] = useState("");
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
+  const [inlineError, setInlineError] = useState<string | null>(null);
 
   useEffect(() => {
     async function load() {
-      const u = await getCurrentCmsUser();
-      setUser(u);
-      setUserLoaded(true);
-
-      if (!isNew) {
-        const item = await fetchNews(id);
-        if (item) {
+      try {
+        const u = await getCurrentCmsUser();
+        setUser(u);
+        setUserLoaded(true);
+        if (!isNew) {
+          const item = await fetchNews(id);
+          if (!item) {
+            toast.error("Notícia não encontrada", "Verifique se o ID é válido.");
+            return;
+          }
           setTitle(item.title ?? "");
           setContent(item.content ?? "");
           setExcerpt(item.excerpt ?? "");
@@ -56,6 +59,9 @@ function NewsEditor() {
           setSeoTitle(item.seo_title ?? "");
           setSeoDesc(item.seo_description ?? "");
         }
+      } catch (e: any) {
+        toast.error("Erro ao carregar", e?.message ?? "Não foi possível carregar a notícia.");
+        setUserLoaded(true);
       }
     }
     load();
@@ -64,7 +70,12 @@ function NewsEditor() {
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error("Arquivo muito grande", "O limite é 10 MB. Reduza o tamanho da imagem.");
+      return;
+    }
     setUploading(true);
+    const uploadId = toast.info("Enviando imagem…", undefined, 0);
     try {
       const ext = file.name.split(".").pop();
       const path = `noticias/${Date.now()}.${ext}`;
@@ -79,19 +90,29 @@ function NewsEditor() {
           uploaded_by: user.id,
         });
       }
-    } catch {
-      setError("Erro ao fazer upload da imagem.");
+      toast.success("Imagem enviada com sucesso!");
+    } catch (e: any) {
+      toast.error("Falha no upload", e?.message ?? "Verifique sua conexão e tente novamente.");
     } finally {
       setUploading(false);
     }
   };
 
   const handleSave = async () => {
-    setError(null);
-    if (!title.trim()) { setError("O título é obrigatório."); return; }
-    if (!content.trim()) { setError("O conteúdo é obrigatório."); return; }
+    setInlineError(null);
+    if (!title.trim()) {
+      setInlineError("O título é obrigatório.");
+      toast.warn("Campo obrigatório", "Preencha o título antes de salvar.");
+      return;
+    }
+    if (!content.trim()) {
+      setInlineError("O conteúdo é obrigatório.");
+      toast.warn("Campo obrigatório", "Preencha o conteúdo antes de salvar.");
+      return;
+    }
 
     setSaving(true);
+    const savingId = toast.info("Salvando notícia…", undefined, 0);
     try {
       const words = content.split(/\s+/).length;
       const readTime = `${Math.max(1, Math.round(words / 200))} min de leitura`;
@@ -118,50 +139,40 @@ function NewsEditor() {
       };
 
       let savedId = id;
-
       if (isNew) {
         const { data, error: insertError } = await supabase
-          .from("news")
-          .insert({ ...payload, slug, created_by: user?.id ?? null })
-          .select("id")
-          .single();
-
+          .from("news").insert({ ...payload, slug, created_by: user?.id ?? null })
+          .select("id").single();
         if (insertError) throw insertError;
         savedId = data.id;
       } else {
-        const { error: updateError } = await supabase
-          .from("news")
-          .update(payload)
-          .eq("id", id);
-
+        const { error: updateError } = await supabase.from("news").update(payload).eq("id", id);
         if (updateError) throw updateError;
       }
 
-      await writeAuditLog({
-        user,
-        action: isNew ? "create" : "update",
-        module: "news",
-        record_id: savedId,
-        new_value: { title: title.trim(), status },
-      });
+      await writeAuditLog({ user, action: isNew ? "create" : "update", module: "news", record_id: savedId, new_value: { title: title.trim(), status } });
 
-      setSuccess(true);
-      setTimeout(() => router.navigate({ to: "/admin/news" }), 1200);
+      toast.success(isNew ? "Notícia criada!" : "Notícia atualizada!", status === "published" ? "Publicada e visível no site." : "Salva como rascunho.");
+      setTimeout(() => router.navigate({ to: "/admin/news" }), 1500);
     } catch (e: any) {
-      console.error("[news save]", e);
-      setError(`Erro ao salvar: ${e?.message ?? "Tente novamente."}`);
+      const msg = e?.message ?? "";
+      if (msg.includes("duplicate") || msg.includes("unique")) {
+        toast.error("Título duplicado", "Já existe uma notícia com este título. Altere o título e tente novamente.");
+      } else if (msg.includes("permission") || msg.includes("RLS")) {
+        toast.error("Sem permissão", "Você não tem permissão para realizar esta ação.");
+      } else if (msg.includes("network") || msg.includes("fetch")) {
+        toast.error("Erro de conexão", "Verifique sua internet e tente novamente.");
+      } else {
+        toast.error("Erro ao salvar", msg || "Ocorreu um erro inesperado. Tente novamente.");
+      }
     } finally {
       setSaving(false);
     }
   };
 
-  // Enquanto carrega, mostra estado neutro mas funcional
-  const isDirector = user?.role === "director";
-  const canPublish = isDirector || !!user?.permissions?.publish_archive_content;
-
   return (
     <div className="p-6 md:p-8 max-w-3xl mx-auto">
-      {/* Header */}
+      <ToastContainer />
       <div className="flex items-center gap-3 mb-6">
         <Link to="/admin/news" className="text-white/40 hover:text-white transition-colors">
           <ArrowLeft size={18} />
@@ -173,27 +184,20 @@ function NewsEditor() {
       </div>
 
       <div className="space-y-5">
-        {/* Título */}
         <div>
-          <label className="block text-xs font-semibold uppercase tracking-widest text-white/50 mb-2">
-            Título *
-          </label>
-          <input type="text" value={title} onChange={(e) => setTitle(e.target.value)}
+          <label className="block text-xs font-semibold uppercase tracking-widest text-white/50 mb-2">Título *</label>
+          <input type="text" value={title} onChange={(e) => { setTitle(e.target.value); setInlineError(null); }}
             placeholder="Título da notícia"
-            className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-primary/60 transition-colors" />
+            className={`w-full rounded-lg border bg-white/5 px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none transition-colors ${!title.trim() && inlineError ? "border-red-500/60" : "border-white/10 focus:border-primary/60"}`} />
         </div>
 
-        {/* Conteúdo */}
         <div>
-          <label className="block text-xs font-semibold uppercase tracking-widest text-white/50 mb-2">
-            Conteúdo *
-          </label>
-          <textarea value={content} onChange={(e) => setContent(e.target.value)}
+          <label className="block text-xs font-semibold uppercase tracking-widest text-white/50 mb-2">Conteúdo *</label>
+          <textarea value={content} onChange={(e) => { setContent(e.target.value); setInlineError(null); }}
             rows={10} placeholder="Escreva o conteúdo da notícia…"
-            className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-primary/60 transition-colors resize-y" />
+            className={`w-full rounded-lg border bg-white/5 px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none transition-colors resize-y ${!content.trim() && inlineError ? "border-red-500/60" : "border-white/10 focus:border-primary/60"}`} />
         </div>
 
-        {/* Resumo */}
         <div>
           <label className="block text-xs font-semibold uppercase tracking-widest text-white/50 mb-2">
             Resumo <span className="text-white/20 normal-case font-normal">(aparece nas listagens)</span>
@@ -204,7 +208,6 @@ function NewsEditor() {
         </div>
 
         <div className="grid grid-cols-2 gap-4">
-          {/* Categoria */}
           <div>
             <label className="block text-xs font-semibold uppercase tracking-widest text-white/50 mb-2">Categoria</label>
             <select value={category} onChange={(e) => setCategory(e.target.value)}
@@ -214,8 +217,6 @@ function NewsEditor() {
               ))}
             </select>
           </div>
-
-          {/* Status — sempre mostra todas as opções, sem depender de canPublish para renderizar */}
           <div>
             <label className="block text-xs font-semibold uppercase tracking-widest text-white/50 mb-2">Status</label>
             <select value={status} onChange={(e) => setStatus(e.target.value as NewsStatus)}
@@ -227,15 +228,12 @@ function NewsEditor() {
           </div>
         </div>
 
-        {/* Imagem de capa */}
         <div>
-          <label className="block text-xs font-semibold uppercase tracking-widest text-white/50 mb-2">
-            Imagem de capa
-          </label>
+          <label className="block text-xs font-semibold uppercase tracking-widest text-white/50 mb-2">Imagem de capa</label>
           {coverImage ? (
             <div className="relative rounded-xl overflow-hidden border border-white/10">
               <img src={coverImage} alt="Capa" className="w-full max-h-48 object-cover" />
-              <button onClick={() => setCoverImage(null)}
+              <button onClick={() => { setCoverImage(null); toast.info("Imagem removida."); }}
                 className="absolute top-2 right-2 flex h-7 w-7 items-center justify-center rounded-full bg-black/60 text-white hover:bg-red-500/60">
                 <X size={12} />
               </button>
@@ -243,13 +241,12 @@ function NewsEditor() {
           ) : (
             <button onClick={() => fileRef.current?.click()} disabled={uploading}
               className="flex w-full items-center justify-center gap-3 rounded-xl border-2 border-dashed border-white/10 py-8 text-sm text-white/30 hover:border-primary/40 hover:text-white/60 disabled:opacity-50">
-              <Upload size={18} /> {uploading ? "Enviando…" : "Clique para fazer upload"}
+              <Upload size={18} /> {uploading ? "Enviando…" : "Clique para fazer upload (máx. 10 MB)"}
             </button>
           )}
           <input ref={fileRef} type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
         </div>
 
-        {/* SEO */}
         <div className="rounded-xl border border-white/5 bg-white/5 p-5 space-y-4">
           <h3 className="text-xs font-bold uppercase tracking-widest text-white/50">SEO</h3>
           <div>
@@ -266,7 +263,6 @@ function NewsEditor() {
           </div>
         </div>
 
-        {/* Link Instagram (se vier de importação) */}
         {instagramUrl && (
           <div className="rounded-xl border border-pink-500/20 bg-pink-500/5 px-5 py-4 flex items-center justify-between">
             <div>
@@ -280,19 +276,10 @@ function NewsEditor() {
           </div>
         )}
 
-        {/* Feedback */}
-        {error && (
-          <div className="rounded-lg bg-red-500/10 border border-red-500/20 px-4 py-3 text-sm text-red-400">
-            {error}
-          </div>
-        )}
-        {success && (
-          <div className="rounded-lg bg-green-500/10 border border-green-500/20 px-4 py-3 text-sm text-green-400">
-            Salvo com sucesso! Redirecionando…
-          </div>
+        {inlineError && (
+          <Alert type="error" title={inlineError} onClose={() => setInlineError(null)} />
         )}
 
-        {/* Salvar */}
         <div className="flex gap-3 pt-2">
           <button onClick={handleSave} disabled={saving}
             className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-50 transition-opacity">

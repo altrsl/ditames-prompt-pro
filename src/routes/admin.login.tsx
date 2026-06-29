@@ -1,6 +1,6 @@
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { useState } from "react";
-import { Leaf, Eye, EyeOff, Lock, Mail } from "lucide-react";
+import { Leaf, Eye, EyeOff, Lock, Mail, Loader2 } from "lucide-react";
 import { signIn, getCurrentCmsUser } from "@/lib/admin";
 import { writeAuditLog } from "@/lib/admin";
 
@@ -25,22 +25,25 @@ function AdminLogin() {
       await signIn(email, password);
       const user = await getCurrentCmsUser();
 
-      if (!user || user.status !== "active") {
-        setError("Usuário inativo ou sem acesso ao CMS.");
+      if (user && user.status !== "active") {
+        setError("Sua conta está inativa. Entre em contato com o administrador.");
         setLoading(false);
         return;
       }
 
-      await writeAuditLog({
-        user,
-        action: "login",
-        module: "users",
-        metadata: { email },
-      });
-
+      await writeAuditLog({ user, action: "login", module: "users", metadata: { email } });
       router.navigate({ to: "/admin" });
-    } catch {
-      setError("E-mail ou senha incorretos.");
+    } catch (e: any) {
+      const msg = e?.message ?? "";
+      if (msg.includes("Invalid login") || msg.includes("invalid_credentials")) {
+        setError("E-mail ou senha incorretos. Verifique seus dados e tente novamente.");
+      } else if (msg.includes("Email not confirmed")) {
+        setError("E-mail ainda não confirmado. Verifique sua caixa de entrada.");
+      } else if (msg.includes("Too many requests")) {
+        setError("Muitas tentativas. Aguarde alguns minutos antes de tentar novamente.");
+      } else {
+        setError("Erro ao entrar. Tente novamente ou contate o suporte.");
+      }
     } finally {
       setLoading(false);
     }
@@ -110,8 +113,9 @@ function AdminLogin() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-lg bg-primary py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-50"
+            className="w-full rounded-lg bg-primary py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-50 flex items-center justify-center gap-2"
           >
+            {loading && <Loader2 size={15} className="animate-spin" />}
             {loading ? "Entrando…" : "Entrar"}
           </button>
         </form>

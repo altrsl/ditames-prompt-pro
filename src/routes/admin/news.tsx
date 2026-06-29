@@ -1,8 +1,9 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Plus, Pencil, Trash2, Eye, EyeOff, Archive, Instagram, FileText } from "lucide-react";
+import { Plus, Pencil, Trash2, Eye, Archive, Instagram, FileText } from "lucide-react";
 import { getCurrentCmsUser, hasPermission } from "@/lib/admin";
 import { listNews, publishNews, archiveNews, deleteNews } from "@/lib/news";
+import { useToast } from "@/components/admin/Toast";
 import type { CmsUserRow, NewsRow, NewsStatus } from "@/lib/database.types";
 
 export const Route = createFileRoute("/admin/news")({
@@ -27,41 +28,57 @@ function AdminNews() {
   const [news, setNews] = useState<NewsRow[]>([]);
   const [filter, setFilter] = useState<NewsStatus | "all">("all");
   const [loading, setLoading] = useState(true);
+  const { toast, ToastContainer } = useToast();
 
   const canEdit = hasPermission(user, "create_edit_news");
   const canPublish = hasPermission(user, "publish_archive_content");
 
   async function load() {
-    const u = await getCurrentCmsUser();
-    setUser(u);
-    const items = await listNews(filter !== "all" ? { status: filter } : undefined);
-    setNews(items);
-    setLoading(false);
+    try {
+      const u = await getCurrentCmsUser();
+      setUser(u);
+      const items = await listNews(filter !== "all" ? { status: filter } : undefined);
+      setNews(items);
+    } catch {
+      toast.error("Erro ao carregar notícias", "Verifique sua conexão e recarregue a página.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   useEffect(() => { load(); }, [filter]);
 
   const handlePublish = async (id: string) => {
-    if (!user || !canPublish) return;
-    await publishNews(id, user);
-    load();
+    if (!user || !canPublish) { toast.warn("Sem permissão", "Você não tem permissão para publicar notícias."); return; }
+    try {
+      await publishNews(id, user);
+      toast.success("Notícia publicada!", "Já está visível no site.");
+      load();
+    } catch { toast.error("Erro ao publicar", "Tente novamente."); }
   };
 
   const handleArchive = async (id: string) => {
-    if (!user || !canPublish) return;
-    await archiveNews(id, user);
-    load();
+    if (!user || !canPublish) { toast.warn("Sem permissão", "Você não tem permissão para arquivar notícias."); return; }
+    try {
+      await archiveNews(id, user);
+      toast.info("Notícia arquivada.");
+      load();
+    } catch { toast.error("Erro ao arquivar", "Tente novamente."); }
   };
 
   const handleDelete = async (id: string) => {
-    if (!user || !canEdit) return;
-    if (!confirm("Remover esta notícia? Esta ação não pode ser desfeita.")) return;
-    await deleteNews(id, user);
-    load();
+    if (!user || !canEdit) { toast.warn("Sem permissão"); return; }
+    if (!confirm("Remover esta notícia permanentemente? Esta ação não pode ser desfeita.")) return;
+    try {
+      await deleteNews(id, user);
+      toast.success("Notícia removida.");
+      load();
+    } catch { toast.error("Erro ao remover", "Tente novamente."); }
   };
 
   return (
     <div className="p-6 md:p-8 max-w-5xl mx-auto">
+      <ToastContainer />
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-xl font-bold text-white">Notícias</h1>

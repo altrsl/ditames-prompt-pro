@@ -3,6 +3,7 @@ import { Plus, Pencil, Trash2, Eye, Archive } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getCurrentCmsUser, hasPermission } from "@/lib/admin";
 import { supabase } from "@/lib/supabase";
+import { useToast } from "@/components/admin/Toast";
 import type { CmsUserRow } from "@/lib/database.types";
 
 export const Route = createFileRoute("/admin/blog")({
@@ -15,32 +16,51 @@ function AdminBlog() {
   const [user, setUser] = useState<CmsUserRow | null>(null);
   const [posts, setPosts] = useState<BlogRow[]>([]);
   const [loading, setLoading] = useState(true);
+  const { toast, ToastContainer } = useToast();
 
   async function load() {
-    const u = await getCurrentCmsUser();
-    setUser(u);
-    const { data } = await supabase.from("blog_posts").select("id, title, category, published, published_at, created_at").order("created_at", { ascending: false });
-    setPosts((data ?? []) as BlogRow[]);
-    setLoading(false);
+    try {
+      const u = await getCurrentCmsUser();
+      setUser(u);
+      const { data, error } = await supabase.from("blog_posts").select("id, title, category, published, published_at, created_at").order("created_at", { ascending: false });
+      if (error) throw error;
+      setPosts((data ?? []) as BlogRow[]);
+    } catch {
+      toast.error("Erro ao carregar artigos", "Verifique sua conexão e recarregue a página.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   useEffect(() => { load(); }, []);
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Remover este artigo?")) return;
-    await supabase.from("blog_posts").delete().eq("id", id);
-    load();
+    if (!confirm("Remover este artigo permanentemente?")) return;
+    try {
+      const { error } = await supabase.from("blog_posts").delete().eq("id", id);
+      if (error) throw error;
+      toast.success("Artigo removido.");
+      load();
+    } catch { toast.error("Erro ao remover", "Tente novamente."); }
   };
 
   const handleToggle = async (post: BlogRow) => {
-    await supabase.from("blog_posts").update({ published: !post.published, published_at: !post.published ? new Date().toISOString() : null }).eq("id", post.id);
-    load();
+    try {
+      const { error } = await supabase.from("blog_posts").update({
+        published: !post.published,
+        published_at: !post.published ? new Date().toISOString() : null,
+      }).eq("id", post.id);
+      if (error) throw error;
+      toast.success(!post.published ? "Artigo publicado!" : "Artigo despublicado.", !post.published ? "Já está visível no blog." : "Movido para rascunho.");
+      load();
+    } catch { toast.error("Erro ao alterar status", "Tente novamente."); }
   };
 
   const canEdit = hasPermission(user, "create_edit_blog");
 
   return (
     <div className="p-6 md:p-8 max-w-5xl mx-auto">
+      <ToastContainer />
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-xl font-bold text-white">Blog</h1>
