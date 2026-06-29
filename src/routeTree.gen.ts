@@ -22,8 +22,80 @@ import { Route as ServicosSlugRouteImport } from './routes/servicos.$slug'
 import { Route as NoticiasSlugRouteImport } from './routes/noticias.$slug'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
+// Admin routes
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AdminLoginRouteImport } from './routes/admin.login'
+import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as AdminNewsRouteImport } from './routes/admin/news'
+import { Route as AdminNewsIdRouteImport } from './routes/admin/news.$id'
+import { Route as AdminBlogRouteImport } from './routes/admin/blog'
+import { Route as AdminCasesRouteImport } from './routes/admin/cases'
+import { Route as AdminUsersRouteImport } from './routes/admin/users'
+import { Route as AdminAuditRouteImport } from './routes/admin/audit'
+import { Route as AdminInstagramRouteImport } from './routes/admin/instagram'
+import { Route as AdminImportRouteImport } from './routes/admin/import'
 
-const SobreRoute = SobreRouteImport.update({
+import { Route as AdminBlogIdRouteImport } from './routes/admin/blog.$id'
+
+const AdminBlogIdRoute = AdminBlogIdRouteImport.update({
+  id: '/admin/blog/$id',
+  path: '/blog/$id',
+  getParentRoute: () => AdminRoute,
+} as any)
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminLoginRoute = AdminLoginRouteImport.update({
+  id: '/admin/login',
+  path: '/admin/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminNewsRoute = AdminNewsRouteImport.update({
+  id: '/admin/news',
+  path: '/news',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminNewsIdRoute = AdminNewsIdRouteImport.update({
+  id: '/admin/news/$id',
+  path: '/news/$id',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminBlogRoute = AdminBlogRouteImport.update({
+  id: '/admin/blog',
+  path: '/blog',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCasesRoute = AdminCasesRouteImport.update({
+  id: '/admin/cases',
+  path: '/cases',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminUsersRoute = AdminUsersRouteImport.update({
+  id: '/admin/users',
+  path: '/users',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAuditRoute = AdminAuditRouteImport.update({
+  id: '/admin/audit',
+  path: '/audit',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminInstagramRoute = AdminInstagramRouteImport.update({
+  id: '/admin/instagram',
+  path: '/instagram',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminImportRoute = AdminImportRouteImport.update({
+  id: '/admin/import',
+  path: '/import',
+  getParentRoute: () => AdminRoute,
+} as any)
   id: '/sobre',
   path: '/sobre',
   getParentRoute: () => rootRouteImport,
@@ -295,6 +367,20 @@ declare module '@tanstack/react-router' {
   }
 }
 
+const adminRouteChildren = {
+  AdminIndexRoute,
+  AdminNewsRoute,
+  AdminNewsIdRoute,
+  AdminBlogRoute,
+  AdminBlogIdRoute,
+  AdminUsersRoute,
+  AdminAuditRoute,
+  AdminInstagramRoute,
+  AdminImportRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(adminRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CasesRoute: CasesRoute,
@@ -309,6 +395,8 @@ const rootRouteChildren: RootRouteChildren = {
   BlogIndexRoute: BlogIndexRoute,
   NoticiasIndexRoute: NoticiasIndexRoute,
   ServicosIndexRoute: ServicosIndexRoute,
+  AdminRoute: AdminRouteWithChildren,
+  AdminLoginRoute: AdminLoginRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
