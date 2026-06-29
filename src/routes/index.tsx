@@ -40,13 +40,7 @@ import { services, WHATSAPP_URL } from "@/lib/services";
 import { formatDate } from "@/lib/content";
 import { getCases, getFaq, getBlogPosts, getNewsPosts } from "@/lib/data";
 import type { NormalizedCase, NormalizedFaqItem, NormalizedPost } from "@/lib/data";
-import { InlineText, InlineImage } from "@/components/admin/InlineEditable";
-import { supabase } from "@/lib/supabase";
-
-// Helper: salva texto na tabela homepage_content
-async function saveHomepageText(key: string, value: string) {
-  await supabase.from("homepage_content").upsert({ key, value, type: "text" }, { onConflict: "key" });
-}
+import * as E from "@/components/admin/InlineEditable";
 
 export const Route = createFileRoute("/")({
   loader: async () => {
@@ -143,53 +137,29 @@ function Hero() {
   const [bg, setBg] = useState(heroImg);
   return (
     <section id="top" className="relative min-h-[100svh] w-full overflow-hidden">
-      <InlineImage
-        src={bg}
+      <E.Image
+        k="hero_image" fallback={heroImg}
         alt="Drone sobrevoando área verde com equipe técnica em operação"
-        onSave={async (url) => { setBg(url); await supabase.from("homepage_content").upsert({ key: "hero_image", value: url, type: "image_id" }, { onConflict: "key" }); }}
         className="absolute inset-0 h-full w-full object-cover"
+        folder="homepage"
       />
       <div className="absolute inset-0 bg-gradient-to-b from-black/65 via-black/45 to-black/80" />
-      <div
-        className="absolute inset-0 opacity-30"
-        style={{
-          backgroundImage:
-            "repeating-linear-gradient(115deg, transparent 0 80px, rgba(219,231,211,.08) 80px 81px)",
-        }}
-      />
-
-
+      <div className="absolute inset-0 opacity-30" style={{ backgroundImage: "repeating-linear-gradient(115deg, transparent 0 80px, rgba(219,231,211,.08) 80px 81px)" }} />
 
       <div className="container-x relative z-10 flex min-h-[100svh] flex-col justify-center pt-32 pb-20 text-white">
         <span className="eyebrow text-secondary mb-6">Ditames Ambiental</span>
         <h1 className="font-display text-[clamp(2.5rem,6.5vw,5.75rem)] uppercase max-w-5xl">
-          <InlineText
-            value="Transformamos desafios ambientais em oportunidades de crescimento, segurança e desenvolvimento."
-            onSave={(v) => saveHomepageText("hero_title", v)}
-            className="font-display text-[clamp(2.5rem,6.5vw,5.75rem)] uppercase"
-            multiline
-          />
+          <E.Text k="hero_title" fallback="Transformamos desafios ambientais em oportunidades de crescimento, segurança e desenvolvimento."
+            className="font-display text-[clamp(2.5rem,6.5vw,5.75rem)] uppercase" multiline />
         </h1>
         <p className="mt-8 max-w-2xl text-base md:text-lg text-white/85 leading-relaxed">
-          <InlineText
-            value="Fortalecemos pessoas, propriedades e empresas por meio de soluções ambientais completas, promovendo segurança, conformidade legal e crescimento sustentável."
-            onSave={(v) => saveHomepageText("hero_subtitle", v)}
-            multiline
-          />
+          <E.Text k="hero_subtitle" fallback="Fortalecemos pessoas, propriedades e empresas por meio de soluções ambientais completas, promovendo segurança, conformidade legal e crescimento sustentável." multiline />
         </p>
         <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-          <Link to="/contato" className="btn-primary">
-            Solicitar Atendimento <ArrowRight size={16} />
-          </Link>
-          <a href={WHATSAPP_URL} className="btn-on-dark">
-            Falar com Especialista
-          </a>
+          <Link to="/contato" className="btn-primary">Solicitar Atendimento <ArrowRight size={16} /></Link>
+          <a href={WHATSAPP_URL} className="btn-on-dark">Falar com Especialista</a>
         </div>
-
-
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-[10px] tracking-[0.3em] text-white/60">
-          ROLE PARA EXPLORAR
-        </div>
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-[10px] tracking-[0.3em] text-white/60">ROLE PARA EXPLORAR</div>
       </div>
     </section>
   );
@@ -209,19 +179,10 @@ function PublicoAlvo() {
         <div className="max-w-3xl">
           <span className="eyebrow">Para quem atuamos</span>
           <h2 className="mt-4 text-4xl md:text-5xl uppercase text-ink">
-            <InlineText
-              value="Soluções para quem precisa crescer com segurança"
-              onSave={(v) => saveHomepageText("publico_title", v)}
-              className="text-4xl md:text-5xl uppercase text-ink font-display"
-              multiline
-            />
+            <E.Text k="publico_title" fallback="Soluções para quem precisa crescer com segurança" className="text-4xl md:text-5xl uppercase text-ink font-display" multiline />
           </h2>
           <p className="mt-6 text-base md:text-lg text-muted-foreground max-w-2xl">
-            <InlineText
-              value="Atendemos desde proprietários rurais até grandes empreendimentos industriais, oferecendo soluções ambientais que unem técnica, estratégia e segurança para cada realidade."
-              onSave={(v) => saveHomepageText("publico_desc", v)}
-              multiline
-            />
+            <E.Text k="publico_desc" fallback="Atendemos desde proprietários rurais até grandes empreendimentos industriais, oferecendo soluções ambientais que unem técnica, estratégia e segurança para cada realidade." multiline />
           </p>
         </div>
         <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
@@ -287,19 +248,10 @@ function Crescimento() {
         <div>
           <span className="eyebrow">Trajetória</span>
           <h2 className="mt-4 text-4xl md:text-5xl uppercase text-ink">
-            <InlineText
-              value="Crescimento que reflete confiança"
-              onSave={(v) => saveHomepageText("crescimento_title", v)}
-              className="text-4xl md:text-5xl uppercase text-ink font-display"
-              multiline
-            />
+            <E.Text k="crescimento_title" fallback="Crescimento que reflete confiança" className="text-4xl md:text-5xl uppercase text-ink font-display" multiline />
           </h2>
           <p className="mt-6 text-base md:text-lg text-foreground/80 leading-relaxed max-w-xl">
-            <InlineText
-              value="Em apenas 4 anos de atuação, a Ditames consolidou sua presença em 47 municípios catarinenses, atendeu mais de 687 clientes e construiu uma rede com mais de 40 profissionais e parceiros especializados."
-              onSave={(v) => saveHomepageText("crescimento_desc", v)}
-              multiline
-            />
+            <E.Text k="crescimento_desc" fallback="Em apenas 4 anos de atuação, a Ditames consolidou sua presença em 47 municípios catarinenses, atendeu mais de 687 clientes e construiu uma rede com mais de 40 profissionais e parceiros especializados." multiline />
           </p>
           <Link to="/sobre" className="btn-primary mt-8">
             Conheça Nossa História <ArrowRight size={16} />
@@ -328,32 +280,27 @@ function Crescimento() {
 }
 
 function QuemSomos() {
-  const [img, setImg] = useState(quemSomosImg);
   return (
     <section id="quem-somos" className="bg-background py-24 md:py-32">
       <div className="container-x grid items-center gap-14 lg:grid-cols-2">
         <div className="relative">
-          <InlineImage
-            src={img}
+          <E.Image k="quem_somos_image" fallback={quemSomosImg}
             alt="Equipe técnica analisando mapas em campo"
-            onSave={async (url) => { setImg(url); await supabase.from("homepage_content").upsert({ key: "quem_somos_image", value: url, type: "image_id" }, { onConflict: "key" }); }}
-            className="rounded-xl object-cover w-full aspect-[4/3]"
-          />
+            className="rounded-xl object-cover w-full aspect-[4/3]" folder="homepage" />
           <div className="absolute -bottom-6 -right-6 hidden md:block max-w-xs rounded-xl bg-primary p-6 text-primary-foreground shadow-glow">
             <p className="text-sm leading-relaxed">
-              "Assumimos a responsabilidade de conduzir cada projeto do início ao fim, permitindo
-              que o cliente foque no seu crescimento."
+              <E.Text k="quem_somos_quote" fallback='"Assumimos a responsabilidade de conduzir cada projeto do início ao fim, permitindo que o cliente foque no seu crescimento."' multiline />
             </p>
           </div>
         </div>
         <div>
           <span className="eyebrow">Quem somos</span>
           <h2 className="mt-4 text-4xl md:text-5xl uppercase text-ink">
-            Técnica, tecnologia <br />e <span className="text-primary">pessoas</span>
+            <E.Text k="quem_somos_title" fallback="Técnica, tecnologia e pessoas"
+              className="text-4xl md:text-5xl uppercase text-ink font-display" multiline />
           </h2>
           <p className="mt-6 text-base md:text-lg text-muted-foreground leading-relaxed">
-            A Ditames une engenharia, meio ambiente, geotecnologia e gestão para entregar soluções
-            seguras e eficientes.
+            <E.Text k="quem_somos_desc" fallback="A Ditames une engenharia, meio ambiente, geotecnologia e gestão para entregar soluções seguras e eficientes." multiline />
           </p>
           <div className="mt-8 grid grid-cols-2 gap-4">
             {["Engenharia", "Meio Ambiente", "Geotecnologia", "Gestão"].map((p) => (
@@ -376,12 +323,12 @@ function Servicos() {
           <div className="max-w-2xl">
             <span className="eyebrow">O que entregamos</span>
             <h2 className="mt-4 text-4xl md:text-5xl uppercase text-ink">
-              Soluções ambientais <span className="text-primary">integradas</span>
+              <E.Text k="servicos_title" fallback="Soluções ambientais integradas"
+                className="text-4xl md:text-5xl uppercase text-ink font-display" multiline />
             </h2>
           </div>
           <p className="max-w-md text-muted-foreground">
-            Cobrimos todo o ciclo ambiental de um projeto — do diagnóstico às aprovações finais.
-            Nosso portfólio evolui continuamente para acompanhar novas demandas.
+            <E.Text k="servicos_desc" fallback="Cobrimos todo o ciclo ambiental de um projeto — do diagnóstico às aprovações finais. Nosso portfólio evolui continuamente para acompanhar novas demandas." multiline />
           </p>
         </div>
 
@@ -427,11 +374,11 @@ function Metodo() {
         <div className="max-w-2xl">
           <span className="eyebrow">Como trabalhamos</span>
           <h2 className="mt-4 text-4xl md:text-5xl uppercase text-ink">
-            Método <span className="text-primary">Ditames</span>
+            <E.Text k="metodo_title" fallback="Método Ditames"
+              className="text-4xl md:text-5xl uppercase text-ink font-display" />
           </h2>
           <p className="mt-6 text-muted-foreground">
-            Um processo claro e rastreável que assegura previsibilidade e qualidade em cada etapa
-            do projeto.
+            <E.Text k="metodo_desc" fallback="Um processo claro e rastreável que assegura previsibilidade e qualidade em cada etapa do projeto." multiline />
           </p>
         </div>
         <div className="relative mt-16">
@@ -486,20 +433,22 @@ function Diferenciais() {
         <div className="max-w-2xl">
           <span className="eyebrow">Diferenciais</span>
           <h2 className="mt-4 text-4xl md:text-5xl uppercase text-ink">
-            Por que escolher a <span className="text-primary">Ditames</span>
+            <E.Text k="diferenciais_title" fallback="Por que escolher a Ditames"
+              className="text-4xl md:text-5xl uppercase text-ink font-display" multiline />
           </h2>
         </div>
         <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {items.map((i) => (
-            <div
-              key={i.t}
-              className="rounded-xl bg-card border border-border p-7 transition-all duration-300 hover:-translate-y-1 hover:shadow-card"
-            >
+          {items.map((i, idx) => (
+            <div key={i.t} className="rounded-xl bg-card border border-border p-7 transition-all duration-300 hover:-translate-y-1 hover:shadow-card">
               <div className="grid h-12 w-12 place-items-center rounded-lg bg-secondary text-primary">
                 <i.icon size={22} strokeWidth={1.8} />
               </div>
-              <h3 className="mt-5 font-display text-xl uppercase text-ink">{i.t}</h3>
-              <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{i.d}</p>
+              <h3 className="mt-5 font-display text-xl uppercase text-ink">
+                <E.Text k={`diferencial_${idx}_title`} fallback={i.t} />
+              </h3>
+              <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+                <E.Text k={`diferencial_${idx}_desc`} fallback={i.d} multiline />
+              </p>
             </div>
           ))}
         </div>
@@ -509,7 +458,6 @@ function Diferenciais() {
 }
 
 function Tecnologia() {
-  const [img, setImg] = useState(tecnologiaImg);
   const stack = [
     { icon: Plane, t: "Drones" },
     { icon: Satellite, t: "GPS RTK" },
@@ -524,19 +472,15 @@ function Tecnologia() {
         <div>
           <span className="eyebrow">Stack técnico</span>
           <h2 className="mt-4 text-4xl md:text-5xl uppercase text-ink">
-            Tecnologia que <span className="text-primary">precisa</span>, <br />
-            decisão que <span className="text-primary">acelera</span>
+            <E.Text k="tecnologia_title" fallback="Tecnologia que precisa, decisão que acelera"
+              className="text-4xl md:text-5xl uppercase text-ink font-display" multiline />
           </h2>
           <p className="mt-6 text-muted-foreground max-w-lg">
-            Aplicamos tecnologias de ponta para gerar dados confiáveis, reduzir prazos e ampliar a
-            capacidade de decisão dos nossos clientes.
+            <E.Text k="tecnologia_desc" fallback="Aplicamos tecnologias de ponta para gerar dados confiáveis, reduzir prazos e ampliar a capacidade de decisão dos nossos clientes." multiline />
           </p>
           <div className="mt-10 grid gap-3 sm:grid-cols-2">
             {stack.map((s) => (
-              <div
-                key={s.t}
-                className="flex items-center gap-3 rounded-lg border border-border bg-card px-4 py-3 transition-colors hover:border-primary/50"
-              >
+              <div key={s.t} className="flex items-center gap-3 rounded-lg border border-border bg-card px-4 py-3 transition-colors hover:border-primary/50">
                 <s.icon size={20} className="text-primary" strokeWidth={1.6} />
                 <span className="text-sm font-semibold text-ink">{s.t}</span>
               </div>
@@ -544,21 +488,13 @@ function Tecnologia() {
           </div>
         </div>
         <div className="relative">
-          <InlineImage
-            src={img}
+          <E.Image k="tecnologia_image" fallback={tecnologiaImg}
             alt="Drone e equipamento topográfico em campo"
-            onSave={async (url) => { setImg(url); await supabase.from("homepage_content").upsert({ key: "tecnologia_image", value: url, type: "image_id" }, { onConflict: "key" }); }}
-            className="rounded-xl object-cover w-full aspect-[4/3]"
-          />
-          <div
-            className="absolute inset-0 rounded-xl pointer-events-none"
-            style={{
-              backgroundImage:
-                "linear-gradient(rgba(96,148,48,.2) 1px, transparent 1px), linear-gradient(90deg, rgba(96,148,48,.2) 1px, transparent 1px)",
-              backgroundSize: "44px 44px",
-              mixBlendMode: "overlay",
-            }}
-          />
+            className="rounded-xl object-cover w-full aspect-[4/3]" folder="homepage" />
+          <div className="absolute inset-0 rounded-xl pointer-events-none" style={{
+            backgroundImage: "linear-gradient(rgba(96,148,48,.2) 1px, transparent 1px), linear-gradient(90deg, rgba(96,148,48,.2) 1px, transparent 1px)",
+            backgroundSize: "44px 44px", mixBlendMode: "overlay",
+          }} />
         </div>
       </div>
     </section>
@@ -581,12 +517,11 @@ function IA() {
             <div>
               <span className="eyebrow">Recepcionista Digital</span>
               <h2 className="mt-4 text-3xl md:text-5xl uppercase text-ink">
-                Olá! Posso te ajudar a <span className="text-primary">entender seu caso?</span>
+                <E.Text k="ia_title" fallback="Olá! Posso te ajudar a entender seu caso?"
+                  className="text-3xl md:text-5xl uppercase text-ink font-display" multiline />
               </h2>
               <p className="mt-5 text-foreground/80 max-w-lg">
-                Sou a recepcionista digital da Ditames. Em uma conversa simples, te ouço,
-                ajudo a identificar qual solução ambiental você precisa e, quando fizer
-                sentido, te encaminho para um especialista da nossa equipe.
+                <E.Text k="ia_desc" fallback="Sou a recepcionista digital da Ditames. Em uma conversa simples, te ouço, ajudo a identificar qual solução ambiental você precisa e, quando fizer sentido, te encaminho para um especialista da nossa equipe." multiline />
               </p>
               <Link to="/ia" className="btn-primary mt-8">
                 <Sparkles size={16} /> Conversar com a recepcionista
@@ -890,10 +825,11 @@ function Cultura() {
         <div>
           <span className="eyebrow">Cultura Ditames</span>
           <h2 className="mt-4 text-4xl md:text-5xl uppercase text-ink">
-            A cultura que <span className="text-primary">sustenta</span> nossos resultados
+            <E.Text k="cultura_title" fallback="A cultura que sustenta nossos resultados"
+              className="text-4xl md:text-5xl uppercase text-ink font-display" multiline />
           </h2>
           <p className="mt-6 text-muted-foreground max-w-lg">
-            Excelência técnica e desenvolvimento humano caminham juntos na Ditames.
+            <E.Text k="cultura_desc" fallback="Excelência técnica e desenvolvimento humano caminham juntos na Ditames." multiline />
           </p>
           <Link to="/cultura" className="btn-outline mt-8">
             Conheça a Cultura Completa <ArrowRight size={16} />
@@ -901,13 +837,8 @@ function Cultura() {
         </div>
         <ul className="grid gap-3">
           {pilares.map((p, i) => (
-            <li
-              key={p}
-              className="group flex items-center gap-5 rounded-xl border border-border bg-card px-6 py-5 transition-all hover:border-primary/50 hover:translate-x-1"
-            >
-              <span className="font-display text-3xl text-primary/40 group-hover:text-primary">
-                {String(i + 1).padStart(2, "0")}
-              </span>
+            <li key={p} className="group flex items-center gap-5 rounded-xl border border-border bg-card px-6 py-5 transition-all hover:border-primary/50 hover:translate-x-1">
+              <span className="font-display text-3xl text-primary/40 group-hover:text-primary">{String(i + 1).padStart(2, "0")}</span>
               <span className="font-display uppercase text-lg text-ink">{p}</span>
             </li>
           ))}
@@ -930,19 +861,15 @@ function CTAFinal() {
       <div className="container-x relative text-center">
         <span className="eyebrow text-secondary">Vamos conversar</span>
         <h2 className="mt-6 font-display text-5xl md:text-7xl uppercase text-white max-w-4xl mx-auto">
-          Tem um desafio <span className="text-secondary">ambiental?</span>
+          <E.Text k="cta_title" fallback="Tem um desafio ambiental?"
+            className="font-display text-5xl md:text-7xl uppercase text-white" multiline />
         </h2>
         <p className="mt-6 text-lg text-white/85 max-w-2xl mx-auto">
-          Conte com uma equipe preparada para conduzir seu projeto com segurança, clareza e responsabilidade.
+          <E.Text k="cta_desc" fallback="Conte com uma equipe preparada para conduzir seu projeto com segurança, clareza e responsabilidade." multiline />
         </p>
-
         <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:justify-center">
-          <Link to="/contato" className="btn-primary">
-            <Phone size={16} /> Solicitar Atendimento
-          </Link>
-          <a href={WHATSAPP_URL} className="btn-on-dark">
-            <MessageCircle size={16} /> WhatsApp
-          </a>
+          <Link to="/contato" className="btn-primary"><Phone size={16} /> Solicitar Atendimento</Link>
+          <a href={WHATSAPP_URL} className="btn-on-dark"><MessageCircle size={16} /> WhatsApp</a>
         </div>
       </div>
     </section>
