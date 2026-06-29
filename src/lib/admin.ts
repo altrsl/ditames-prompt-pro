@@ -43,7 +43,37 @@ export async function getCmsUser(userId: string): Promise<CmsUserRow | null> {
 export async function getCurrentCmsUser(): Promise<CmsUserRow | null> {
   const user = await getAuthUser();
   if (!user) return null;
-  return getCmsUser(user.id);
+
+  let cmsUser = await getCmsUser(user.id);
+
+  // Se o usuário está autenticado mas não tem entrada em cms_users,
+  // cria automaticamente como director (primeiro usuário = master)
+  if (!cmsUser) {
+    const { data } = await supabase
+      .from("cms_users")
+      .select("id")
+      .limit(1);
+
+    const isFirst = !data || data.length === 0;
+    const role = isFirst ? "director" : "dev";
+
+    const { data: created } = await supabase
+      .from("cms_users")
+      .insert({
+        id: user.id,
+        email: user.email ?? "",
+        name: user.user_metadata?.name ?? user.email?.split("@")[0] ?? "Usuário",
+        role,
+        status: "active",
+        permissions: {},
+      })
+      .select()
+      .single();
+
+    cmsUser = created as CmsUserRow | null;
+  }
+
+  return cmsUser;
 }
 
 export async function listCmsUsers(): Promise<CmsUserRow[]> {
