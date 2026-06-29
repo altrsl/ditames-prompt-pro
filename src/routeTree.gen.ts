@@ -14,75 +14,320 @@ import { Route as IaRouteImport } from './routes/ia'
 import { Route as CulturaRouteImport } from './routes/cultura'
 import { Route as ContatoRouteImport } from './routes/contato'
 import { Route as CasesRouteImport } from './routes/cases'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ServicosIndexRouteImport } from './routes/servicos.index'
 import { Route as NoticiasIndexRouteImport } from './routes/noticias.index'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
+import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as ServicosSlugRouteImport } from './routes/servicos.$slug'
 import { Route as NoticiasSlugRouteImport } from './routes/noticias.$slug'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
-// Admin routes
-import { Route as AdminRouteImport } from './routes/admin'
-import { Route as AdminLoginRouteImport } from './routes/admin.login'
-import { Route as AdminIndexRouteImport } from './routes/admin/index'
-import { Route as AdminNewsRouteImport } from './routes/admin/news'
-import { Route as AdminNewsIdRouteImport } from './routes/admin/news.$id'
-import { Route as AdminBlogRouteImport } from './routes/admin/blog'
-import { Route as AdminBlogIdRouteImport } from './routes/admin/blog.$id'
-import { Route as AdminCasesRouteImport } from './routes/admin/cases'
 import { Route as AdminUsersRouteImport } from './routes/admin/users'
-import { Route as AdminAuditRouteImport } from './routes/admin/audit'
+import { Route as AdminNewsRouteImport } from './routes/admin/news'
+import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminInstagramRouteImport } from './routes/admin/instagram'
 import { Route as AdminImportRouteImport } from './routes/admin/import'
+import { Route as AdminCasesRouteImport } from './routes/admin/cases'
+import { Route as AdminBlogRouteImport } from './routes/admin/blog'
+import { Route as AdminAuditRouteImport } from './routes/admin/audit'
+import { Route as AdminNewsIdRouteImport } from './routes/admin/news.$id'
+import { Route as AdminBlogIdRouteImport } from './routes/admin/blog.$id'
 
-// Public routes
-const SobreRoute = SobreRouteImport.update({ id: '/sobre', path: '/sobre', getParentRoute: () => rootRouteImport } as any)
-const IaRoute = IaRouteImport.update({ id: '/ia', path: '/ia', getParentRoute: () => rootRouteImport } as any)
-const CulturaRoute = CulturaRouteImport.update({ id: '/cultura', path: '/cultura', getParentRoute: () => rootRouteImport } as any)
-const ContatoRoute = ContatoRouteImport.update({ id: '/contato', path: '/contato', getParentRoute: () => rootRouteImport } as any)
-const CasesRoute = CasesRouteImport.update({ id: '/cases', path: '/cases', getParentRoute: () => rootRouteImport } as any)
-const IndexRoute = IndexRouteImport.update({ id: '/', path: '/', getParentRoute: () => rootRouteImport } as any)
-const ServicosIndexRoute = ServicosIndexRouteImport.update({ id: '/servicos/', path: '/servicos/', getParentRoute: () => rootRouteImport } as any)
-const NoticiasIndexRoute = NoticiasIndexRouteImport.update({ id: '/noticias/', path: '/noticias/', getParentRoute: () => rootRouteImport } as any)
-const BlogIndexRoute = BlogIndexRouteImport.update({ id: '/blog/', path: '/blog/', getParentRoute: () => rootRouteImport } as any)
-const ServicosSlugRoute = ServicosSlugRouteImport.update({ id: '/servicos/$slug', path: '/servicos/$slug', getParentRoute: () => rootRouteImport } as any)
-const NoticiasSlugRoute = NoticiasSlugRouteImport.update({ id: '/noticias/$slug', path: '/noticias/$slug', getParentRoute: () => rootRouteImport } as any)
-const BlogSlugRoute = BlogSlugRouteImport.update({ id: '/blog/$slug', path: '/blog/$slug', getParentRoute: () => rootRouteImport } as any)
-const ApiChatRoute = ApiChatRouteImport.update({ id: '/api/chat', path: '/api/chat', getParentRoute: () => rootRouteImport } as any)
+const SobreRoute = SobreRouteImport.update({
+  id: '/sobre',
+  path: '/sobre',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IaRoute = IaRouteImport.update({
+  id: '/ia',
+  path: '/ia',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CulturaRoute = CulturaRouteImport.update({
+  id: '/cultura',
+  path: '/cultura',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContatoRoute = ContatoRouteImport.update({
+  id: '/contato',
+  path: '/contato',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CasesRoute = CasesRouteImport.update({
+  id: '/cases',
+  path: '/cases',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicosIndexRoute = ServicosIndexRouteImport.update({
+  id: '/servicos/',
+  path: '/servicos/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NoticiasIndexRoute = NoticiasIndexRouteImport.update({
+  id: '/noticias/',
+  path: '/noticias/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogIndexRoute = BlogIndexRouteImport.update({
+  id: '/blog/',
+  path: '/blog/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const ServicosSlugRoute = ServicosSlugRouteImport.update({
+  id: '/servicos/$slug',
+  path: '/servicos/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NoticiasSlugRoute = NoticiasSlugRouteImport.update({
+  id: '/noticias/$slug',
+  path: '/noticias/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogSlugRoute = BlogSlugRouteImport.update({
+  id: '/blog/$slug',
+  path: '/blog/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiChatRoute = ApiChatRouteImport.update({
+  id: '/api/chat',
+  path: '/api/chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminUsersRoute = AdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminNewsRoute = AdminNewsRouteImport.update({
+  id: '/news',
+  path: '/news',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminLoginRoute = AdminLoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminInstagramRoute = AdminInstagramRouteImport.update({
+  id: '/instagram',
+  path: '/instagram',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminImportRoute = AdminImportRouteImport.update({
+  id: '/import',
+  path: '/import',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCasesRoute = AdminCasesRouteImport.update({
+  id: '/cases',
+  path: '/cases',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminBlogRoute = AdminBlogRouteImport.update({
+  id: '/blog',
+  path: '/blog',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAuditRoute = AdminAuditRouteImport.update({
+  id: '/audit',
+  path: '/audit',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminNewsIdRoute = AdminNewsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AdminNewsRoute,
+} as any)
+const AdminBlogIdRoute = AdminBlogIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AdminBlogRoute,
+} as any)
 
-// Admin routes
-const AdminRoute = AdminRouteImport.update({ id: '/admin', path: '/admin', getParentRoute: () => rootRouteImport } as any)
-const AdminLoginRoute = AdminLoginRouteImport.update({ id: '/admin/login', path: '/admin/login', getParentRoute: () => rootRouteImport } as any)
-const AdminIndexRoute = AdminIndexRouteImport.update({ id: '/admin/', path: '/', getParentRoute: () => AdminRoute } as any)
-const AdminNewsRoute = AdminNewsRouteImport.update({ id: '/admin/news', path: '/news', getParentRoute: () => AdminRoute } as any)
-const AdminNewsIdRoute = AdminNewsIdRouteImport.update({ id: '/admin/news/$id', path: '/news/$id', getParentRoute: () => AdminRoute } as any)
-const AdminBlogRoute = AdminBlogRouteImport.update({ id: '/admin/blog', path: '/blog', getParentRoute: () => AdminRoute } as any)
-const AdminBlogIdRoute = AdminBlogIdRouteImport.update({ id: '/admin/blog/$id', path: '/blog/$id', getParentRoute: () => AdminRoute } as any)
-const AdminCasesRoute = AdminCasesRouteImport.update({ id: '/admin/cases', path: '/cases', getParentRoute: () => AdminRoute } as any)
-const AdminUsersRoute = AdminUsersRouteImport.update({ id: '/admin/users', path: '/users', getParentRoute: () => AdminRoute } as any)
-const AdminAuditRoute = AdminAuditRouteImport.update({ id: '/admin/audit', path: '/audit', getParentRoute: () => AdminRoute } as any)
-const AdminInstagramRoute = AdminInstagramRouteImport.update({ id: '/admin/instagram', path: '/instagram', getParentRoute: () => AdminRoute } as any)
-const AdminImportRoute = AdminImportRouteImport.update({ id: '/admin/import', path: '/import', getParentRoute: () => AdminRoute } as any)
-
-// Admin children
-const adminRouteChildren = {
-  AdminIndexRoute,
-  AdminNewsRoute,
-  AdminNewsIdRoute,
-  AdminBlogRoute,
-  AdminBlogIdRoute,
-  AdminCasesRoute,
-  AdminUsersRoute,
-  AdminAuditRoute,
-  AdminInstagramRoute,
-  AdminImportRoute,
+export interface FileRoutesByFullPath {
+  '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
+  '/cases': typeof CasesRoute
+  '/contato': typeof ContatoRoute
+  '/cultura': typeof CulturaRoute
+  '/ia': typeof IaRoute
+  '/sobre': typeof SobreRoute
+  '/admin/audit': typeof AdminAuditRoute
+  '/admin/blog': typeof AdminBlogRouteWithChildren
+  '/admin/cases': typeof AdminCasesRoute
+  '/admin/import': typeof AdminImportRoute
+  '/admin/instagram': typeof AdminInstagramRoute
+  '/admin/login': typeof AdminLoginRoute
+  '/admin/news': typeof AdminNewsRouteWithChildren
+  '/admin/users': typeof AdminUsersRoute
+  '/api/chat': typeof ApiChatRoute
+  '/blog/$slug': typeof BlogSlugRoute
+  '/noticias/$slug': typeof NoticiasSlugRoute
+  '/servicos/$slug': typeof ServicosSlugRoute
+  '/admin/': typeof AdminIndexRoute
+  '/blog/': typeof BlogIndexRoute
+  '/noticias/': typeof NoticiasIndexRoute
+  '/servicos/': typeof ServicosIndexRoute
+  '/admin/blog/$id': typeof AdminBlogIdRoute
+  '/admin/news/$id': typeof AdminNewsIdRoute
 }
-const AdminRouteWithChildren = AdminRoute._addFileChildren(adminRouteChildren)
-
-// Root children
-interface RootRouteChildren {
+export interface FileRoutesByTo {
+  '/': typeof IndexRoute
+  '/cases': typeof CasesRoute
+  '/contato': typeof ContatoRoute
+  '/cultura': typeof CulturaRoute
+  '/ia': typeof IaRoute
+  '/sobre': typeof SobreRoute
+  '/admin/audit': typeof AdminAuditRoute
+  '/admin/blog': typeof AdminBlogRouteWithChildren
+  '/admin/cases': typeof AdminCasesRoute
+  '/admin/import': typeof AdminImportRoute
+  '/admin/instagram': typeof AdminInstagramRoute
+  '/admin/login': typeof AdminLoginRoute
+  '/admin/news': typeof AdminNewsRouteWithChildren
+  '/admin/users': typeof AdminUsersRoute
+  '/api/chat': typeof ApiChatRoute
+  '/blog/$slug': typeof BlogSlugRoute
+  '/noticias/$slug': typeof NoticiasSlugRoute
+  '/servicos/$slug': typeof ServicosSlugRoute
+  '/admin': typeof AdminIndexRoute
+  '/blog': typeof BlogIndexRoute
+  '/noticias': typeof NoticiasIndexRoute
+  '/servicos': typeof ServicosIndexRoute
+  '/admin/blog/$id': typeof AdminBlogIdRoute
+  '/admin/news/$id': typeof AdminNewsIdRoute
+}
+export interface FileRoutesById {
+  __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
+  '/cases': typeof CasesRoute
+  '/contato': typeof ContatoRoute
+  '/cultura': typeof CulturaRoute
+  '/ia': typeof IaRoute
+  '/sobre': typeof SobreRoute
+  '/admin/audit': typeof AdminAuditRoute
+  '/admin/blog': typeof AdminBlogRouteWithChildren
+  '/admin/cases': typeof AdminCasesRoute
+  '/admin/import': typeof AdminImportRoute
+  '/admin/instagram': typeof AdminInstagramRoute
+  '/admin/login': typeof AdminLoginRoute
+  '/admin/news': typeof AdminNewsRouteWithChildren
+  '/admin/users': typeof AdminUsersRoute
+  '/api/chat': typeof ApiChatRoute
+  '/blog/$slug': typeof BlogSlugRoute
+  '/noticias/$slug': typeof NoticiasSlugRoute
+  '/servicos/$slug': typeof ServicosSlugRoute
+  '/admin/': typeof AdminIndexRoute
+  '/blog/': typeof BlogIndexRoute
+  '/noticias/': typeof NoticiasIndexRoute
+  '/servicos/': typeof ServicosIndexRoute
+  '/admin/blog/$id': typeof AdminBlogIdRoute
+  '/admin/news/$id': typeof AdminNewsIdRoute
+}
+export interface FileRouteTypes {
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/cases'
+    | '/contato'
+    | '/cultura'
+    | '/ia'
+    | '/sobre'
+    | '/admin/audit'
+    | '/admin/blog'
+    | '/admin/cases'
+    | '/admin/import'
+    | '/admin/instagram'
+    | '/admin/login'
+    | '/admin/news'
+    | '/admin/users'
+    | '/api/chat'
+    | '/blog/$slug'
+    | '/noticias/$slug'
+    | '/servicos/$slug'
+    | '/admin/'
+    | '/blog/'
+    | '/noticias/'
+    | '/servicos/'
+    | '/admin/blog/$id'
+    | '/admin/news/$id'
+  fileRoutesByTo: FileRoutesByTo
+  to:
+    | '/'
+    | '/cases'
+    | '/contato'
+    | '/cultura'
+    | '/ia'
+    | '/sobre'
+    | '/admin/audit'
+    | '/admin/blog'
+    | '/admin/cases'
+    | '/admin/import'
+    | '/admin/instagram'
+    | '/admin/login'
+    | '/admin/news'
+    | '/admin/users'
+    | '/api/chat'
+    | '/blog/$slug'
+    | '/noticias/$slug'
+    | '/servicos/$slug'
+    | '/admin'
+    | '/blog'
+    | '/noticias'
+    | '/servicos'
+    | '/admin/blog/$id'
+    | '/admin/news/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin'
+    | '/cases'
+    | '/contato'
+    | '/cultura'
+    | '/ia'
+    | '/sobre'
+    | '/admin/audit'
+    | '/admin/blog'
+    | '/admin/cases'
+    | '/admin/import'
+    | '/admin/instagram'
+    | '/admin/login'
+    | '/admin/news'
+    | '/admin/users'
+    | '/api/chat'
+    | '/blog/$slug'
+    | '/noticias/$slug'
+    | '/servicos/$slug'
+    | '/admin/'
+    | '/blog/'
+    | '/noticias/'
+    | '/servicos/'
+    | '/admin/blog/$id'
+    | '/admin/news/$id'
+  fileRoutesById: FileRoutesById
+}
+export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRouteWithChildren
   CasesRoute: typeof CasesRoute
   ContatoRoute: typeof ContatoRoute
   CulturaRoute: typeof CulturaRoute
@@ -95,198 +340,254 @@ interface RootRouteChildren {
   BlogIndexRoute: typeof BlogIndexRoute
   NoticiasIndexRoute: typeof NoticiasIndexRoute
   ServicosIndexRoute: typeof ServicosIndexRoute
-  AdminRoute: typeof AdminRouteWithChildren
-  AdminLoginRoute: typeof AdminLoginRoute
 }
+
+declare module '@tanstack/react-router' {
+  interface FileRoutesByPath {
+    '/sobre': {
+      id: '/sobre'
+      path: '/sobre'
+      fullPath: '/sobre'
+      preLoaderRoute: typeof SobreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ia': {
+      id: '/ia'
+      path: '/ia'
+      fullPath: '/ia'
+      preLoaderRoute: typeof IaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cultura': {
+      id: '/cultura'
+      path: '/cultura'
+      fullPath: '/cultura'
+      preLoaderRoute: typeof CulturaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contato': {
+      id: '/contato'
+      path: '/contato'
+      fullPath: '/contato'
+      preLoaderRoute: typeof ContatoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cases': {
+      id: '/cases'
+      path: '/cases'
+      fullPath: '/cases'
+      preLoaderRoute: typeof CasesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/servicos/': {
+      id: '/servicos/'
+      path: '/servicos'
+      fullPath: '/servicos/'
+      preLoaderRoute: typeof ServicosIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/noticias/': {
+      id: '/noticias/'
+      path: '/noticias'
+      fullPath: '/noticias/'
+      preLoaderRoute: typeof NoticiasIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog/': {
+      id: '/blog/'
+      path: '/blog'
+      fullPath: '/blog/'
+      preLoaderRoute: typeof BlogIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/servicos/$slug': {
+      id: '/servicos/$slug'
+      path: '/servicos/$slug'
+      fullPath: '/servicos/$slug'
+      preLoaderRoute: typeof ServicosSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/noticias/$slug': {
+      id: '/noticias/$slug'
+      path: '/noticias/$slug'
+      fullPath: '/noticias/$slug'
+      preLoaderRoute: typeof NoticiasSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog/$slug': {
+      id: '/blog/$slug'
+      path: '/blog/$slug'
+      fullPath: '/blog/$slug'
+      preLoaderRoute: typeof BlogSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/chat': {
+      id: '/api/chat'
+      path: '/api/chat'
+      fullPath: '/api/chat'
+      preLoaderRoute: typeof ApiChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/news': {
+      id: '/admin/news'
+      path: '/news'
+      fullPath: '/admin/news'
+      preLoaderRoute: typeof AdminNewsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/login': {
+      id: '/admin/login'
+      path: '/login'
+      fullPath: '/admin/login'
+      preLoaderRoute: typeof AdminLoginRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/instagram': {
+      id: '/admin/instagram'
+      path: '/instagram'
+      fullPath: '/admin/instagram'
+      preLoaderRoute: typeof AdminInstagramRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/import': {
+      id: '/admin/import'
+      path: '/import'
+      fullPath: '/admin/import'
+      preLoaderRoute: typeof AdminImportRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/cases': {
+      id: '/admin/cases'
+      path: '/cases'
+      fullPath: '/admin/cases'
+      preLoaderRoute: typeof AdminCasesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/blog': {
+      id: '/admin/blog'
+      path: '/blog'
+      fullPath: '/admin/blog'
+      preLoaderRoute: typeof AdminBlogRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/audit': {
+      id: '/admin/audit'
+      path: '/audit'
+      fullPath: '/admin/audit'
+      preLoaderRoute: typeof AdminAuditRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/news/$id': {
+      id: '/admin/news/$id'
+      path: '/$id'
+      fullPath: '/admin/news/$id'
+      preLoaderRoute: typeof AdminNewsIdRouteImport
+      parentRoute: typeof AdminNewsRoute
+    }
+    '/admin/blog/$id': {
+      id: '/admin/blog/$id'
+      path: '/$id'
+      fullPath: '/admin/blog/$id'
+      preLoaderRoute: typeof AdminBlogIdRouteImport
+      parentRoute: typeof AdminBlogRoute
+    }
+  }
+}
+
+interface AdminBlogRouteChildren {
+  AdminBlogIdRoute: typeof AdminBlogIdRoute
+}
+
+const AdminBlogRouteChildren: AdminBlogRouteChildren = {
+  AdminBlogIdRoute: AdminBlogIdRoute,
+}
+
+const AdminBlogRouteWithChildren = AdminBlogRoute._addFileChildren(
+  AdminBlogRouteChildren,
+)
+
+interface AdminNewsRouteChildren {
+  AdminNewsIdRoute: typeof AdminNewsIdRoute
+}
+
+const AdminNewsRouteChildren: AdminNewsRouteChildren = {
+  AdminNewsIdRoute: AdminNewsIdRoute,
+}
+
+const AdminNewsRouteWithChildren = AdminNewsRoute._addFileChildren(
+  AdminNewsRouteChildren,
+)
+
+interface AdminRouteChildren {
+  AdminAuditRoute: typeof AdminAuditRoute
+  AdminBlogRoute: typeof AdminBlogRouteWithChildren
+  AdminCasesRoute: typeof AdminCasesRoute
+  AdminImportRoute: typeof AdminImportRoute
+  AdminInstagramRoute: typeof AdminInstagramRoute
+  AdminLoginRoute: typeof AdminLoginRoute
+  AdminNewsRoute: typeof AdminNewsRouteWithChildren
+  AdminUsersRoute: typeof AdminUsersRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminAuditRoute: AdminAuditRoute,
+  AdminBlogRoute: AdminBlogRouteWithChildren,
+  AdminCasesRoute: AdminCasesRoute,
+  AdminImportRoute: AdminImportRoute,
+  AdminInstagramRoute: AdminInstagramRoute,
+  AdminLoginRoute: AdminLoginRoute,
+  AdminNewsRoute: AdminNewsRouteWithChildren,
+  AdminUsersRoute: AdminUsersRoute,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute,
-  CasesRoute,
-  ContatoRoute,
-  CulturaRoute,
-  IaRoute,
-  SobreRoute,
-  ApiChatRoute,
-  BlogSlugRoute,
-  NoticiasSlugRoute,
-  ServicosSlugRoute,
-  BlogIndexRoute,
-  NoticiasIndexRoute,
-  ServicosIndexRoute,
+  IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
-  AdminLoginRoute,
+  CasesRoute: CasesRoute,
+  ContatoRoute: ContatoRoute,
+  CulturaRoute: CulturaRoute,
+  IaRoute: IaRoute,
+  SobreRoute: SobreRoute,
+  ApiChatRoute: ApiChatRoute,
+  BlogSlugRoute: BlogSlugRoute,
+  NoticiasSlugRoute: NoticiasSlugRoute,
+  ServicosSlugRoute: ServicosSlugRoute,
+  BlogIndexRoute: BlogIndexRoute,
+  NoticiasIndexRoute: NoticiasIndexRoute,
+  ServicosIndexRoute: ServicosIndexRoute,
 }
-
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/cases'
-    | '/contato'
-    | '/cultura'
-    | '/ia'
-    | '/sobre'
-    | '/api/chat'
-    | '/blog/$slug'
-    | '/noticias/$slug'
-    | '/servicos/$slug'
-    | '/blog'
-    | '/noticias'
-    | '/servicos'
-    | '/admin'
-    | '/admin/login'
-    | '/admin/'
-    | '/admin/news'
-    | '/admin/news/$id'
-    | '/admin/blog'
-    | '/admin/blog/$id'
-    | '/admin/cases'
-    | '/admin/users'
-    | '/admin/audit'
-    | '/admin/instagram'
-    | '/admin/import'
-  fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/cases'
-    | '/contato'
-    | '/cultura'
-    | '/ia'
-    | '/sobre'
-    | '/api/chat'
-    | '/blog/$slug'
-    | '/noticias/$slug'
-    | '/servicos/$slug'
-    | '/blog'
-    | '/noticias'
-    | '/servicos'
-    | '/admin'
-    | '/admin/login'
-    | '/admin/'
-    | '/admin/news'
-    | '/admin/news/$id'
-    | '/admin/blog'
-    | '/admin/blog/$id'
-    | '/admin/cases'
-    | '/admin/users'
-    | '/admin/audit'
-    | '/admin/instagram'
-    | '/admin/import'
-  id:
-    | '__root__'
-    | '/'
-    | '/cases'
-    | '/contato'
-    | '/cultura'
-    | '/ia'
-    | '/sobre'
-    | '/api/chat'
-    | '/blog/$slug'
-    | '/noticias/$slug'
-    | '/servicos/$slug'
-    | '/blog/'
-    | '/noticias/'
-    | '/servicos/'
-    | '/admin'
-    | '/admin/login'
-    | '/admin/'
-    | '/admin/news'
-    | '/admin/news/$id'
-    | '/admin/blog'
-    | '/admin/blog/$id'
-    | '/admin/cases'
-    | '/admin/users'
-    | '/admin/audit'
-    | '/admin/instagram'
-    | '/admin/import'
-  fileRoutesById: FileRoutesById
-}
-
-export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/cases': typeof CasesRoute
-  '/contato': typeof ContatoRoute
-  '/cultura': typeof CulturaRoute
-  '/ia': typeof IaRoute
-  '/sobre': typeof SobreRoute
-  '/api/chat': typeof ApiChatRoute
-  '/blog/$slug': typeof BlogSlugRoute
-  '/noticias/$slug': typeof NoticiasSlugRoute
-  '/servicos/$slug': typeof ServicosSlugRoute
-  '/blog': typeof BlogIndexRoute
-  '/noticias': typeof NoticiasIndexRoute
-  '/servicos': typeof ServicosIndexRoute
-  '/admin': typeof AdminRouteWithChildren
-  '/admin/login': typeof AdminLoginRoute
-  '/admin/': typeof AdminIndexRoute
-  '/admin/news': typeof AdminNewsRoute
-  '/admin/news/$id': typeof AdminNewsIdRoute
-  '/admin/blog': typeof AdminBlogRoute
-  '/admin/blog/$id': typeof AdminBlogIdRoute
-  '/admin/cases': typeof AdminCasesRoute
-  '/admin/users': typeof AdminUsersRoute
-  '/admin/audit': typeof AdminAuditRoute
-  '/admin/instagram': typeof AdminInstagramRoute
-  '/admin/import': typeof AdminImportRoute
-}
-
-export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/cases': typeof CasesRoute
-  '/contato': typeof ContatoRoute
-  '/cultura': typeof CulturaRoute
-  '/ia': typeof IaRoute
-  '/sobre': typeof SobreRoute
-  '/api/chat': typeof ApiChatRoute
-  '/blog/$slug': typeof BlogSlugRoute
-  '/noticias/$slug': typeof NoticiasSlugRoute
-  '/servicos/$slug': typeof ServicosSlugRoute
-  '/blog': typeof BlogIndexRoute
-  '/noticias': typeof NoticiasIndexRoute
-  '/servicos': typeof ServicosIndexRoute
-  '/admin': typeof AdminRouteWithChildren
-  '/admin/login': typeof AdminLoginRoute
-  '/admin/': typeof AdminIndexRoute
-  '/admin/news': typeof AdminNewsRoute
-  '/admin/news/$id': typeof AdminNewsIdRoute
-  '/admin/blog': typeof AdminBlogRoute
-  '/admin/blog/$id': typeof AdminBlogIdRoute
-  '/admin/cases': typeof AdminCasesRoute
-  '/admin/users': typeof AdminUsersRoute
-  '/admin/audit': typeof AdminAuditRoute
-  '/admin/instagram': typeof AdminInstagramRoute
-  '/admin/import': typeof AdminImportRoute
-}
-
-export interface FileRoutesById {
-  __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/cases': typeof CasesRoute
-  '/contato': typeof ContatoRoute
-  '/cultura': typeof CulturaRoute
-  '/ia': typeof IaRoute
-  '/sobre': typeof SobreRoute
-  '/api/chat': typeof ApiChatRoute
-  '/blog/$slug': typeof BlogSlugRoute
-  '/noticias/$slug': typeof NoticiasSlugRoute
-  '/servicos/$slug': typeof ServicosSlugRoute
-  '/blog/': typeof BlogIndexRoute
-  '/noticias/': typeof NoticiasIndexRoute
-  '/servicos/': typeof ServicosIndexRoute
-  '/admin': typeof AdminRouteWithChildren
-  '/admin/login': typeof AdminLoginRoute
-  '/admin/': typeof AdminIndexRoute
-  '/admin/news': typeof AdminNewsRoute
-  '/admin/news/$id': typeof AdminNewsIdRoute
-  '/admin/blog': typeof AdminBlogRoute
-  '/admin/blog/$id': typeof AdminBlogIdRoute
-  '/admin/cases': typeof AdminCasesRoute
-  '/admin/users': typeof AdminUsersRoute
-  '/admin/audit': typeof AdminAuditRoute
-  '/admin/instagram': typeof AdminInstagramRoute
-  '/admin/import': typeof AdminImportRoute
-}
