@@ -1,61 +1,21 @@
-## Visão geral
+## Problema
 
-Expandir o site atual da Ditames Ambiental (hoje single-page) para um ecossistema multi-page com IA integrada, mantendo a identidade visual já implementada (verde #609430, Anton + Montserrat, padrão topográfico).
+O build do publish está falhando com 3 erros de parse em `src/components/admin/Toast.tsx`:
 
-## Arquitetura de rotas (TanStack Start)
+- `Duplicated export 'ToastContainer'`
+- `Duplicated export 'useToast'`
+- `Duplicated export 'Alert'`
 
-```
-src/routes/
-  __root.tsx              → Header fixo + Footer + WhatsApp flutuante
-  index.tsx               → Home (manter estrutura atual)
-  sobre.tsx               → Sobre a Ditames
-  servicos.tsx            → Hub de serviços
-  servicos.$slug.tsx      → Página individual de serviço (template master)
-  cases.tsx               → Grid de clientes/cases
-  cultura.tsx             → 5 pilares, Eudaimonia
-  ia.tsx                  → Inteligência Ambiental (chatbot)
-  contato.tsx             → Formulário + canais
-  api/chat.ts             → Endpoint streaming Lovable AI Gateway
-```
+O arquivo tem **330 linhas** e contém **duas versões do mesmo módulo concatenadas** — provavelmente resultado de um merge mal resolvido vindo do GitHub (outra IA editou em paralelo). As linhas 1–171 são a versão nova (com GIF da árvore nos erros). As linhas 173–330 são a versão antiga repetindo todos os mesmos exports (`ToastType`, `ToastItem`, `CONFIG`, `Toast`, `ToastContainer`, `useToast`, `Alert`).
 
-Cada rota terá `head()` próprio com title, description e og tags únicos.
+Por isso o Lovable não consegue publicar: o bundler interrompe antes mesmo de chegar ao deploy.
 
-## Componentes compartilhados
+## Correção
 
-- `src/components/site/Header.tsx` — nav fixa com menu (Home, Sobre, Serviços, Cases, Cultura, IA, Contato)
-- `src/components/site/Footer.tsx` — institucional completo
-- `src/components/site/WhatsAppFab.tsx` — botão flutuante fixo
-- `src/components/site/ServiceTemplate.tsx` — template master de serviço (Hero, O que é, Quando, Como atuamos, Etapas, Diferencial, CTA)
-- `src/lib/services.ts` — fonte única dos 12 serviços (slug, nome, ícone, descrição, quando, etapas) consumida pelo hub, páginas individuais e IA
+Remover as linhas 173–330 de `src/components/admin/Toast.tsx`, mantendo apenas a versão nova (1–171), que já contém todos os exports necessários (`ToastType`, `ToastItem`, `ToastContainer`, `useToast`, `Alert`).
 
-Esses são montados dentro de `__root.tsx` ao redor do `<Outlet />`.
+Depois rodar o build local para confirmar que volta a passar — aí o Publish funciona normalmente.
 
-## Template master de serviço
+## Por que aconteceu
 
-Todas as 12 páginas `/servicos/$slug` renderizam o mesmo `ServiceTemplate` lendo de `services.ts`. Estrutura fixa: Hero → O que é → Quando é necessário → Como a Ditames atua → Etapas (timeline) → Diferencial → CTA verde escuro.
-
-## Inteligência Ambiental (IA)
-
-- Página `/ia` com interface chat (AI Elements: Conversation, Message, PromptInput, Shimmer)
-- Sugestões iniciais como chips clicáveis (6 cenários do briefing)
-- Endpoint `src/routes/api/chat.ts` com `streamText` + Lovable AI Gateway (`google/gemini-3-flash-preview`)
-- System prompt restritivo: só recomenda serviços existentes no catálogo da Ditames (passado no prompt), tom simples, sem juridiquês, encaminha para `/servicos/$slug` ou WhatsApp
-- Conversa única em memória (sem persistência) — sem perguntas de threading, pois é triagem rápida
-
-## Conteúdos
-
-Vou redigir conteúdos institucionais coerentes para Sobre, Cultura (5 pilares + Eudaimonia), Cases (grid de placeholders setoriais até receber clientes reais), Contato. Os 12 serviços recebem conteúdo técnico padronizado.
-
-## Correções técnicas
-
-- Fix do erro runtime atual `Map is not a constructor`: ícone `Map` do lucide-react está sombreando `globalThis.Map`. Renomear import para `Map as MapIcon`.
-- Habilitar Lovable Cloud não é necessário (IA usa apenas o AI Gateway, sem persistência).
-
-## O que NÃO está incluso
-
-- Formulário de contato funcional com backend (apenas UI + mailto/WhatsApp)
-- Cases reais (uso placeholders setoriais)
-- Persistência de histórico do chat
-- Autenticação
-
-Confirma que posso seguir com tudo isso?
+Você está editando o repositório por várias IAs em paralelo. Quando duas alterações tocam o mesmo arquivo e o merge no GitHub não escolhe um lado limpo, o conteúdo das duas versões pode acabar empilhado no arquivo. Vale conferir, depois desta correção, se algum outro arquivo recente tem o mesmo sintoma (imports duplicados, funções declaradas duas vezes).
