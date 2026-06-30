@@ -26,11 +26,13 @@ import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
 import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
+import { Route as AdminResetPasswordRouteImport } from './routes/admin.reset-password'
 import { Route as AdminNewsRouteImport } from './routes/admin.news_'
 import { Route as AdminMediaRouteImport } from './routes/admin.media'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminInstagramRouteImport } from './routes/admin.instagram'
 import { Route as AdminImportRouteImport } from './routes/admin.import'
+import { Route as AdminForgotPasswordRouteImport } from './routes/admin.forgot-password'
 import { Route as AdminFaqRouteImport } from './routes/admin.faq'
 import { Route as AdminCasesRouteImport } from './routes/admin.cases_'
 import { Route as AdminBlogRouteImport } from './routes/admin.blog_'
@@ -124,6 +126,11 @@ const AdminSettingsRoute = AdminSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminResetPasswordRoute = AdminResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminNewsRoute = AdminNewsRouteImport.update({
   id: '/news_',
   path: '/news',
@@ -147,6 +154,11 @@ const AdminInstagramRoute = AdminInstagramRouteImport.update({
 const AdminImportRoute = AdminImportRouteImport.update({
   id: '/import',
   path: '/import',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminForgotPasswordRoute = AdminForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminFaqRoute = AdminFaqRouteImport.update({
@@ -197,11 +209,13 @@ export interface FileRoutesByFullPath {
   '/admin/blog': typeof AdminBlogRoute
   '/admin/cases': typeof AdminCasesRoute
   '/admin/faq': typeof AdminFaqRoute
+  '/admin/forgot-password': typeof AdminForgotPasswordRoute
   '/admin/import': typeof AdminImportRoute
   '/admin/instagram': typeof AdminInstagramRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/media': typeof AdminMediaRoute
   '/admin/news': typeof AdminNewsRoute
+  '/admin/reset-password': typeof AdminResetPasswordRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
   '/api/chat': typeof ApiChatRoute
@@ -227,11 +241,13 @@ export interface FileRoutesByTo {
   '/admin/blog': typeof AdminBlogRoute
   '/admin/cases': typeof AdminCasesRoute
   '/admin/faq': typeof AdminFaqRoute
+  '/admin/forgot-password': typeof AdminForgotPasswordRoute
   '/admin/import': typeof AdminImportRoute
   '/admin/instagram': typeof AdminInstagramRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/media': typeof AdminMediaRoute
   '/admin/news': typeof AdminNewsRoute
+  '/admin/reset-password': typeof AdminResetPasswordRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
   '/api/chat': typeof ApiChatRoute
@@ -259,11 +275,13 @@ export interface FileRoutesById {
   '/admin/blog_': typeof AdminBlogRoute
   '/admin/cases_': typeof AdminCasesRoute
   '/admin/faq': typeof AdminFaqRoute
+  '/admin/forgot-password': typeof AdminForgotPasswordRoute
   '/admin/import': typeof AdminImportRoute
   '/admin/instagram': typeof AdminInstagramRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/media': typeof AdminMediaRoute
   '/admin/news_': typeof AdminNewsRoute
+  '/admin/reset-password': typeof AdminResetPasswordRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
   '/api/chat': typeof ApiChatRoute
@@ -292,11 +310,13 @@ export interface FileRouteTypes {
     | '/admin/blog'
     | '/admin/cases'
     | '/admin/faq'
+    | '/admin/forgot-password'
     | '/admin/import'
     | '/admin/instagram'
     | '/admin/login'
     | '/admin/media'
     | '/admin/news'
+    | '/admin/reset-password'
     | '/admin/settings'
     | '/admin/users'
     | '/api/chat'
@@ -322,11 +342,13 @@ export interface FileRouteTypes {
     | '/admin/blog'
     | '/admin/cases'
     | '/admin/faq'
+    | '/admin/forgot-password'
     | '/admin/import'
     | '/admin/instagram'
     | '/admin/login'
     | '/admin/media'
     | '/admin/news'
+    | '/admin/reset-password'
     | '/admin/settings'
     | '/admin/users'
     | '/api/chat'
@@ -353,11 +375,13 @@ export interface FileRouteTypes {
     | '/admin/blog_'
     | '/admin/cases_'
     | '/admin/faq'
+    | '/admin/forgot-password'
     | '/admin/import'
     | '/admin/instagram'
     | '/admin/login'
     | '/admin/media'
     | '/admin/news_'
+    | '/admin/reset-password'
     | '/admin/settings'
     | '/admin/users'
     | '/api/chat'
@@ -511,6 +535,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminSettingsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/reset-password': {
+      id: '/admin/reset-password'
+      path: '/reset-password'
+      fullPath: '/admin/reset-password'
+      preLoaderRoute: typeof AdminResetPasswordRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/news_': {
       id: '/admin/news_'
       path: '/news'
@@ -544,6 +575,13 @@ declare module '@tanstack/react-router' {
       path: '/import'
       fullPath: '/admin/import'
       preLoaderRoute: typeof AdminImportRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/forgot-password': {
+      id: '/admin/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/admin/forgot-password'
+      preLoaderRoute: typeof AdminForgotPasswordRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/faq': {
@@ -603,11 +641,13 @@ interface AdminRouteChildren {
   AdminBlogRoute: typeof AdminBlogRoute
   AdminCasesRoute: typeof AdminCasesRoute
   AdminFaqRoute: typeof AdminFaqRoute
+  AdminForgotPasswordRoute: typeof AdminForgotPasswordRoute
   AdminImportRoute: typeof AdminImportRoute
   AdminInstagramRoute: typeof AdminInstagramRoute
   AdminLoginRoute: typeof AdminLoginRoute
   AdminMediaRoute: typeof AdminMediaRoute
   AdminNewsRoute: typeof AdminNewsRoute
+  AdminResetPasswordRoute: typeof AdminResetPasswordRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
   AdminUsersRoute: typeof AdminUsersRoute
   AdminIndexRoute: typeof AdminIndexRoute
@@ -621,11 +661,13 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminBlogRoute: AdminBlogRoute,
   AdminCasesRoute: AdminCasesRoute,
   AdminFaqRoute: AdminFaqRoute,
+  AdminForgotPasswordRoute: AdminForgotPasswordRoute,
   AdminImportRoute: AdminImportRoute,
   AdminInstagramRoute: AdminInstagramRoute,
   AdminLoginRoute: AdminLoginRoute,
   AdminMediaRoute: AdminMediaRoute,
   AdminNewsRoute: AdminNewsRoute,
+  AdminResetPasswordRoute: AdminResetPasswordRoute,
   AdminSettingsRoute: AdminSettingsRoute,
   AdminUsersRoute: AdminUsersRoute,
   AdminIndexRoute: AdminIndexRoute,

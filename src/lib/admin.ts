@@ -14,6 +14,32 @@ export async function signIn(email: string, password: string) {
   return data;
 }
 
+/**
+ * Envia e-mail de recuperação de senha via Supabase Auth.
+ * O e-mail contém um link que volta para /admin/reset-password com
+ * um token de sessão temporário, usado por updatePassword() para
+ * efetivamente trocar a senha.
+ *
+ * Requer: configuração de SMTP/template de e-mail no Supabase
+ * Dashboard (Authentication → Email Templates → Reset Password).
+ */
+export async function requestPasswordReset(email: string) {
+  const redirectTo = `${window.location.origin}/admin/reset-password`;
+  const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo });
+  if (error) throw error;
+}
+
+/**
+ * Define uma nova senha. Só funciona dentro da sessão de recuperação
+ * criada automaticamente pelo Supabase quando o usuário clica no link
+ * do e-mail (a sessão é estabelecida via hash da URL pelo próprio
+ * supabase-js ao carregar a página de destino).
+ */
+export async function updatePassword(newPassword: string) {
+  const { error } = await supabase.auth.updateUser({ password: newPassword });
+  if (error) throw error;
+}
+
 export async function signOut() {
   const { error } = await supabase.auth.signOut();
   if (error) throw error;

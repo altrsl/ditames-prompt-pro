@@ -12,7 +12,10 @@ import { useErrorModal, friendlyError } from "@/components/admin/Toast";
 
 export const Route = createFileRoute("/admin")({
   beforeLoad: async ({ location }) => {
-    if (location.pathname === "/admin/login") return;
+    // Rotas públicas de autenticação — acessíveis sem sessão ativa
+    const publicAuthRoutes = ["/admin/login", "/admin/forgot-password", "/admin/reset-password"];
+    if (publicAuthRoutes.includes(location.pathname)) return;
+
     const session = await getSession();
     if (!session) throw redirect({ to: "/admin/login" });
   },
@@ -39,14 +42,19 @@ function AdminLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { showError, ErrorModalContainer } = useErrorModal();
 
+  const isPublicAuthRoute = ["/admin/forgot-password", "/admin/reset-password"].includes(
+    router.state.location.pathname
+  );
+
   useEffect(() => {
+    if (isPublicAuthRoute) return; // sem sessão obrigatória nessas rotas
     getCurrentCmsUser()
       .then(setUser)
       .catch((e) => {
         const { title, message } = friendlyError(e);
         showError(title, message);
       });
-  }, []);
+  }, [isPublicAuthRoute]);
 
   const handleLogout = async () => {
     try {
@@ -61,6 +69,16 @@ function AdminLayout() {
   const visibleNav = NAV_ITEMS.filter(
     (item) => !item.permission || hasPermission(user, item.permission)
   );
+
+  // Telas de recuperação de senha não usam o layout do CMS (sem sidebar)
+  if (isPublicAuthRoute) {
+    return (
+      <>
+        <ErrorModalContainer />
+        <Outlet />
+      </>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#0f1410] flex">

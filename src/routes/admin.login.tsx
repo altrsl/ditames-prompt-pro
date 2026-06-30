@@ -1,4 +1,4 @@
-import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { createFileRoute, useRouter, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Leaf, Eye, EyeOff, Lock, Mail, Loader2 } from "lucide-react";
 import { signIn, getCurrentCmsUser, writeAuditLog } from "@/lib/admin";
@@ -70,9 +70,14 @@ function AdminLogin() {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-widest text-white/50 mb-2">
-              Senha
-            </label>
+            <div className="flex items-center justify-between mb-2">
+              <label className="block text-xs font-semibold uppercase tracking-widest text-white/50">
+                Senha
+              </label>
+              <Link to="/admin/forgot-password" className="text-xs text-primary hover:underline">
+                Esqueci minha senha
+              </Link>
+            </div>
             <div className="relative">
               <Lock size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30" />
               <input
