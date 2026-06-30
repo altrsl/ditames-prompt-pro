@@ -3,6 +3,7 @@
  */
 
 import { supabase } from "./supabase";
+import { DEFAULT_PERMISSIONS } from "./database.types";
 import type { CmsUserRow, CmsPermissions, AuditLogRow } from "./database.types";
 
 // ─── AUTH ─────────────────────────────────────────────────────
@@ -65,7 +66,7 @@ export async function getCurrentCmsUser(): Promise<CmsUserRow | null> {
         name: user.user_metadata?.name ?? user.email?.split("@")[0] ?? "Usuário",
         role,
         status: "active",
-        permissions: {},
+        permissions: DEFAULT_PERMISSIONS,
       })
       .select()
       .single();

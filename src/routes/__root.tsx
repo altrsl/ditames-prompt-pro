@@ -54,29 +54,42 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="max-w-md text-center">
-        <h1 className="text-xl font-semibold tracking-tight text-foreground">
-          Esta página não carregou
-        </h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Algo deu errado. Você pode tentar novamente ou voltar para o início.
-        </p>
-        <div className="mt-6 flex flex-wrap justify-center gap-2">
-          <button
-            onClick={() => {
-              router.invalidate();
-              reset();
-            }}
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-          >
-            Tentar novamente
-          </button>
-          <a
-            href="/"
-            className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
-          >
-            Voltar
-          </a>
+      <div className="max-w-sm w-full text-center rounded-2xl border border-red-200 bg-white shadow-xl overflow-hidden">
+        {/* Animação institucional */}
+        <div className="flex justify-center pt-8 pb-4 bg-red-50">
+          <img
+            src="/error-tree.gif"
+            alt="Erro"
+            style={{ width: 96, height: 96, objectFit: "contain" }}
+          />
+        </div>
+
+        <div className="px-6 pb-8">
+          <h1 className="text-lg font-bold text-red-600">
+            Esta página não carregou
+          </h1>
+          <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+            Não foi possível carregar este conteúdo. Isso pode acontecer por instabilidade de
+            conexão ou uma falha temporária no servidor.
+          </p>
+
+          <div className="mt-6 flex flex-wrap justify-center gap-2">
+            <button
+              onClick={() => {
+                router.invalidate();
+                reset();
+              }}
+              className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+            >
+              Tentar novamente
+            </button>
+            <a
+              href="/"
+              className="inline-flex items-center justify-center rounded-lg border border-border bg-background px-5 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-accent"
+            >
+              Voltar ao início
+            </a>
+          </div>
         </div>
       </div>
     </div>

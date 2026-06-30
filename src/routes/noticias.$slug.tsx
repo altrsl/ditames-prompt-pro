@@ -1,6 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowLeft, Calendar, MessageCircle } from "lucide-react";
 import { getNewsPost, getNewsPosts } from "@/lib/data";
+import type { NormalizedPost } from "@/lib/data";
 import { formatDate } from "@/lib/content";
 import { PostCard } from "@/components/site/PostCard";
 import { WHATSAPP_URL } from "@/lib/services";
@@ -87,7 +88,7 @@ function NoticiaPost() {
         <div className="container-x">
           <h2 className="font-display text-3xl uppercase text-ink">Outras notícias</h2>
           <div className="mt-8 grid gap-6 md:grid-cols-3">
-            {related.map((r) => (
+            {related.map((r: NormalizedPost) => (
               <PostCard key={r.slug} post={r} kind="noticias" />
             ))}
           </div>

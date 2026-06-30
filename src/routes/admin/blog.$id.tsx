@@ -1,7 +1,7 @@
 import { createFileRoute, useRouter, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, Save, Upload, X, Loader2 } from "lucide-react";
-import { getCurrentCmsUser, writeAuditLog } from "@/lib/admin";
+import { getCurrentCmsUser, writeAuditLog, hasPermission } from "@/lib/admin";
 import { supabase, storageUrl } from "@/lib/supabase";
 import { useToast, useErrorModal, Alert, friendlyError } from "@/components/admin/Toast";
 import type { CmsUserRow } from "@/lib/database.types";
@@ -98,6 +98,22 @@ function BlogEditor() {
 
   const handleSave = async () => {
     setInlineError(null);
+
+    if (!hasPermission(user, "create_edit_blog")) {
+      showError(
+        "Sem permissão",
+        isNew
+          ? "Você não possui permissão para criar novos artigos."
+          : "Você não possui permissão para editar este artigo."
+      );
+      return;
+    }
+
+    if (published && !hasPermission(user, "publish_archive_content")) {
+      showError("Sem permissão", "Você não possui permissão para publicar conteúdo. Salve como rascunho e peça a um responsável para publicar.");
+      return;
+    }
+
     if (!title.trim()) { setInlineError("O título é obrigatório."); return; }
     if (!body.trim()) { setInlineError("O conteúdo é obrigatório."); return; }
 

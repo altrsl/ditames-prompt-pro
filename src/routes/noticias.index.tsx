@@ -30,9 +30,9 @@ export const Route = createFileRoute("/noticias/")({
 
 function NoticiasIndex() {
   const { posts } = Route.useLoaderData();
-  const categories = ["Todas", ...Array.from(new Set(posts.map((p: NormalizedPost) => p.category)))];
+  const categories: string[] = ["Todas", ...Array.from(new Set<string>(posts.map((p: NormalizedPost) => p.category)))];
   const [active, setActive] = useState("Todas");
-  const filtered =
+  const filtered: NormalizedPost[] =
     active === "Todas" ? posts : posts.filter((p: NormalizedPost) => p.category === active);
 
   return (
@@ -66,7 +66,7 @@ function NoticiasIndex() {
           </div>
 
           <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {filtered.map((p) => (
+            {filtered.map((p: NormalizedPost) => (
               <PostCard key={p.slug} post={p} kind="noticias" />
             ))}
           </div>

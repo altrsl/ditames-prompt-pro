@@ -4,7 +4,7 @@
  */
 
 import { supabase } from "./supabase";
-import type { CaseRow, BlogPostRow, NewsPostRow, FaqRow, ServiceRow } from "./database.types";
+import type { CaseRow, BlogPostRow, NewsRow, FaqRow, ServiceRow, MediaCategory } from "./database.types";
 
 // ─── CASES ────────────────────────────────────────────────────
 
@@ -149,7 +149,7 @@ export async function getHomepageContent(): Promise<Record<string, string>> {
 
 // ─── MEDIA ────────────────────────────────────────────────────
 
-export async function getMediaByCategory(category: string) {
+export async function getMediaByCategory(category: MediaCategory) {
   const { data, error } = await supabase
     .from("media")
     .select("*")

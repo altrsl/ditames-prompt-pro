@@ -175,7 +175,7 @@ export async function updateNews(
 ): Promise<NewsRow> {
   const previous = await getNewsById(id);
 
-  const patch: Record<string, unknown> = { ...updates, updated_by: user.id };
+  const patch: Partial<Omit<NewsRow, "id" | "created_at" | "updated_at">> = { ...updates, updated_by: user.id };
   if (updates.status === "published" && previous?.status !== "published") {
     patch.published_at = new Date().toISOString();
   }

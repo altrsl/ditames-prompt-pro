@@ -1,4 +1,5 @@
-// Tipos gerados manualmente a partir do schema do Supabase Ditames
+// Tipos do schema Supabase Ditames — fonte única de verdade
+// Reflete exatamente as tabelas reais do banco (supabase/*.sql)
 // Execute `npx supabase gen types typescript` para regenerar automaticamente após migrações
 
 export type Json =
@@ -44,8 +45,16 @@ export const DEFAULT_PERMISSIONS: CmsPermissions = {
 
 export const DIRECTOR_PERMISSIONS: CmsPermissions = Object.fromEntries(
   Object.keys(DEFAULT_PERMISSIONS).map((k) => [k, true])
-) as CmsPermissions;
+) as unknown as CmsPermissions;
 
+// ─── ENUMS ───────────────────────────────────────────────────
+export type MediaCategory = "cases" | "blog" | "noticias" | "servicos" | "homepage" | "geral";
+export type ContentType = "text" | "html" | "image_id";
+export type CmsRole = "director" | "dev" | "editor" | "moderator" | "analyst";
+export type NewsStatus = "published" | "draft" | "archived";
+export type NewsSource = "manual" | "instagram";
+
+// ─── DATABASE (fonte única de verdade — espelha o SQL real) ───
 export interface Database {
   public: {
     Tables: {
@@ -56,18 +65,19 @@ export interface Database {
           created_at: string;
           updated_at: string;
           filename: string;
-          storage_path: string;         // caminho no bucket: "cases/logo-madefrahm.webp"
-          public_url: string;           // URL pública completa
+          storage_path: string;
+          public_url: string;
           alt_text: string | null;
-          category: MediaCategory;      // "cases" | "blog" | "noticias" | "servicos" | "homepage" | "geral"
+          category: MediaCategory;
           width: number | null;
           height: number | null;
           size_bytes: number | null;
           mime_type: string | null;
-          uploaded_by: string | null;   // auth.users.id
+          uploaded_by: string | null;
         };
-        Insert: Omit<Database["public"]["Tables"]["media"]["Row"], "id" | "created_at" | "updated_at">;
-        Update: Partial<Database["public"]["Tables"]["media"]["Insert"]>;
+        Insert: Partial<Omit<Database["public"]["Tables"]["media"]["Row"], "id" | "created_at" | "updated_at">> & Pick<Database["public"]["Tables"]["media"]["Row"], "filename" | "storage_path" | "public_url">;
+        Update: Partial<Omit<Database["public"]["Tables"]["media"]["Row"], "id" | "created_at" | "updated_at">>;
+        Relationships: [];
       };
 
       // ─── CASES ───────────────────────────────────────────────
@@ -79,42 +89,20 @@ export interface Database {
           name: string;
           sector: string;
           description: string | null;
-          logo_media_id: string | null; // FK → media.id
-          logo_url: string | null;      // URL direta (temporário enquanto não há logo oficial)
+          logo_media_id: string | null;
+          logo_url: string | null;
           published: boolean;
           order_index: number;
-          slug: string | null;          // para futura página individual
+          slug: string | null;
         };
-        Insert: Omit<Database["public"]["Tables"]["cases"]["Row"], "id" | "created_at" | "updated_at">;
-        Update: Partial<Database["public"]["Tables"]["cases"]["Insert"]>;
+        Insert: Partial<Omit<Database["public"]["Tables"]["cases"]["Row"], "id" | "created_at" | "updated_at">> & Pick<Database["public"]["Tables"]["cases"]["Row"], "name" | "sector">;
+        Update: Partial<Omit<Database["public"]["Tables"]["cases"]["Row"], "id" | "created_at" | "updated_at">>;
+        Relationships: [];
       };
 
       // ─── BLOG POSTS ──────────────────────────────────────────
+      // Arquitetura definitiva do blog. published: boolean controla visibilidade.
       blog_posts: {
-        Row: {
-          id: string;
-          created_at: string;
-          updated_at: string;
-          slug: string;
-          title: string;
-          excerpt: string;
-          body: string;                 // HTML ou Markdown
-          category: string;
-          read_time: string;
-          cover_media_id: string | null; // FK → media.id
-          cover_url: string | null;
-          published: boolean;
-          published_at: string | null;
-          author: string | null;
-          seo_title: string | null;
-          seo_description: string | null;
-        };
-        Insert: Omit<Database["public"]["Tables"]["blog_posts"]["Row"], "id" | "created_at" | "updated_at">;
-        Update: Partial<Database["public"]["Tables"]["blog_posts"]["Insert"]>;
-      };
-
-      // ─── NOTÍCIAS ────────────────────────────────────────────
-      news_posts: {
         Row: {
           id: string;
           created_at: string;
@@ -124,16 +112,53 @@ export interface Database {
           excerpt: string;
           body: string;
           category: string;
+          tags: string[];
           read_time: string;
           cover_media_id: string | null;
           cover_url: string | null;
+          gallery: string[];
           published: boolean;
           published_at: string | null;
+          author: string | null;
+          created_by: string | null;
+          updated_by: string | null;
           seo_title: string | null;
           seo_description: string | null;
         };
-        Insert: Omit<Database["public"]["Tables"]["news_posts"]["Row"], "id" | "created_at" | "updated_at">;
-        Update: Partial<Database["public"]["Tables"]["news_posts"]["Insert"]>;
+        Insert: Partial<Omit<Database["public"]["Tables"]["blog_posts"]["Row"], "id" | "created_at" | "updated_at">> & Pick<Database["public"]["Tables"]["blog_posts"]["Row"], "slug" | "title" | "excerpt">;
+        Update: Partial<Omit<Database["public"]["Tables"]["blog_posts"]["Row"], "id" | "created_at" | "updated_at">>;
+        Relationships: [];
+      };
+
+      // ─── NEWS (Notícias) ─────────────────────────────────────
+      // Arquitetura definitiva. status: enum controla visibilidade (não boolean).
+      // source distingue conteúdo manual de importações (Instagram, link externo).
+      news: {
+        Row: {
+          id: string;
+          created_at: string;
+          updated_at: string;
+          title: string;
+          content: string;
+          excerpt: string;
+          slug: string | null;
+          category: string;
+          cover_image: string | null;
+          images: string[];
+          source: NewsSource;
+          instagram_post_id: string | null;
+          instagram_url: string | null;
+          status: NewsStatus;
+          published_at: string | null;
+          read_time: string;
+          created_by: string | null;
+          updated_by: string | null;
+          seo_title: string | null;
+          seo_description: string | null;
+        };
+        Insert: Partial<Omit<Database["public"]["Tables"]["news"]["Row"], "id" | "created_at" | "updated_at">> & Pick<Database["public"]["Tables"]["news"]["Row"], "title" | "content">;
+        Update: Partial<Omit<Database["public"]["Tables"]["news"]["Row"], "id" | "created_at" | "updated_at">>;
+        Relationships: [];
       };
 
       // ─── FAQ ─────────────────────────────────────────────────
@@ -147,8 +172,9 @@ export interface Database {
           order_index: number;
           published: boolean;
         };
-        Insert: Omit<Database["public"]["Tables"]["faq"]["Row"], "id" | "created_at" | "updated_at">;
-        Update: Partial<Database["public"]["Tables"]["faq"]["Insert"]>;
+        Insert: Partial<Omit<Database["public"]["Tables"]["faq"]["Row"], "id" | "created_at" | "updated_at">> & Pick<Database["public"]["Tables"]["faq"]["Row"], "question" | "answer">;
+        Update: Partial<Omit<Database["public"]["Tables"]["faq"]["Row"], "id" | "created_at" | "updated_at">>;
+        Relationships: [];
       };
 
       // ─── SERVIÇOS ────────────────────────────────────────────
@@ -161,18 +187,19 @@ export interface Database {
           title: string;
           short: string;
           what_is: string;
-          when_needed: string[];        // array de strings
+          when_needed: string[];
           steps: string[];
           keywords: string[];
-          icon_name: string;            // nome do ícone Lucide
+          icon_name: string;
           cover_media_id: string | null;
           published: boolean;
           order_index: number;
           seo_title: string | null;
           seo_description: string | null;
         };
-        Insert: Omit<Database["public"]["Tables"]["services"]["Row"], "id" | "created_at" | "updated_at">;
-        Update: Partial<Database["public"]["Tables"]["services"]["Insert"]>;
+        Insert: Partial<Omit<Database["public"]["Tables"]["services"]["Row"], "id" | "created_at" | "updated_at">> & Pick<Database["public"]["Tables"]["services"]["Row"], "slug" | "title" | "short">;
+        Update: Partial<Omit<Database["public"]["Tables"]["services"]["Row"], "id" | "created_at" | "updated_at">>;
+        Relationships: [];
       };
 
       // ─── HOMEPAGE CONTENT ────────────────────────────────────
@@ -180,12 +207,50 @@ export interface Database {
         Row: {
           id: string;
           updated_at: string;
-          key: string;                  // ex: "hero_title", "hero_subtitle"
+          key: string;
           value: string;
-          type: ContentType;            // "text" | "html" | "image_id"
+          type: ContentType;
         };
-        Insert: Omit<Database["public"]["Tables"]["homepage_content"]["Row"], "id">;
-        Update: Partial<Database["public"]["Tables"]["homepage_content"]["Insert"]>;
+        Insert: Partial<Omit<Database["public"]["Tables"]["homepage_content"]["Row"], "id" | "updated_at">> & Pick<Database["public"]["Tables"]["homepage_content"]["Row"], "key" | "value">;
+        Update: Partial<Omit<Database["public"]["Tables"]["homepage_content"]["Row"], "id" | "updated_at">>;
+        Relationships: [];
+      };
+
+      // ─── CMS USERS ───────────────────────────────────────────
+      cms_users: {
+        Row: {
+          id: string;
+          created_at: string;
+          updated_at: string;
+          name: string;
+          email: string;
+          role: CmsRole;
+          status: "active" | "inactive";
+          permissions: CmsPermissions;
+        };
+        Insert: Partial<Omit<Database["public"]["Tables"]["cms_users"]["Row"], "created_at" | "updated_at">> & Pick<Database["public"]["Tables"]["cms_users"]["Row"], "id" | "name" | "email">;
+        Update: Partial<Omit<Database["public"]["Tables"]["cms_users"]["Row"], "created_at" | "updated_at">>;
+        Relationships: [];
+      };
+
+      // ─── AUDIT LOGS ──────────────────────────────────────────
+      audit_logs: {
+        Row: {
+          id: string;
+          created_at: string;
+          user_id: string | null;
+          user_name: string | null;
+          action: string;
+          module: string;
+          record_id: string | null;
+          field: string | null;
+          previous_value: string | null;
+          new_value: string | null;
+          metadata: Record<string, unknown>;
+        };
+        Insert: Partial<Omit<Database["public"]["Tables"]["audit_logs"]["Row"], "id" | "created_at">> & Pick<Database["public"]["Tables"]["audit_logs"]["Row"], "action" | "module">;
+        Update: Partial<Omit<Database["public"]["Tables"]["audit_logs"]["Row"], "id" | "created_at">>;
+        Relationships: [];
       };
     };
 
@@ -195,87 +260,30 @@ export interface Database {
     Enums: {
       media_category: MediaCategory;
       content_type: ContentType;
+      cms_role: CmsRole;
+      news_status: NewsStatus;
+      news_source: NewsSource;
     };
   };
 }
 
-export type MediaCategory =
-  | "cases"
-  | "blog"
-  | "noticias"
-  | "servicos"
-  | "homepage"
-  | "geral";
-
-export type ContentType = "text" | "html" | "image_id";
-
-// Tipos de conveniência
+// ─── TIPOS DE CONVENIÊNCIA (derivados do Database — fonte única) ───
 export type MediaRow = Database["public"]["Tables"]["media"]["Row"];
 export type CaseRow = Database["public"]["Tables"]["cases"]["Row"];
 export type BlogPostRow = Database["public"]["Tables"]["blog_posts"]["Row"];
-export type NewsPostRow = Database["public"]["Tables"]["news_posts"]["Row"];
+export type NewsRow = Database["public"]["Tables"]["news"]["Row"];
 export type FaqRow = Database["public"]["Tables"]["faq"]["Row"];
 export type ServiceRow = Database["public"]["Tables"]["services"]["Row"];
 export type HomepageContentRow = Database["public"]["Tables"]["homepage_content"]["Row"];
-
-// ─── TIPOS CMS ───────────────────────────────────────────────
-export type CmsRole = 'director' | 'dev' | 'editor' | 'moderator' | 'analyst';
-export type NewsStatus = 'published' | 'draft' | 'archived';
-export type NewsSource = 'manual' | 'instagram';
-
-export interface CmsUserRow {
-  id: string;
-  created_at: string;
-  updated_at: string;
-  name: string;
-  email: string;
-  role: CmsRole;
-  status: 'active' | 'inactive';
-  permissions: CmsPermissions;
-}
-
-export interface AuditLogRow {
-  id: string;
-  created_at: string;
-  user_id: string | null;
-  user_name: string | null;
-  action: string;
-  module: string;
-  record_id: string | null;
-  field: string | null;
-  previous_value: string | null;
-  new_value: string | null;
-  metadata: Record<string, unknown>;
-}
-
-export interface NewsRow {
-  id: string;
-  created_at: string;
-  updated_at: string;
-  title: string;
-  content: string;
-  excerpt: string;
-  slug: string | null;
-  category: string;
-  cover_image: string | null;
-  images: string[];
-  source: NewsSource;
-  instagram_post_id: string | null;
-  instagram_url: string | null;
-  status: NewsStatus;
-  published_at: string | null;
-  read_time: string;
-  created_by: string | null;
-  updated_by: string | null;
-  seo_title: string | null;
-  seo_description: string | null;
-}
+export type CmsUserRow = Database["public"]["Tables"]["cms_users"]["Row"];
+export type AuditLogRow = Database["public"]["Tables"]["audit_logs"]["Row"];
 
 // ─── PERMISSÕES PADRÃO POR ROLE ──────────────────────────────
-export const ROLE_DEFAULT_PERMISSIONS: Record<CmsRole, Partial<CmsPermissions>> = {
-  director: Object.fromEntries(Object.keys(DEFAULT_PERMISSIONS).map((k) => [k, true])) as CmsPermissions,
-  dev: Object.fromEntries(Object.keys(DEFAULT_PERMISSIONS).map((k) => [k, true])) as CmsPermissions,
+export const ROLE_DEFAULT_PERMISSIONS: Record<CmsRole, CmsPermissions> = {
+  director: { ...DIRECTOR_PERMISSIONS },
+  dev: { ...DIRECTOR_PERMISSIONS },
   editor: {
+    ...DEFAULT_PERMISSIONS,
     edit_homepage: true,
     edit_homepage_images: true,
     edit_cases: true,
@@ -283,41 +291,14 @@ export const ROLE_DEFAULT_PERMISSIONS: Record<CmsRole, Partial<CmsPermissions>> 
     create_edit_blog: true,
     create_edit_services: true,
     edit_seo: true,
-    publish_archive_content: false,
-    create_users: false,
-    edit_users: false,
-    remove_users: false,
-    manage_permissions: false,
-    view_audit_log: false,
   },
   moderator: {
-    edit_homepage: false,
-    edit_homepage_images: false,
-    edit_cases: false,
-    create_edit_news: false,
-    create_edit_blog: false,
-    create_edit_services: false,
-    edit_seo: false,
+    ...DEFAULT_PERMISSIONS,
     publish_archive_content: true,
-    create_users: false,
-    edit_users: false,
-    remove_users: false,
-    manage_permissions: false,
     view_audit_log: true,
   },
   analyst: {
-    edit_homepage: false,
-    edit_homepage_images: false,
-    edit_cases: false,
-    create_edit_news: false,
-    create_edit_blog: false,
-    create_edit_services: false,
-    edit_seo: false,
-    publish_archive_content: false,
-    create_users: false,
-    edit_users: false,
-    remove_users: false,
-    manage_permissions: false,
+    ...DEFAULT_PERMISSIONS,
     view_audit_log: true,
   },
 };

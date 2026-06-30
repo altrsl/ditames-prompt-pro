@@ -31,6 +31,9 @@ function AdminNews() {
   const { toast, ToastContainer } = useToast();
   const { showError, ErrorModalContainer } = useErrorModal();
 
+  const canEdit = hasPermission(user, "create_edit_news");
+  const canPublish = hasPermission(user, "publish_archive_content");
+
   async function load() {
     try {
       const u = await getCurrentCmsUser();

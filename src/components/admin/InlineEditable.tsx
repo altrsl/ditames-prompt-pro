@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import { useEditMode, useEditable } from "@/lib/edit-mode";
 import { supabase, storageUrl } from "@/lib/supabase";
+import type { MediaCategory } from "@/lib/database.types";
 
 // ─── TOOLTIP DE METADADOS ─────────────────────────────────────
 
@@ -154,7 +155,7 @@ interface ImageProps {
   module?: string;
   meta?: Meta;
   onRemove?: () => void;
-  folder?: string;             // pasta no Storage: "homepage", "cases", "blog"...
+  folder?: MediaCategory;      // pasta no Storage: "homepage", "cases", "blog"...
 }
 
 export function Image({

@@ -103,6 +103,22 @@ function NewsEditor() {
 
   const handleSave = async () => {
     setInlineError(null);
+
+    if (!hasPermission(user, "create_edit_news")) {
+      showError(
+        "Sem permissão",
+        isNew
+          ? "Você não possui permissão para criar novas publicações."
+          : "Você não possui permissão para editar esta publicação."
+      );
+      return;
+    }
+
+    if (status === "published" && !hasPermission(user, "publish_archive_content")) {
+      showError("Sem permissão", "Você não possui permissão para publicar conteúdo. Salve como rascunho e peça a um responsável para publicar.");
+      return;
+    }
+
     if (!title.trim()) { setInlineError("O título é obrigatório."); return; }
     if (!content.trim()) { setInlineError("O conteúdo é obrigatório."); return; }
 
