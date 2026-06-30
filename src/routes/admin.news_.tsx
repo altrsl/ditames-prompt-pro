@@ -6,7 +6,7 @@ import { listNews, publishNews, archiveNews, deleteNews } from "@/lib/news";
 import { useToast, useErrorModal, friendlyError } from "@/components/admin/Toast";
 import type { CmsUserRow, NewsRow, NewsStatus } from "@/lib/database.types";
 
-export const Route = createFileRoute("/admin/news_")({
+export const Route = createFileRoute("/admin/news")({
   component: AdminNews,
 });
 

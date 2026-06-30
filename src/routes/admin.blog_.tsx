@@ -6,7 +6,7 @@ import { supabase } from "@/lib/supabase";
 import { useToast, useErrorModal, friendlyError } from "@/components/admin/Toast";
 import type { CmsUserRow } from "@/lib/database.types";
 
-export const Route = createFileRoute("/admin/blog_")({
+export const Route = createFileRoute("/admin/blog")({
   component: AdminBlog,
 });
 
