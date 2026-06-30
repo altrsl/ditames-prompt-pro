@@ -59,9 +59,11 @@ export function EditModeProvider({ children }: { children: ReactNode }) {
 
   // Salva no banco e atualiza cache local
   const saveContent = useCallback(async (key: string, value: string, module = "homepage") => {
-    await supabase
+    const { error } = await supabase
       .from("homepage_content")
       .upsert({ key, value, type: "text" }, { onConflict: "key" });
+
+    if (error) throw error;
 
     setContent((prev) => ({ ...prev, [key]: value }));
 

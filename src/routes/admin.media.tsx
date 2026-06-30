@@ -56,6 +56,11 @@ function AdminMedia() {
     const file = e.target.files?.[0];
     if (!file || !user) return;
 
+    if (!hasPermission(user, "edit_homepage_images")) {
+      showError("Sem permissão", "Você não possui permissão para enviar arquivos de mídia.");
+      return;
+    }
+
     if (file.size > 10 * 1024 * 1024) {
       showError("Arquivo muito grande", "O limite é 10 MB. Reduza o tamanho da imagem e tente novamente.");
       return;

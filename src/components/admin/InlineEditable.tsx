@@ -24,7 +24,11 @@ import {
 } from "lucide-react";
 import { useEditMode, useEditable } from "@/lib/edit-mode";
 import { supabase, storageUrl } from "@/lib/supabase";
+import { useToast, useErrorModal, friendlyError } from "@/components/admin/Toast";
 import type { MediaCategory } from "@/lib/database.types";
+
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
+const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif", "image/svg+xml"];
 
 // ─── TOOLTIP DE METADADOS ─────────────────────────────────────
 
@@ -83,6 +87,8 @@ export function Text({
   const [draft, setDraft] = useState(value);
   const [saving, setSaving] = useState(false);
   const [hover, setHover] = useState(false);
+  const { toast, ToastContainer } = useToast();
+  const { showError, ErrorModalContainer } = useErrorModal();
 
   // Modo normal — renderiza igual ao original
   if (!editMode) {
@@ -91,10 +97,21 @@ export function Text({
 
   const handleSave = async () => {
     if (draft === value) { setEditing(false); return; }
+    if (!draft.trim()) {
+      showError("Texto vazio", "O campo não pode ficar em branco. Cancele ou digite um conteúdo.");
+      return;
+    }
     setSaving(true);
-    await save(draft);
-    setSaving(false);
-    setEditing(false);
+    try {
+      await save(draft);
+      toast.success("Texto atualizado!");
+      setEditing(false);
+    } catch (e) {
+      const { title, message } = friendlyError(e);
+      showError(title, message, handleSave);
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleCancel = () => { setDraft(value); setEditing(false); };
@@ -102,6 +119,8 @@ export function Text({
   if (editing) {
     return (
       <span className="relative inline-block w-full">
+        <ToastContainer />
+        <ErrorModalContainer />
         {multiline ? (
           <textarea autoFocus value={draft} onChange={(e) => setDraft(e.target.value)}
             className={`${className} w-full bg-primary/5 border-2 border-primary/60 rounded-lg
@@ -154,12 +173,11 @@ interface ImageProps {
   className?: string;
   module?: string;
   meta?: Meta;
-  onRemove?: () => void;
   folder?: MediaCategory;      // pasta no Storage: "homepage", "cases", "blog"...
 }
 
 export function Image({
-  k, fallback, alt, className = "", module, meta, onRemove, folder = "homepage",
+  k, fallback, alt, className = "", module, meta, folder = "homepage",
 }: ImageProps) {
   const { editMode, cmsUser } = useEditMode();
   const [value, save] = useEditable(k, fallback, module);
@@ -169,6 +187,8 @@ export function Image({
   const [uploading, setUploading] = useState(false);
   const [hover, setHover] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+  const { toast, ToastContainer } = useToast();
+  const { showError, ErrorModalContainer } = useErrorModal();
 
   if (!editMode) {
     return <img src={value} alt={alt} className={className} />;
@@ -176,29 +196,80 @@ export function Image({
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file || !cmsUser) return;
+    if (!file) return;
+
+    if (file.size > MAX_FILE_SIZE) {
+      showError("Arquivo muito grande", "O limite é 10 MB. Reduza o tamanho da imagem e tente novamente.");
+      return;
+    }
+    if (!ALLOWED_TYPES.includes(file.type)) {
+      showError("Formato não suportado", "Use imagens nos formatos JPG, PNG, WebP, SVG ou GIF.");
+      return;
+    }
+    if (!cmsUser) {
+      showError("Sessão expirada", "Faça login novamente para continuar editando.");
+      return;
+    }
+
     setUploading(true);
     setShowMenu(false);
     try {
       const ext = file.name.split(".").pop();
       const path = `${folder}/${Date.now()}.${ext}`;
-      const { error } = await supabase.storage.from("media").upload(path, file);
-      if (error) throw error;
+      const { error: upErr } = await supabase.storage.from("media").upload(path, file);
+      if (upErr) throw upErr;
       const url = storageUrl("media", path);
-      await supabase.from("media").insert({
+
+      const { error: mediaErr } = await supabase.from("media").insert({
         filename: file.name, storage_path: path, public_url: url,
         category: folder, size_bytes: file.size, mime_type: file.type,
         uploaded_by: cmsUser.id,
       });
+      if (mediaErr) throw mediaErr;
+
       await save(url);
-    } finally { setUploading(false); }
+      toast.success("Imagem substituída com sucesso!");
+    } catch (e) {
+      const { title, message } = friendlyError(e);
+      showError(title, message, () => fileRef.current?.click());
+    } finally {
+      setUploading(false);
+      if (fileRef.current) fileRef.current.value = "";
+    }
   };
 
   const handleUrl = async () => {
-    if (!urlDraft.trim()) return;
-    await save(urlDraft.trim());
-    setShowUrl(false);
-    setUrlDraft("");
+    if (!urlDraft.trim()) {
+      showError("URL vazia", "Informe uma URL válida de imagem.");
+      return;
+    }
+    try {
+      new URL(urlDraft.trim());
+    } catch {
+      showError("URL inválida", "Verifique se o endereço está correto e começa com http:// ou https://");
+      return;
+    }
+    try {
+      await save(urlDraft.trim());
+      toast.success("Imagem atualizada!");
+      setShowUrl(false);
+      setUrlDraft("");
+    } catch (e) {
+      const { title, message } = friendlyError(e);
+      showError(title, message);
+    }
+  };
+
+  const handleRemove = async () => {
+    if (!confirm("Remover esta imagem? Ela voltará à imagem padrão do site.")) return;
+    setShowMenu(false);
+    try {
+      await save(fallback);
+      toast.success("Imagem removida.", "Voltou à imagem padrão.");
+    } catch (e) {
+      const { title, message } = friendlyError(e);
+      showError(title, message);
+    }
   };
 
   return (
@@ -207,6 +278,9 @@ export function Image({
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => { setHover(false); setShowMenu(false); }}
     >
+      <ToastContainer />
+      <ErrorModalContainer />
+
       <img
         src={value}
         alt={alt}
@@ -233,20 +307,18 @@ export function Image({
           <button onClick={() => { setShowMenu(false); fileRef.current?.click(); }}
             className="flex w-full items-center gap-2 px-4 py-2.5 text-xs text-white/70
               hover:text-white hover:bg-white/5 transition-colors">
-            <Upload size={12} /> Upload de arquivo
+            <Upload size={12} /> Substituir imagem
           </button>
           <button onClick={() => { setShowMenu(false); setShowUrl(true); }}
             className="flex w-full items-center gap-2 px-4 py-2.5 text-xs text-white/70
               hover:text-white hover:bg-white/5 transition-colors">
             <Link2 size={12} /> Inserir URL
           </button>
-          {onRemove && (
-            <button onClick={() => { setShowMenu(false); onRemove(); }}
-              className="flex w-full items-center gap-2 px-4 py-2.5 text-xs text-red-400
-                hover:bg-red-500/10 transition-colors border-t border-white/5">
-              <Trash2 size={12} /> Remover
-            </button>
-          )}
+          <button onClick={handleRemove}
+            className="flex w-full items-center gap-2 px-4 py-2.5 text-xs text-red-400
+              hover:bg-red-500/10 transition-colors border-t border-white/5">
+            <Trash2 size={12} /> Remover (voltar ao padrão)
+          </button>
           <button onClick={() => setShowMenu(false)}
             className="flex w-full items-center gap-2 px-4 py-2.5 text-xs text-white/30
               hover:text-white hover:bg-white/5 transition-colors border-t border-white/5">
@@ -279,7 +351,7 @@ export function Image({
       )}
 
       {hover && <Tooltip meta={meta} />}
-      <input ref={fileRef} type="file" accept="image/*" onChange={handleUpload} className="hidden" />
+      <input ref={fileRef} type="file" accept={ALLOWED_TYPES.join(",")} onChange={handleUpload} className="hidden" />
     </div>
   );
 }
