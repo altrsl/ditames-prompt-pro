@@ -1,10 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { Send, Brain, MessageCircle, Sparkles, ExternalLink } from "lucide-react";
 import { PageHero } from "@/components/site/PageHero";
 import { WHATSAPP_URL } from "@/lib/services";
+import { useErrorModal, friendlyError } from "@/components/admin/Toast";
 
 export const Route = createFileRoute("/ia")({
   head: () => ({
@@ -27,12 +28,67 @@ const suggestions = [
   "Não sei qual serviço preciso",
 ];
 
+// Extrai texto puro de uma mensagem do useChat (remove markdown de links/negrito)
+function plainText(parts: { type: string; text?: string }[]): string {
+  return parts
+    .map((p) => (p.type === "text" ? p.text ?? "" : ""))
+    .join("")
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1") // [label](url) → label
+    .replace(/\*\*([^*]+)\*\*/g, "$1");       // **bold** → bold
+}
+
+// Gera um resumo curto da conversa para encaminhar ao especialista via WhatsApp
+function buildWhatsAppSummary(messages: { role: string; parts: { type: string; text?: string }[] }[]): string {
+  if (messages.length === 0) {
+    return "Olá, vim pelo site da Ditames e gostaria de falar com um especialista.";
+  }
+
+  const userMessages = messages
+    .filter((m) => m.role === "user")
+    .map((m) => plainText(m.parts))
+    .filter(Boolean);
+
+  const lastAssistant = [...messages].reverse().find((m) => m.role === "assistant");
+  const assistantSummary = lastAssistant ? plainText(lastAssistant.parts) : "";
+
+  let summary = "Olá! Conversei com a Recepcionista Ambiental do site e gostaria de continuar com um especialista.\n\n";
+
+  if (userMessages.length > 0) {
+    summary += `Minha situação: ${userMessages[0].slice(0, 200)}\n\n`;
+  }
+  if (assistantSummary) {
+    summary += `Última orientação recebida: ${assistantSummary.slice(0, 300)}`;
+  }
+
+  // WhatsApp tem limite prático de URL — garante uma mensagem segura
+  return summary.slice(0, 700);
+}
+
+function getWhatsAppUrlWithSummary(messages: { role: string; parts: { type: string; text?: string }[] }[]): string {
+  const summary = buildWhatsAppSummary(messages);
+  const base = WHATSAPP_URL.split("?")[0];
+  return `${base}?text=${encodeURIComponent(summary)}`;
+}
+
 function IAPage() {
   const [transport] = useState(() => new DefaultChatTransport({ api: "/api/chat" }));
-  const { messages, sendMessage, status } = useChat({ transport });
+  const { messages, sendMessage, status, error } = useChat({ transport });
   const [input, setInput] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const whatsappUrl = useMemo(() => getWhatsAppUrlWithSummary(messages), [messages]);
+  const { showError, ErrorModalContainer } = useErrorModal();
+
+  useEffect(() => {
+    if (error) {
+      const { title, message } = friendlyError(error);
+      showError(
+        title || "Não foi possível conversar agora",
+        message || "A Recepcionista Ambiental está indisponível no momento. Fale com a gente pelo WhatsApp.",
+      );
+    }
+  }, [error]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -50,6 +106,7 @@ function IAPage() {
 
   return (
     <>
+      <ErrorModalContainer />
       <PageHero
         eyebrow="Recepcionista Digital"
         title={<>Olá! Posso te ajudar a <span className="text-primary">entender seu caso?</span></>}
@@ -73,9 +130,14 @@ function IAPage() {
                 <li>4. Vai direto para a página do serviço ou WhatsApp.</li>
               </ol>
             </div>
-            <a href={WHATSAPP_URL} className="btn-outline w-full">
+            <a href={whatsappUrl} className="btn-outline w-full">
               <MessageCircle size={16} /> Prefiro falar com humano
             </a>
+            {messages.length > 0 && (
+              <p className="text-xs text-muted-foreground text-center -mt-2">
+                Sua conversa será resumida e enviada junto.
+              </p>
+            )}
           </aside>
 
           {/* Chat */}
