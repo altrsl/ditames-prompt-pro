@@ -216,6 +216,25 @@ export interface Database {
         Relationships: [];
       };
 
+      // ─── CONTACTS (Formulário de Contato) ──────────────────────
+      contacts: {
+        Row: {
+          id: string;
+          created_at: string;
+          name: string;
+          email: string;
+          phone: string | null;
+          service: string | null;
+          message: string;
+          source: string;
+          status: "new" | "contacted" | "closed";
+          forwarded_to_whatsapp: boolean;
+        };
+        Insert: Partial<Omit<Database["public"]["Tables"]["contacts"]["Row"], "id" | "created_at">> & Pick<Database["public"]["Tables"]["contacts"]["Row"], "name" | "email" | "message">;
+        Update: Partial<Omit<Database["public"]["Tables"]["contacts"]["Row"], "id" | "created_at">>;
+        Relationships: [];
+      };
+
       // ─── SETTINGS (Configurações do site) ─────────────────────
       settings: {
         Row: {
@@ -292,6 +311,7 @@ export type FaqRow = Database["public"]["Tables"]["faq"]["Row"];
 export type ServiceRow = Database["public"]["Tables"]["services"]["Row"];
 export type HomepageContentRow = Database["public"]["Tables"]["homepage_content"]["Row"];
 export type SettingsRow = Database["public"]["Tables"]["settings"]["Row"];
+export type ContactRow = Database["public"]["Tables"]["contacts"]["Row"];
 export type CmsUserRow = Database["public"]["Tables"]["cms_users"]["Row"];
 export type AuditLogRow = Database["public"]["Tables"]["audit_logs"]["Row"];
 

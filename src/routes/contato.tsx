@@ -1,8 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Phone, MessageCircle, Mail, MapPin, Send } from "lucide-react";
+import { Phone, MessageCircle, Mail, MapPin, Send, Loader2, CheckCircle2 } from "lucide-react";
 import { PageHero } from "@/components/site/PageHero";
 import { WHATSAPP_URL } from "@/lib/services";
+import { supabase } from "@/lib/supabase";
+import { useErrorModal, friendlyError } from "@/components/admin/Toast";
 
 export const Route = createFileRoute("/contato")({
   head: () => ({
@@ -18,19 +20,80 @@ export const Route = createFileRoute("/contato")({
 
 function ContatoPage() {
   const [sent, setSent] = useState(false);
+  const [sending, setSending] = useState(false);
+  const { showError, ErrorModalContainer } = useErrorModal();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const data = new FormData(e.currentTarget);
-    const nome = data.get("nome");
-    const msg = data.get("mensagem");
-    const body = encodeURIComponent(`Olá, sou ${nome}. ${msg}`);
-    window.location.href = `${WHATSAPP_URL}&text=${body}`;
+    const form = e.currentTarget;
+    const data = new FormData(form);
+    const nome = String(data.get("nome") ?? "").trim();
+    const email = String(data.get("email") ?? "").trim();
+    const telefone = String(data.get("telefone") ?? "").trim();
+    const servico = String(data.get("servico") ?? "").trim();
+    const mensagem = String(data.get("mensagem") ?? "").trim();
+
+    if (!nome || !email || !mensagem) {
+      showError("Campos obrigatórios", "Preencha nome, e-mail e mensagem antes de enviar.");
+      return;
+    }
+
+    setSending(true);
+    let persisted = false;
+
+    try {
+      const { error } = await supabase.from("contacts").insert({
+        name: nome,
+        email,
+        phone: telefone || null,
+        service: servico || null,
+        message: mensagem,
+        source: "site_form",
+        forwarded_to_whatsapp: true,
+      });
+      if (error) throw error;
+      persisted = true;
+    } catch (e) {
+      // Não bloqueia o envio por WhatsApp mesmo se a persistência falhar —
+      // o contato ainda chega ao especialista, só não fica registrado no CMS.
+      console.error("[contato] falha ao persistir contato:", e);
+    }
+
+    // Monta a mensagem completa, agora incluindo TODOS os campos preenchidos
+    // (antes: email, telefone e serviço eram coletados e descartados)
+    const linhas = [
+      `Olá, sou ${nome}.`,
+      email && `E-mail: ${email}`,
+      telefone && `Telefone: ${telefone}`,
+      servico && servico !== "Não sei qual preciso" && `Serviço de interesse: ${servico}`,
+      "",
+      mensagem,
+    ].filter(Boolean);
+
+    const body = encodeURIComponent(linhas.join("\n"));
+
     setSent(true);
+    form.reset();
+
+    // Abre em nova aba — antes usava window.location.href, que navegava
+    // a aba inteira para fora do site (comportamento destrutivo e
+    // inconsistente com os outros links de WhatsApp da própria página,
+    // que já abrem normalmente como link).
+    window.open(`${WHATSAPP_URL.split("?")[0]}?text=${body}`, "_blank", "noopener,noreferrer");
+
+    if (!persisted) {
+      showError(
+        "Mensagem enviada, mas não registrada",
+        "Sua mensagem foi encaminhada para o WhatsApp, mas não conseguimos salvar uma cópia no nosso sistema. Se possível, confirme o envio por lá."
+      );
+    }
+
+    setSending(false);
   };
 
   return (
     <>
+      <ErrorModalContainer />
       <PageHero
         eyebrow="Vamos conversar"
         title={<>Pronto para resolver seu <span className="text-primary">desafio ambiental?</span></>}
@@ -133,12 +196,13 @@ function ContatoPage() {
                 className="mt-2 w-full rounded-lg border border-border bg-background px-4 py-3 text-sm focus:border-primary focus:outline-none resize-none"
               />
             </div>
-            <button type="submit" className="btn-primary w-full">
-              <Send size={16} /> Enviar via WhatsApp
+            <button type="submit" disabled={sending} className="btn-primary w-full disabled:opacity-50">
+              {sending ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
+              {sending ? "Enviando…" : "Enviar via WhatsApp"}
             </button>
             {sent && (
-              <p className="text-sm text-primary text-center">
-                Abrindo WhatsApp...
+              <p className="flex items-center justify-center gap-2 text-sm text-primary text-center">
+                <CheckCircle2 size={15} /> Mensagem enviada! O WhatsApp foi aberto em uma nova aba.
               </p>
             )}
           </form>
