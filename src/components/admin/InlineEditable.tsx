@@ -25,6 +25,7 @@ import {
 import { useEditMode, useEditable } from "@/lib/edit-mode";
 import { supabase, storageUrl } from "@/lib/supabase";
 import { useToast, useErrorModal, friendlyError } from "@/components/admin/Toast";
+import { downloadImageToStorage, friendlyImageDownloadError } from "@/lib/image-download";
 import type { MediaCategory } from "@/lib/database.types";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
@@ -238,6 +239,8 @@ export function Image({
     }
   };
 
+  const [downloadingUrl, setDownloadingUrl] = useState(false);
+
   const handleUrl = async () => {
     if (!urlDraft.trim()) {
       showError("URL vazia", "Informe uma URL válida de imagem.");
@@ -249,14 +252,26 @@ export function Image({
       showError("URL inválida", "Verifique se o endereço está correto e começa com http:// ou https://");
       return;
     }
+    if (!cmsUser) {
+      showError("Sessão expirada", "Faça login novamente para continuar editando.");
+      return;
+    }
+
+    setDownloadingUrl(true);
     try {
-      await save(urlDraft.trim());
-      toast.success("Imagem atualizada!");
+      // Baixa a imagem de verdade e armazena no nosso Storage —
+      // nunca salvamos a URL externa diretamente (frágil: depende
+      // do site de origem permanecer no ar e permitir hotlink).
+      const downloaded = await downloadImageToStorage(urlDraft.trim(), folder, cmsUser.id);
+      await save(downloaded.url);
+      toast.success("Imagem baixada e salva com sucesso!");
       setShowUrl(false);
       setUrlDraft("");
     } catch (e) {
-      const { title, message } = friendlyError(e);
+      const { title, message } = friendlyImageDownloadError(e);
       showError(title, message);
+    } finally {
+      setDownloadingUrl(false);
     }
   };
 
@@ -331,19 +346,20 @@ export function Image({
       {showUrl && (
         <div className="absolute top-full left-0 right-0 z-[10000] mt-2 bg-[#1a2118]
           border border-white/10 rounded-xl p-3 shadow-xl">
-          <input autoFocus type="url" value={urlDraft}
+          <input autoFocus type="url" value={urlDraft} disabled={downloadingUrl}
             onChange={(e) => setUrlDraft(e.target.value)}
             onKeyDown={(e) => { if (e.key === "Enter") handleUrl(); if (e.key === "Escape") setShowUrl(false); }}
             placeholder="https://..."
             className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2
-              text-xs text-white placeholder-white/20 focus:outline-none focus:border-primary/60" />
+              text-xs text-white placeholder-white/20 focus:outline-none focus:border-primary/60 disabled:opacity-50" />
+          <p className="text-[10px] text-white/30 mt-1.5">A imagem será baixada e salva no nosso sistema.</p>
           <div className="flex gap-2 mt-2">
-            <button onClick={handleUrl}
-              className="flex-1 rounded-lg bg-primary py-1.5 text-xs font-semibold text-white hover:opacity-90">
-              Aplicar
+            <button onClick={handleUrl} disabled={downloadingUrl}
+              className="flex-1 rounded-lg bg-primary py-1.5 text-xs font-semibold text-white hover:opacity-90 disabled:opacity-50">
+              {downloadingUrl ? "Baixando…" : "Aplicar"}
             </button>
-            <button onClick={() => setShowUrl(false)}
-              className="rounded-lg border border-white/10 px-3 py-1.5 text-xs text-white/40 hover:text-white">
+            <button onClick={() => setShowUrl(false)} disabled={downloadingUrl}
+              className="rounded-lg border border-white/10 px-3 py-1.5 text-xs text-white/40 hover:text-white disabled:opacity-50">
               <X size={11} />
             </button>
           </div>
