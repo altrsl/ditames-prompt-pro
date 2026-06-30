@@ -35,6 +35,7 @@ import { Route as AdminInstagramRouteImport } from './routes/admin.instagram'
 import { Route as AdminImportRouteImport } from './routes/admin.import'
 import { Route as AdminForgotPasswordRouteImport } from './routes/admin.forgot-password'
 import { Route as AdminFaqRouteImport } from './routes/admin.faq'
+import { Route as AdminContactsRouteImport } from './routes/admin.contacts'
 import { Route as AdminCasesRouteImport } from './routes/admin.cases_'
 import { Route as AdminBlogRouteImport } from './routes/admin.blog_'
 import { Route as AdminAuditRouteImport } from './routes/admin.audit'
@@ -172,6 +173,11 @@ const AdminFaqRoute = AdminFaqRouteImport.update({
   path: '/faq',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminContactsRoute = AdminContactsRouteImport.update({
+  id: '/contacts',
+  path: '/contacts',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminCasesRoute = AdminCasesRouteImport.update({
   id: '/cases_',
   path: '/cases',
@@ -214,6 +220,7 @@ export interface FileRoutesByFullPath {
   '/admin/audit': typeof AdminAuditRoute
   '/admin/blog': typeof AdminBlogRoute
   '/admin/cases': typeof AdminCasesRoute
+  '/admin/contacts': typeof AdminContactsRoute
   '/admin/faq': typeof AdminFaqRoute
   '/admin/forgot-password': typeof AdminForgotPasswordRoute
   '/admin/import': typeof AdminImportRoute
@@ -247,6 +254,7 @@ export interface FileRoutesByTo {
   '/admin/audit': typeof AdminAuditRoute
   '/admin/blog': typeof AdminBlogRoute
   '/admin/cases': typeof AdminCasesRoute
+  '/admin/contacts': typeof AdminContactsRoute
   '/admin/faq': typeof AdminFaqRoute
   '/admin/forgot-password': typeof AdminForgotPasswordRoute
   '/admin/import': typeof AdminImportRoute
@@ -282,6 +290,7 @@ export interface FileRoutesById {
   '/admin/audit': typeof AdminAuditRoute
   '/admin/blog_': typeof AdminBlogRoute
   '/admin/cases_': typeof AdminCasesRoute
+  '/admin/contacts': typeof AdminContactsRoute
   '/admin/faq': typeof AdminFaqRoute
   '/admin/forgot-password': typeof AdminForgotPasswordRoute
   '/admin/import': typeof AdminImportRoute
@@ -318,6 +327,7 @@ export interface FileRouteTypes {
     | '/admin/audit'
     | '/admin/blog'
     | '/admin/cases'
+    | '/admin/contacts'
     | '/admin/faq'
     | '/admin/forgot-password'
     | '/admin/import'
@@ -351,6 +361,7 @@ export interface FileRouteTypes {
     | '/admin/audit'
     | '/admin/blog'
     | '/admin/cases'
+    | '/admin/contacts'
     | '/admin/faq'
     | '/admin/forgot-password'
     | '/admin/import'
@@ -385,6 +396,7 @@ export interface FileRouteTypes {
     | '/admin/audit'
     | '/admin/blog_'
     | '/admin/cases_'
+    | '/admin/contacts'
     | '/admin/faq'
     | '/admin/forgot-password'
     | '/admin/import'
@@ -610,6 +622,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminFaqRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/contacts': {
+      id: '/admin/contacts'
+      path: '/contacts'
+      fullPath: '/admin/contacts'
+      preLoaderRoute: typeof AdminContactsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/cases_': {
       id: '/admin/cases_'
       path: '/cases'
@@ -659,6 +678,7 @@ interface AdminRouteChildren {
   AdminAuditRoute: typeof AdminAuditRoute
   AdminBlogRoute: typeof AdminBlogRoute
   AdminCasesRoute: typeof AdminCasesRoute
+  AdminContactsRoute: typeof AdminContactsRoute
   AdminFaqRoute: typeof AdminFaqRoute
   AdminForgotPasswordRoute: typeof AdminForgotPasswordRoute
   AdminImportRoute: typeof AdminImportRoute
@@ -680,6 +700,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminAuditRoute: AdminAuditRoute,
   AdminBlogRoute: AdminBlogRoute,
   AdminCasesRoute: AdminCasesRoute,
+  AdminContactsRoute: AdminContactsRoute,
   AdminFaqRoute: AdminFaqRoute,
   AdminForgotPasswordRoute: AdminForgotPasswordRoute,
   AdminImportRoute: AdminImportRoute,
