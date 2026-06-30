@@ -3,7 +3,7 @@ import { Plus, Pencil, Trash2, Eye, Archive } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getCurrentCmsUser, hasPermission } from "@/lib/admin";
 import { supabase } from "@/lib/supabase";
-import { useToast } from "@/components/admin/Toast";
+import { useToast, useErrorModal, friendlyError } from "@/components/admin/Toast";
 import type { CmsUserRow } from "@/lib/database.types";
 
 export const Route = createFileRoute("/admin/blog")({
@@ -17,6 +17,7 @@ function AdminBlog() {
   const [posts, setPosts] = useState<BlogRow[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast, ToastContainer } = useToast();
+  const { showError, ErrorModalContainer } = useErrorModal();
 
   async function load() {
     try {
@@ -25,8 +26,9 @@ function AdminBlog() {
       const { data, error } = await supabase.from("blog_posts").select("id, title, category, published, published_at, created_at").order("created_at", { ascending: false });
       if (error) throw error;
       setPosts((data ?? []) as BlogRow[]);
-    } catch {
-      toast.error("Erro ao carregar artigos", "Verifique sua conexão e recarregue a página.");
+    } catch (e) {
+      const { title, message } = friendlyError(e);
+      showError(title, message, load);
     } finally {
       setLoading(false);
     }
@@ -41,7 +43,10 @@ function AdminBlog() {
       if (error) throw error;
       toast.success("Artigo removido.");
       load();
-    } catch { toast.error("Erro ao remover", "Tente novamente."); }
+    } catch (e) {
+      const { title, message } = friendlyError(e);
+      showError(title, message);
+    }
   };
 
   const handleToggle = async (post: BlogRow) => {
@@ -53,7 +58,10 @@ function AdminBlog() {
       if (error) throw error;
       toast.success(!post.published ? "Artigo publicado!" : "Artigo despublicado.", !post.published ? "Já está visível no blog." : "Movido para rascunho.");
       load();
-    } catch { toast.error("Erro ao alterar status", "Tente novamente."); }
+    } catch (e) {
+      const { title, message } = friendlyError(e);
+      showError(title, message);
+    }
   };
 
   const canEdit = hasPermission(user, "create_edit_blog");
@@ -61,6 +69,7 @@ function AdminBlog() {
   return (
     <div className="p-6 md:p-8 max-w-5xl mx-auto">
       <ToastContainer />
+      <ErrorModalContainer />
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-xl font-bold text-white">Blog</h1>

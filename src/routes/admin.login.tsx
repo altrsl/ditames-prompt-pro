@@ -1,8 +1,8 @@
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { useState } from "react";
 import { Leaf, Eye, EyeOff, Lock, Mail, Loader2 } from "lucide-react";
-import { signIn, getCurrentCmsUser } from "@/lib/admin";
-import { writeAuditLog } from "@/lib/admin";
+import { signIn, getCurrentCmsUser, writeAuditLog } from "@/lib/admin";
+import { friendlyError } from "@/components/admin/Toast";
 
 export const Route = createFileRoute("/admin/login")({
   component: AdminLogin,
@@ -20,30 +20,19 @@ function AdminLogin() {
     e.preventDefault();
     setError(null);
     setLoading(true);
-
     try {
       await signIn(email, password);
       const user = await getCurrentCmsUser();
-
       if (user && user.status !== "active") {
-        setError("Sua conta está inativa. Entre em contato com o administrador.");
+        setError("Sua conta está inativa. Entre em contato com o administrador do sistema.");
         setLoading(false);
         return;
       }
-
       await writeAuditLog({ user, action: "login", module: "users", metadata: { email } });
       router.navigate({ to: "/admin" });
-    } catch (e: any) {
-      const msg = e?.message ?? "";
-      if (msg.includes("Invalid login") || msg.includes("invalid_credentials")) {
-        setError("E-mail ou senha incorretos. Verifique seus dados e tente novamente.");
-      } else if (msg.includes("Email not confirmed")) {
-        setError("E-mail ainda não confirmado. Verifique sua caixa de entrada.");
-      } else if (msg.includes("Too many requests")) {
-        setError("Muitas tentativas. Aguarde alguns minutos antes de tentar novamente.");
-      } else {
-        setError("Erro ao entrar. Tente novamente ou contate o suporte.");
-      }
+    } catch (e) {
+      const { message } = friendlyError(e);
+      setError(message);
     } finally {
       setLoading(false);
     }

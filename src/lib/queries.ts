@@ -68,13 +68,15 @@ export async function getBlogCategories(): Promise<string[]> {
   return [...new Set(data?.map((p) => p.category) ?? [])];
 }
 
-// ─── NOTÍCIAS ─────────────────────────────────────────────────
+// ─── NOTÍCIAS (tabela: news) ──────────────────────────────────
+// IMPORTANTE: a tabela "news_posts" está obsoleta.
+// Todas as queries de notícias usam a tabela "news" com status enum.
 
-export async function getNewsPosts(limit?: number): Promise<NewsPostRow[]> {
+export async function getNewsPosts(limit?: number) {
   let query = supabase
-    .from("news_posts")
+    .from("news")
     .select("*")
-    .eq("published", true)
+    .eq("status", "published")
     .order("published_at", { ascending: false });
 
   if (limit) query = query.limit(limit);
@@ -84,12 +86,12 @@ export async function getNewsPosts(limit?: number): Promise<NewsPostRow[]> {
   return data ?? [];
 }
 
-export async function getNewsPostBySlug(slug: string): Promise<NewsPostRow | null> {
+export async function getNewsPostBySlug(slug: string) {
   const { data, error } = await supabase
-    .from("news_posts")
+    .from("news")
     .select("*")
     .eq("slug", slug)
-    .eq("published", true)
+    .eq("status", "published")
     .single();
 
   if (error) return null;

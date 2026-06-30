@@ -67,6 +67,10 @@ create table if not exists blog_posts (
 );
 
 -- ─── TABELA: news_posts ──────────────────────────────────────
+-- ─── TABELA: news_posts (OBSOLETA — substituída por "news") ──
+-- Esta tabela foi mantida apenas para compatibilidade durante a migração.
+-- Use a tabela "news" do cms-schema.sql para todas as operações.
+-- Execute supabase/unify-news.sql para migrar dados e adicionar colunas de compatibilidade.
 create table if not exists news_posts (
   id               uuid primary key default uuid_generate_v4(),
   created_at       timestamptz not null default now(),

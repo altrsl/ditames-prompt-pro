@@ -1,9 +1,12 @@
 /**
- * Ditames — Data Layer
+ * Ditames — Data Layer (UNIFICADO)
  *
- * Busca dados do Supabase e normaliza para o formato usado pelo frontend.
- * Se o Supabase retornar vazio ou erro, usa os dados hardcoded como fallback
- * para garantir que o site nunca quebra.
+ * ARQUITETURA DE TABELAS:
+ *   - notícias → tabela "news"  (status: 'published'|'draft'|'archived', fonte: manual|instagram)
+ *   - blog     → tabela "blog_posts" (published: boolean)
+ *
+ * Todas as queries públicas e do CMS usam exatamente estas tabelas.
+ * Fallback para arrays vazios quando banco não retorna dados.
  */
 
 import { supabase } from "./supabase";
@@ -12,7 +15,7 @@ import type { Post } from "./content";
 
 // ─── TIPOS NORMALIZADOS ───────────────────────────────────────
 
-export type NormalizedPost = Post; // mesmo formato do content.ts
+export type NormalizedPost = Post;
 
 export type NormalizedCase = {
   id: string;
@@ -30,11 +33,11 @@ export type NormalizedFaqItem = {
   order: number;
 };
 
-// ─── HELPERS ─────────────────────────────────────────────────
+// ─── HELPER ──────────────────────────────────────────────────
 
-function isoFromSupabase(ts: string | null): string {
+function isoToDate(ts: string | null): string {
   if (!ts) return new Date().toISOString().split("T")[0];
-  return ts.split("T")[0]; // "2026-06-10T00:00:00" → "2026-06-10"
+  return ts.split("T")[0];
 }
 
 // ─── CASES ───────────────────────────────────────────────────
@@ -73,14 +76,14 @@ export async function getCases(): Promise<NormalizedCase[]> {
 // ─── FAQ ─────────────────────────────────────────────────────
 
 const FALLBACK_FAQ: NormalizedFaqItem[] = [
-  { id: "1", order: 1, question: "Ganhei uma multa ambiental. O que devo fazer?", answer: "O primeiro passo é entender a origem e o embasamento legal da multa. A Ditames pode analisar o auto de infração, identificar as obrigações envolvidas e orientar sobre as possibilidades de defesa administrativa, regularização ou cumprimento de exigências. Cada situação é única e merece análise técnica especializada." },
-  { id: "2", order: 2, question: "Como regularizar uma área rural?", answer: "A regularização de áreas rurais envolve etapas como Cadastro Ambiental Rural (CAR), georreferenciamento, identificação de Áreas de Preservação Permanente (APP), Reserva Legal e, quando necessário, Programa de Regularização Ambiental (PRA). A Ditames conduz todo esse processo de forma integrada." },
-  { id: "3", order: 3, question: "O que acontece quando existe uma APP na propriedade?", answer: "Áreas de Preservação Permanente (APP) possuem restrições de uso estabelecidas pelo Código Florestal. Dependendo da situação — margem de rio, encosta, nascente — é necessário identificar as obrigações, avaliar passivos e, quando cabível, conduzir processos de recuperação ou regularização junto aos órgãos ambientais." },
-  { id: "4", order: 4, question: "Como funciona um licenciamento ambiental?", answer: "O licenciamento ambiental é o processo pelo qual o poder público autoriza a instalação e operação de atividades potencialmente poluidoras. Dependendo da atividade e do porte, pode envolver Licença Prévia (LP), Licença de Instalação (LI) e Licença de Operação (LO). A Ditames elabora os estudos necessários e conduz todo o processo junto aos órgãos competentes." },
-  { id: "5", order: 5, question: "Preciso de autorização para suprimir vegetação?", answer: "Sim, em grande parte dos casos. A supressão de vegetação nativa exige autorização do órgão ambiental estadual ou federal, dependendo do bioma e da área. A Ditames realiza o levantamento florístico, elabora o requerimento técnico e acompanha o processo de aprovação." },
-  { id: "6", order: 6, question: "Tenho uma nascente na propriedade. O que fazer?", answer: "Nascentes são protegidas pelo Código Florestal e exigem manutenção de faixa de APP ao redor. É necessário identificá-las corretamente no Cadastro Ambiental Rural e, caso haja ocupação indevida, conduzir processo de regularização. A Ditames realiza o mapeamento e orienta sobre as obrigações legais." },
-  { id: "7", order: 7, question: "Como regularizar um loteamento?", answer: "A regularização de loteamentos envolve aspectos fundiários, urbanísticos e ambientais. A Ditames apoia desde a elaboração de estudos ambientais e topográficos até a aprovação nos órgãos competentes, passando por licenciamento, elaboração de projetos de drenagem, arborização e demais exigências técnicas." },
-  { id: "8", order: 8, question: "Como saber se minha atividade precisa de licenciamento?", answer: "A necessidade de licenciamento depende da natureza, porte e localização da atividade. A Ditames realiza o enquadramento da atividade na legislação estadual e federal e orienta sobre os procedimentos necessários, evitando surpresas e autuações futuras." },
+  { id: "1", order: 1, question: "Ganhei uma multa ambiental. O que devo fazer?", answer: "O primeiro passo é entender a origem e o embasamento legal da multa. A Ditames pode analisar o auto de infração, identificar as obrigações envolvidas e orientar sobre as possibilidades de defesa administrativa, regularização ou cumprimento de exigências." },
+  { id: "2", order: 2, question: "Como regularizar uma área rural?", answer: "A regularização envolve CAR, georreferenciamento, identificação de APP, Reserva Legal e PRA quando necessário. A Ditames conduz todo esse processo de forma integrada." },
+  { id: "3", order: 3, question: "O que acontece quando existe uma APP na propriedade?", answer: "APP possui restrições de uso pelo Código Florestal. É necessário identificar as obrigações, avaliar passivos e conduzir processos de recuperação ou regularização junto aos órgãos ambientais." },
+  { id: "4", order: 4, question: "Como funciona um licenciamento ambiental?", answer: "O licenciamento autoriza a instalação e operação de atividades potencialmente poluidoras. Pode envolver LP, LI e LO. A Ditames elabora os estudos e conduz o processo junto aos órgãos competentes." },
+  { id: "5", order: 5, question: "Preciso de autorização para suprimir vegetação?", answer: "Sim, na maioria dos casos. A Ditames realiza o levantamento florístico, elabora o requerimento técnico e acompanha o processo de aprovação." },
+  { id: "6", order: 6, question: "Tenho uma nascente na propriedade. O que fazer?", answer: "Nascentes são protegidas pelo Código Florestal e exigem faixa de APP. A Ditames realiza o mapeamento e orienta sobre as obrigações legais." },
+  { id: "7", order: 7, question: "Como regularizar um loteamento?", answer: "A Ditames apoia desde os estudos ambientais até a aprovação nos órgãos competentes, passando por licenciamento e demais exigências técnicas." },
+  { id: "8", order: 8, question: "Como saber se minha atividade precisa de licenciamento?", answer: "A Ditames realiza o enquadramento da atividade na legislação estadual e federal e orienta sobre os procedimentos necessários." },
 ];
 
 export async function getFaq(): Promise<NormalizedFaqItem[]> {
@@ -104,7 +107,8 @@ export async function getFaq(): Promise<NormalizedFaqItem[]> {
   }
 }
 
-// ─── BLOG ────────────────────────────────────────────────────
+// ─── BLOG (tabela: blog_posts) ────────────────────────────────
+// blog_posts usa: published (boolean), body (text), cover_url
 
 export async function getBlogPosts(limit?: number): Promise<NormalizedPost[]> {
   try {
@@ -126,10 +130,10 @@ export async function getBlogPosts(limit?: number): Promise<NormalizedPost[]> {
       slug: p.slug,
       title: p.title,
       excerpt: p.excerpt,
-      date: isoFromSupabase(p.published_at),
+      date: isoToDate(p.published_at),
       category: p.category,
       readTime: p.read_time,
-      body: [p.body], // body vem como string única do Supabase
+      body: [p.body ?? ""],
     }));
   } catch {
     return limit ? fallbackBlog.slice(0, limit) : fallbackBlog;
@@ -153,10 +157,10 @@ export async function getBlogPost(slug: string): Promise<NormalizedPost | null> 
       slug: data.slug,
       title: data.title,
       excerpt: data.excerpt,
-      date: isoFromSupabase(data.published_at),
+      date: isoToDate(data.published_at),
       category: data.category,
       readTime: data.read_time,
-      body: [data.body],
+      body: [data.body ?? ""],
     };
   } catch {
     return fallbackBlog.find((p) => p.slug === slug) ?? null;
@@ -173,21 +177,21 @@ export async function getBlogCategories(): Promise<string[]> {
     if (error || !data || data.length === 0) {
       return [...new Set(fallbackBlog.map((p) => p.category))];
     }
-
     return [...new Set(data.map((p) => p.category))];
   } catch {
     return [...new Set(fallbackBlog.map((p) => p.category))];
   }
 }
 
-// ─── NOTÍCIAS ────────────────────────────────────────────────
+// ─── NOTÍCIAS (tabela: news) ──────────────────────────────────
+// news usa: status ('published'|'draft'|'archived'), content (text), cover_image
 
 export async function getNewsPosts(limit?: number): Promise<NormalizedPost[]> {
   try {
     let query = supabase
-      .from("news_posts")
-      .select("slug, title, excerpt, published_at, category, read_time, body")
-      .eq("published", true)
+      .from("news")
+      .select("slug, title, excerpt, published_at, category, read_time, content")
+      .eq("status", "published")
       .order("published_at", { ascending: false });
 
     if (limit) query = query.limit(limit);
@@ -199,13 +203,13 @@ export async function getNewsPosts(limit?: number): Promise<NormalizedPost[]> {
     }
 
     return data.map((p) => ({
-      slug: p.slug,
+      slug: p.slug ?? "",
       title: p.title,
       excerpt: p.excerpt,
-      date: isoFromSupabase(p.published_at),
+      date: isoToDate(p.published_at),
       category: p.category,
       readTime: p.read_time,
-      body: [p.body],
+      body: [p.content ?? ""],
     }));
   } catch {
     return limit ? fallbackNews.slice(0, limit) : fallbackNews;
@@ -215,10 +219,10 @@ export async function getNewsPosts(limit?: number): Promise<NormalizedPost[]> {
 export async function getNewsPost(slug: string): Promise<NormalizedPost | null> {
   try {
     const { data, error } = await supabase
-      .from("news_posts")
-      .select("slug, title, excerpt, published_at, category, read_time, body")
+      .from("news")
+      .select("slug, title, excerpt, published_at, category, read_time, content")
       .eq("slug", slug)
-      .eq("published", true)
+      .eq("status", "published")
       .single();
 
     if (error || !data) {
@@ -226,13 +230,13 @@ export async function getNewsPost(slug: string): Promise<NormalizedPost | null> 
     }
 
     return {
-      slug: data.slug,
+      slug: data.slug ?? slug,
       title: data.title,
       excerpt: data.excerpt,
-      date: isoFromSupabase(data.published_at),
+      date: isoToDate(data.published_at),
       category: data.category,
       readTime: data.read_time,
-      body: [data.body],
+      body: [data.content ?? ""],
     };
   } catch {
     return fallbackNews.find((p) => p.slug === slug) ?? null;
@@ -242,14 +246,13 @@ export async function getNewsPost(slug: string): Promise<NormalizedPost | null> 
 export async function getNewsCategories(): Promise<string[]> {
   try {
     const { data, error } = await supabase
-      .from("news_posts")
+      .from("news")
       .select("category")
-      .eq("published", true);
+      .eq("status", "published");
 
     if (error || !data || data.length === 0) {
       return [...new Set(fallbackNews.map((p) => p.category))];
     }
-
     return [...new Set(data.map((p) => p.category))];
   } catch {
     return [...new Set(fallbackNews.map((p) => p.category))];
