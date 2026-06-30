@@ -136,6 +136,8 @@ function BlogEditor() {
           read_time: readTime,
           seo_title: seoTitle || null,
           seo_description: seoDesc || null,
+          created_by: user?.id ?? null,
+          updated_by: user?.id ?? null,
         });
         if (error) throw error;
       } else {
@@ -147,6 +149,7 @@ function BlogEditor() {
           read_time: readTime,
           seo_title: seoTitle || null,
           seo_description: seoDesc || null,
+          updated_by: user?.id ?? null,
         }).eq("id", id);
         if (error) throw error;
       }

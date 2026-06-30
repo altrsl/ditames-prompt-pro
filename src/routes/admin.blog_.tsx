@@ -6,7 +6,7 @@ import { supabase } from "@/lib/supabase";
 import { useToast, useErrorModal, friendlyError } from "@/components/admin/Toast";
 import type { CmsUserRow } from "@/lib/database.types";
 
-export const Route = createFileRoute("/admin/blog")({
+export const Route = createFileRoute("/admin/blog_")({
   component: AdminBlog,
 });
 
@@ -37,6 +37,10 @@ function AdminBlog() {
   useEffect(() => { load(); }, []);
 
   const handleDelete = async (id: string) => {
+    if (!hasPermission(user, "create_edit_blog")) {
+      showError("Sem permissão", "Você não possui permissão para remover artigos.");
+      return;
+    }
     if (!confirm("Remover este artigo permanentemente?")) return;
     try {
       const { error } = await supabase.from("blog_posts").delete().eq("id", id);
@@ -50,6 +54,10 @@ function AdminBlog() {
   };
 
   const handleToggle = async (post: BlogRow) => {
+    if (!hasPermission(user, "publish_archive_content")) {
+      showError("Sem permissão", "Você não possui permissão para publicar ou arquivar artigos.");
+      return;
+    }
     try {
       const { error } = await supabase.from("blog_posts").update({
         published: !post.published,
@@ -65,6 +73,7 @@ function AdminBlog() {
   };
 
   const canEdit = hasPermission(user, "create_edit_blog");
+  const canPublish = hasPermission(user, "publish_archive_content");
 
   return (
     <div className="p-6 md:p-8 max-w-5xl mx-auto">
@@ -109,9 +118,11 @@ function AdminBlog() {
                     <Pencil size={14} />
                   </Link>
                 )}
-                <button onClick={() => handleToggle(p)} className={`flex h-8 w-8 items-center justify-center rounded-lg text-white/40 transition-colors ${p.published ? "hover:text-yellow-400 hover:bg-yellow-400/10" : "hover:text-green-400 hover:bg-green-400/10"}`}>
-                  {p.published ? <Archive size={14} /> : <Eye size={14} />}
-                </button>
+                {canPublish && (
+                  <button onClick={() => handleToggle(p)} className={`flex h-8 w-8 items-center justify-center rounded-lg text-white/40 transition-colors ${p.published ? "hover:text-yellow-400 hover:bg-yellow-400/10" : "hover:text-green-400 hover:bg-green-400/10"}`}>
+                    {p.published ? <Archive size={14} /> : <Eye size={14} />}
+                  </button>
+                )}
                 {canEdit && (
                   <button onClick={() => handleDelete(p.id)} className="flex h-8 w-8 items-center justify-center rounded-lg text-white/40 hover:text-red-400 hover:bg-red-400/10">
                     <Trash2 size={14} />
