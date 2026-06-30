@@ -4,7 +4,7 @@
 
 import { supabase } from "./supabase";
 import { DEFAULT_PERMISSIONS } from "./database.types";
-import type { CmsUserRow, CmsPermissions, AuditLogRow } from "./database.types";
+import type { CmsUserRow, CmsPermissions, AuditLogRow, CmsRole } from "./database.types";
 
 // ─── AUTH ─────────────────────────────────────────────────────
 
@@ -91,15 +91,14 @@ export async function createCmsUser(
   email: string,
   password: string,
   name: string,
-  permissions: CmsPermissions
+  permissions: CmsPermissions,
+  role: CmsRole = "dev"
 ): Promise<CmsUserRow> {
-  // 1. Cria no Supabase Auth
-  const { data: authData, error: authError } = await supabase.auth.admin
-    ? // Se tiver service role use admin API; senão use signUp (funciona no client)
-      { data: null, error: new Error("use-signup") }
-    : { data: null, error: new Error("use-signup") };
+  // IMPORTANTE: supabase.auth.signUp() no client troca a sessão ativa
+  // para a do usuário recém-criado. Para não deslogar o admin que está
+  // criando o usuário, guardamos a sessão atual e a restauramos depois.
+  const { data: { session: adminSession } } = await supabase.auth.getSession();
 
-  // Fallback: invite via signUp (o usuário receberá email de confirmação)
   const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
     email,
     password,
@@ -108,14 +107,21 @@ export async function createCmsUser(
   if (signUpError) throw signUpError;
   if (!signUpData.user) throw new Error("Erro ao criar usuário");
 
-  // 2. Insere na tabela cms_users
+  // Restaura a sessão do admin imediatamente, antes de qualquer outra operação
+  if (adminSession) {
+    await supabase.auth.setSession({
+      access_token: adminSession.access_token,
+      refresh_token: adminSession.refresh_token,
+    });
+  }
+
   const { data, error } = await supabase
     .from("cms_users")
     .insert({
       id: signUpData.user.id,
       email,
       name,
-      role: "dev",
+      role,
       permissions,
       status: "active",
     })
@@ -141,6 +147,21 @@ export async function updateCmsUser(
 
 export async function deactivateCmsUser(userId: string) {
   return updateCmsUser(userId, { status: "inactive" });
+}
+
+/**
+ * Remove o usuário do CMS (tabela cms_users).
+ *
+ * LIMITAÇÃO CONHECIDA: a remoção completa da conta de autenticação
+ * (Supabase Auth) requer a Admin API com service role key, que não
+ * está disponível no client por segurança. Esta função remove o
+ * acesso ao painel (cms_users), mas a conta de login no Supabase Auth
+ * permanece e precisa ser removida manualmente pelo Diretor no
+ * Supabase Dashboard → Authentication → Users, se necessário.
+ */
+export async function deleteCmsUser(userId: string): Promise<void> {
+  const { error } = await supabase.from("cms_users").delete().eq("id", userId);
+  if (error) throw error;
 }
 
 // ─── PERMISSÕES ──────────────────────────────────────────────
