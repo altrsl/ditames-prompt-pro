@@ -22,6 +22,7 @@ export interface ImportedContent {
   source_url: string;
   detected_date: string | null;
   raw_meta: Record<string, string>;
+  extraction_failed?: boolean; // true quando o proxy de leitura falhou e caímos no fallback
 }
 
 // ─── DETECÇÃO DE ORIGEM ───────────────────────────────────────
@@ -61,8 +62,12 @@ export async function importFromUrl(url: string): Promise<ImportedContent> {
     if (!res.ok) throw new Error(`Erro ao buscar URL: ${res.status}`);
     const data = await res.json();
     html = data.contents ?? "";
+    if (!html) throw new Error("Conteúdo vazio retornado pelo proxy");
   } catch (e) {
-    // Se o proxy falhar, retorna estrutura mínima editável
+    // O serviço de leitura (proxy CORS) pode estar indisponível.
+    // Retornamos uma estrutura mínima editável, mas sinalizamos
+    // claramente que a extração automática falhou — o chamador deve
+    // avisar o usuário em vez de tratar isso como sucesso silencioso.
     return buildFallback(url, source_type);
   }
 
@@ -157,6 +162,7 @@ function buildFallback(url: string, source_type: SourceType): ImportedContent {
     source_url: url,
     detected_date: null,
     raw_meta: {},
+    extraction_failed: true,
   };
 }
 
