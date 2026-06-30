@@ -19,21 +19,23 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ServicosIndexRouteImport } from './routes/servicos.index'
 import { Route as NoticiasIndexRouteImport } from './routes/noticias.index'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
-import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as ServicosSlugRouteImport } from './routes/servicos.$slug'
 import { Route as NoticiasSlugRouteImport } from './routes/noticias.$slug'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
-import { Route as AdminUsersRouteImport } from './routes/admin/users'
-import { Route as AdminNewsRouteImport } from './routes/admin/news'
+import { Route as AdminUsersRouteImport } from './routes/admin.users'
+import { Route as AdminNewsRouteImport } from './routes/admin.news_'
+import { Route as AdminMediaRouteImport } from './routes/admin.media'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
-import { Route as AdminInstagramRouteImport } from './routes/admin/instagram'
-import { Route as AdminImportRouteImport } from './routes/admin/import'
-import { Route as AdminCasesRouteImport } from './routes/admin/cases'
-import { Route as AdminBlogRouteImport } from './routes/admin/blog'
-import { Route as AdminAuditRouteImport } from './routes/admin/audit'
-import { Route as AdminNewsIdRouteImport } from './routes/admin/news.$id'
-import { Route as AdminBlogIdRouteImport } from './routes/admin/blog.$id'
+import { Route as AdminInstagramRouteImport } from './routes/admin.instagram'
+import { Route as AdminImportRouteImport } from './routes/admin.import'
+import { Route as AdminFaqRouteImport } from './routes/admin.faq'
+import { Route as AdminCasesRouteImport } from './routes/admin.cases'
+import { Route as AdminBlogRouteImport } from './routes/admin.blog_'
+import { Route as AdminAuditRouteImport } from './routes/admin.audit'
+import { Route as AdminNewsIdRouteImport } from './routes/admin.news.$id'
+import { Route as AdminBlogIdRouteImport } from './routes/admin.blog.$id'
 
 const SobreRoute = SobreRouteImport.update({
   id: '/sobre',
@@ -116,8 +118,13 @@ const AdminUsersRoute = AdminUsersRouteImport.update({
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminNewsRoute = AdminNewsRouteImport.update({
-  id: '/news',
+  id: '/news_',
   path: '/news',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminMediaRoute = AdminMediaRouteImport.update({
+  id: '/media',
+  path: '/media',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminLoginRoute = AdminLoginRouteImport.update({
@@ -135,13 +142,18 @@ const AdminImportRoute = AdminImportRouteImport.update({
   path: '/import',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminFaqRoute = AdminFaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminCasesRoute = AdminCasesRouteImport.update({
   id: '/cases',
   path: '/cases',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminBlogRoute = AdminBlogRouteImport.update({
-  id: '/blog',
+  id: '/blog_',
   path: '/blog',
   getParentRoute: () => AdminRoute,
 } as any)
@@ -151,14 +163,14 @@ const AdminAuditRoute = AdminAuditRouteImport.update({
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminNewsIdRoute = AdminNewsIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => AdminNewsRoute,
+  id: '/news/$id',
+  path: '/news/$id',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminBlogIdRoute = AdminBlogIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => AdminBlogRoute,
+  id: '/blog/$id',
+  path: '/blog/$id',
+  getParentRoute: () => AdminRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -170,12 +182,14 @@ export interface FileRoutesByFullPath {
   '/ia': typeof IaRoute
   '/sobre': typeof SobreRoute
   '/admin/audit': typeof AdminAuditRoute
-  '/admin/blog': typeof AdminBlogRouteWithChildren
+  '/admin/blog': typeof AdminBlogRoute
   '/admin/cases': typeof AdminCasesRoute
+  '/admin/faq': typeof AdminFaqRoute
   '/admin/import': typeof AdminImportRoute
   '/admin/instagram': typeof AdminInstagramRoute
   '/admin/login': typeof AdminLoginRoute
-  '/admin/news': typeof AdminNewsRouteWithChildren
+  '/admin/media': typeof AdminMediaRoute
+  '/admin/news': typeof AdminNewsRoute
   '/admin/users': typeof AdminUsersRoute
   '/api/chat': typeof ApiChatRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -196,12 +210,14 @@ export interface FileRoutesByTo {
   '/ia': typeof IaRoute
   '/sobre': typeof SobreRoute
   '/admin/audit': typeof AdminAuditRoute
-  '/admin/blog': typeof AdminBlogRouteWithChildren
+  '/admin/blog': typeof AdminBlogRoute
   '/admin/cases': typeof AdminCasesRoute
+  '/admin/faq': typeof AdminFaqRoute
   '/admin/import': typeof AdminImportRoute
   '/admin/instagram': typeof AdminInstagramRoute
   '/admin/login': typeof AdminLoginRoute
-  '/admin/news': typeof AdminNewsRouteWithChildren
+  '/admin/media': typeof AdminMediaRoute
+  '/admin/news': typeof AdminNewsRoute
   '/admin/users': typeof AdminUsersRoute
   '/api/chat': typeof ApiChatRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -224,12 +240,14 @@ export interface FileRoutesById {
   '/ia': typeof IaRoute
   '/sobre': typeof SobreRoute
   '/admin/audit': typeof AdminAuditRoute
-  '/admin/blog': typeof AdminBlogRouteWithChildren
+  '/admin/blog_': typeof AdminBlogRoute
   '/admin/cases': typeof AdminCasesRoute
+  '/admin/faq': typeof AdminFaqRoute
   '/admin/import': typeof AdminImportRoute
   '/admin/instagram': typeof AdminInstagramRoute
   '/admin/login': typeof AdminLoginRoute
-  '/admin/news': typeof AdminNewsRouteWithChildren
+  '/admin/media': typeof AdminMediaRoute
+  '/admin/news_': typeof AdminNewsRoute
   '/admin/users': typeof AdminUsersRoute
   '/api/chat': typeof ApiChatRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -255,9 +273,11 @@ export interface FileRouteTypes {
     | '/admin/audit'
     | '/admin/blog'
     | '/admin/cases'
+    | '/admin/faq'
     | '/admin/import'
     | '/admin/instagram'
     | '/admin/login'
+    | '/admin/media'
     | '/admin/news'
     | '/admin/users'
     | '/api/chat'
@@ -281,9 +301,11 @@ export interface FileRouteTypes {
     | '/admin/audit'
     | '/admin/blog'
     | '/admin/cases'
+    | '/admin/faq'
     | '/admin/import'
     | '/admin/instagram'
     | '/admin/login'
+    | '/admin/media'
     | '/admin/news'
     | '/admin/users'
     | '/api/chat'
@@ -306,12 +328,14 @@ export interface FileRouteTypes {
     | '/ia'
     | '/sobre'
     | '/admin/audit'
-    | '/admin/blog'
+    | '/admin/blog_'
     | '/admin/cases'
+    | '/admin/faq'
     | '/admin/import'
     | '/admin/instagram'
     | '/admin/login'
-    | '/admin/news'
+    | '/admin/media'
+    | '/admin/news_'
     | '/admin/users'
     | '/api/chat'
     | '/blog/$slug'
@@ -456,11 +480,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminUsersRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/news': {
-      id: '/admin/news'
+    '/admin/news_': {
+      id: '/admin/news_'
       path: '/news'
       fullPath: '/admin/news'
       preLoaderRoute: typeof AdminNewsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/media': {
+      id: '/admin/media'
+      path: '/media'
+      fullPath: '/admin/media'
+      preLoaderRoute: typeof AdminMediaRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/login': {
@@ -484,6 +515,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminImportRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/faq': {
+      id: '/admin/faq'
+      path: '/faq'
+      fullPath: '/admin/faq'
+      preLoaderRoute: typeof AdminFaqRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/cases': {
       id: '/admin/cases'
       path: '/cases'
@@ -491,8 +529,8 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminCasesRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/blog': {
-      id: '/admin/blog'
+    '/admin/blog_': {
+      id: '/admin/blog_'
       path: '/blog'
       fullPath: '/admin/blog'
       preLoaderRoute: typeof AdminBlogRouteImport
@@ -507,67 +545,51 @@ declare module '@tanstack/react-router' {
     }
     '/admin/news/$id': {
       id: '/admin/news/$id'
-      path: '/$id'
+      path: '/news/$id'
       fullPath: '/admin/news/$id'
       preLoaderRoute: typeof AdminNewsIdRouteImport
-      parentRoute: typeof AdminNewsRoute
+      parentRoute: typeof AdminRoute
     }
     '/admin/blog/$id': {
       id: '/admin/blog/$id'
-      path: '/$id'
+      path: '/blog/$id'
       fullPath: '/admin/blog/$id'
       preLoaderRoute: typeof AdminBlogIdRouteImport
-      parentRoute: typeof AdminBlogRoute
+      parentRoute: typeof AdminRoute
     }
   }
 }
 
-interface AdminBlogRouteChildren {
-  AdminBlogIdRoute: typeof AdminBlogIdRoute
-}
-
-const AdminBlogRouteChildren: AdminBlogRouteChildren = {
-  AdminBlogIdRoute: AdminBlogIdRoute,
-}
-
-const AdminBlogRouteWithChildren = AdminBlogRoute._addFileChildren(
-  AdminBlogRouteChildren,
-)
-
-interface AdminNewsRouteChildren {
-  AdminNewsIdRoute: typeof AdminNewsIdRoute
-}
-
-const AdminNewsRouteChildren: AdminNewsRouteChildren = {
-  AdminNewsIdRoute: AdminNewsIdRoute,
-}
-
-const AdminNewsRouteWithChildren = AdminNewsRoute._addFileChildren(
-  AdminNewsRouteChildren,
-)
-
 interface AdminRouteChildren {
   AdminAuditRoute: typeof AdminAuditRoute
-  AdminBlogRoute: typeof AdminBlogRouteWithChildren
+  AdminBlogRoute: typeof AdminBlogRoute
   AdminCasesRoute: typeof AdminCasesRoute
+  AdminFaqRoute: typeof AdminFaqRoute
   AdminImportRoute: typeof AdminImportRoute
   AdminInstagramRoute: typeof AdminInstagramRoute
   AdminLoginRoute: typeof AdminLoginRoute
-  AdminNewsRoute: typeof AdminNewsRouteWithChildren
+  AdminMediaRoute: typeof AdminMediaRoute
+  AdminNewsRoute: typeof AdminNewsRoute
   AdminUsersRoute: typeof AdminUsersRoute
   AdminIndexRoute: typeof AdminIndexRoute
+  AdminBlogIdRoute: typeof AdminBlogIdRoute
+  AdminNewsIdRoute: typeof AdminNewsIdRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminAuditRoute: AdminAuditRoute,
-  AdminBlogRoute: AdminBlogRouteWithChildren,
+  AdminBlogRoute: AdminBlogRoute,
   AdminCasesRoute: AdminCasesRoute,
+  AdminFaqRoute: AdminFaqRoute,
   AdminImportRoute: AdminImportRoute,
   AdminInstagramRoute: AdminInstagramRoute,
   AdminLoginRoute: AdminLoginRoute,
-  AdminNewsRoute: AdminNewsRouteWithChildren,
+  AdminMediaRoute: AdminMediaRoute,
+  AdminNewsRoute: AdminNewsRoute,
   AdminUsersRoute: AdminUsersRoute,
   AdminIndexRoute: AdminIndexRoute,
+  AdminBlogIdRoute: AdminBlogIdRoute,
+  AdminNewsIdRoute: AdminNewsIdRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)

@@ -6,7 +6,7 @@ import { listNews, publishNews, archiveNews, deleteNews } from "@/lib/news";
 import { useToast, useErrorModal, friendlyError } from "@/components/admin/Toast";
 import type { CmsUserRow, NewsRow, NewsStatus } from "@/lib/database.types";
 
-export const Route = createFileRoute("/admin/news")({
+export const Route = createFileRoute("/admin/news_")({
   component: AdminNews,
 });
 
@@ -92,7 +92,8 @@ function AdminNews() {
         </div>
         {canEdit && (
           <Link
-            to="/admin/news/new"
+            to="/admin/news/$id"
+            params={{ id: "new" }}
             className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white hover:opacity-90 transition-opacity"
           >
             <Plus size={16} /> Nova notícia
@@ -124,7 +125,7 @@ function AdminNews() {
         <div className="text-center py-16 text-white/30 text-sm">
           Nenhuma notícia encontrada.
           {canEdit && (
-            <Link to="/admin/news/new" className="block mt-3 text-primary hover:underline">
+            <Link to="/admin/news/$id" params={{ id: "new" }} className="block mt-3 text-primary hover:underline">
               Criar primeira notícia
             </Link>
           )}

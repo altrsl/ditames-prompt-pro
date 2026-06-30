@@ -58,7 +58,7 @@ export async function getCurrentCmsUser(): Promise<CmsUserRow | null> {
     const isFirst = !data || data.length === 0;
     const role = isFirst ? "director" : "dev";
 
-    const { data: created } = await supabase
+    const { data: created, error: insertError } = await supabase
       .from("cms_users")
       .insert({
         id: user.id,
@@ -71,6 +71,7 @@ export async function getCurrentCmsUser(): Promise<CmsUserRow | null> {
       .select()
       .single();
 
+    if (insertError) throw insertError;
     cmsUser = created as CmsUserRow | null;
   }
 

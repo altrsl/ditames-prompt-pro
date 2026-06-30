@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { getCurrentCmsUser, getAuditLogs, ACTION_LABELS, MODULE_LABELS } from "@/lib/admin";
 import { supabase } from "@/lib/supabase";
+import { useErrorModal, friendlyError } from "@/components/admin/Toast";
 import type { CmsUserRow, AuditLogRow } from "@/lib/database.types";
 
 export const Route = createFileRoute("/admin/")({
@@ -90,56 +91,69 @@ function AdminDashboard() {
   });
   const [logs, setLogs] = useState<AuditLogRow[]>([]);
   const [loading, setLoading] = useState(true);
+  const { showError, ErrorModalContainer } = useErrorModal();
 
   useEffect(() => {
     async function load() {
-      const [u, auditLogs] = await Promise.all([
-        getCurrentCmsUser(),
-        getAuditLogs(undefined, undefined, 8),
-      ]);
-      setUser(u);
-      setLogs(auditLogs);
+      try {
+        const [u, auditLogs] = await Promise.all([
+          getCurrentCmsUser(),
+          getAuditLogs(undefined, undefined, 8),
+        ]);
+        setUser(u);
+        setLogs(auditLogs);
 
-      const today = new Date(); today.setHours(0, 0, 0, 0);
-      const weekAgo = new Date(today); weekAgo.setDate(weekAgo.getDate() - 7);
+        const today = new Date(); today.setHours(0, 0, 0, 0);
+        const weekAgo = new Date(today); weekAgo.setDate(weekAgo.getDate() - 7);
 
-      const [
-        newsP, newsD, newsA, newsI, newsM,
-        blogP, blogD,
-        cases, faq, users,
-        edToday, edWeek, media,
-      ] = await Promise.all([
-        supabase.from("news").select("id", { count: "exact", head: true }).eq("status", "published"),
-        supabase.from("news").select("id", { count: "exact", head: true }).eq("status", "draft"),
-        supabase.from("news").select("id", { count: "exact", head: true }).eq("status", "archived"),
-        supabase.from("news").select("id", { count: "exact", head: true }).eq("source", "instagram"),
-        supabase.from("news").select("id", { count: "exact", head: true }).eq("source", "manual"),
-        supabase.from("blog_posts").select("id", { count: "exact", head: true }).eq("published", true),
-        supabase.from("blog_posts").select("id", { count: "exact", head: true }).eq("published", false),
-        supabase.from("cases").select("id", { count: "exact", head: true }).eq("published", true),
-        supabase.from("faq").select("id", { count: "exact", head: true }).eq("published", true),
-        supabase.from("cms_users").select("id", { count: "exact", head: true }).eq("status", "active"),
-        supabase.from("audit_logs").select("id", { count: "exact", head: true }).gte("created_at", today.toISOString()),
-        supabase.from("audit_logs").select("id", { count: "exact", head: true }).gte("created_at", weekAgo.toISOString()),
-        supabase.from("media").select("id", { count: "exact", head: true }),
-      ]);
+        const [
+          newsP, newsD, newsA, newsI, newsM,
+          blogP, blogD,
+          cases, faq, users,
+          edToday, edWeek, media,
+        ] = await Promise.all([
+          supabase.from("news").select("id", { count: "exact", head: true }).eq("status", "published"),
+          supabase.from("news").select("id", { count: "exact", head: true }).eq("status", "draft"),
+          supabase.from("news").select("id", { count: "exact", head: true }).eq("status", "archived"),
+          supabase.from("news").select("id", { count: "exact", head: true }).eq("source", "instagram"),
+          supabase.from("news").select("id", { count: "exact", head: true }).eq("source", "manual"),
+          supabase.from("blog_posts").select("id", { count: "exact", head: true }).eq("published", true),
+          supabase.from("blog_posts").select("id", { count: "exact", head: true }).eq("published", false),
+          supabase.from("cases").select("id", { count: "exact", head: true }).eq("published", true),
+          supabase.from("faq").select("id", { count: "exact", head: true }).eq("published", true),
+          supabase.from("cms_users").select("id", { count: "exact", head: true }).eq("status", "active"),
+          supabase.from("audit_logs").select("id", { count: "exact", head: true }).gte("created_at", today.toISOString()),
+          supabase.from("audit_logs").select("id", { count: "exact", head: true }).gte("created_at", weekAgo.toISOString()),
+          supabase.from("media").select("id", { count: "exact", head: true }),
+        ]);
 
-      setCounts({
-        news_published: newsP.count ?? 0,
-        news_draft: newsD.count ?? 0,
-        news_archived: newsA.count ?? 0,
-        news_instagram: newsI.count ?? 0,
-        news_manual: newsM.count ?? 0,
-        blog_published: blogP.count ?? 0,
-        blog_draft: blogD.count ?? 0,
-        cases: cases.count ?? 0,
-        faq: faq.count ?? 0,
-        users: users.count ?? 0,
-        edits_today: edToday.count ?? 0,
-        edits_week: edWeek.count ?? 0,
-        media_files: media.count ?? 0,
-      });
-      setLoading(false);
+        // Cada query pode falhar individualmente (RLS, rede) sem lançar exceção
+        // (count vem como null mas .error pode estar setado) — verificamos todas.
+        const results = [newsP, newsD, newsA, newsI, newsM, blogP, blogD, cases, faq, users, edToday, edWeek, media];
+        const firstError = results.find((r) => r.error)?.error;
+        if (firstError) throw firstError;
+
+        setCounts({
+          news_published: newsP.count ?? 0,
+          news_draft: newsD.count ?? 0,
+          news_archived: newsA.count ?? 0,
+          news_instagram: newsI.count ?? 0,
+          news_manual: newsM.count ?? 0,
+          blog_published: blogP.count ?? 0,
+          blog_draft: blogD.count ?? 0,
+          cases: cases.count ?? 0,
+          faq: faq.count ?? 0,
+          users: users.count ?? 0,
+          edits_today: edToday.count ?? 0,
+          edits_week: edWeek.count ?? 0,
+          media_files: media.count ?? 0,
+        });
+      } catch (e) {
+        const { title, message } = friendlyError(e);
+        showError(title, message, load);
+      } finally {
+        setLoading(false);
+      }
     }
     load();
   }, []);
@@ -150,6 +164,7 @@ function AdminDashboard() {
 
   return (
     <div className="p-6 md:p-8 max-w-5xl mx-auto">
+      <ErrorModalContainer />
       {/* Header */}
       <div className="mb-6 flex items-start justify-between gap-4 flex-wrap">
         <div>
@@ -195,7 +210,7 @@ function AdminDashboard() {
           <StatCard label="Cases ativos"      value={counts.cases}       icon={Layers}      color="text-orange-400" bg="bg-orange-500/10" to="/admin/cases"  loading={loading} />
           <StatCard label="Perguntas FAQ"     value={counts.faq}         icon={HelpCircle}  color="text-purple-400" bg="bg-purple-500/10" to="/admin/faq"    loading={loading} />
           <StatCard label="Usuários ativos"   value={counts.users}       icon={Users}       color="text-primary"    bg="bg-primary/10"    to="/admin/users"  loading={loading} />
-          <StatCard label="Arquivos de mídia" value={counts.media_files} icon={Globe}       color="text-cyan-400"   bg="bg-cyan-500/10"   to="/admin/news"   loading={loading} />
+          <StatCard label="Arquivos de mídia" value={counts.media_files} icon={Globe}       color="text-cyan-400"   bg="bg-cyan-500/10"   to="/admin/media"   loading={loading} />
         </div>
       </MetricSection>
 

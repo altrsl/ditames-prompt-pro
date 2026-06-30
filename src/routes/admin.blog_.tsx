@@ -6,7 +6,7 @@ import { supabase } from "@/lib/supabase";
 import { useToast, useErrorModal, friendlyError } from "@/components/admin/Toast";
 import type { CmsUserRow } from "@/lib/database.types";
 
-export const Route = createFileRoute("/admin/blog")({
+export const Route = createFileRoute("/admin/blog_")({
   component: AdminBlog,
 });
 
@@ -76,7 +76,7 @@ function AdminBlog() {
           <p className="text-sm text-white/40 mt-0.5">Artigos educativos e informativos</p>
         </div>
         {canEdit && (
-          <Link to="/admin/blog/new" className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white hover:opacity-90">
+          <Link to="/admin/blog/$id" params={{ id: "new" }} className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white hover:opacity-90">
             <Plus size={16} /> Novo artigo
           </Link>
         )}
@@ -87,7 +87,7 @@ function AdminBlog() {
       ) : posts.length === 0 ? (
         <div className="text-center py-16 text-white/30 text-sm">
           Nenhum artigo ainda.
-          {canEdit && <Link to="/admin/blog/new" className="block mt-3 text-primary hover:underline">Criar primeiro artigo</Link>}
+          {canEdit && <Link to="/admin/blog/$id" params={{ id: "new" }} className="block mt-3 text-primary hover:underline">Criar primeiro artigo</Link>}
         </div>
       ) : (
         <div className="rounded-xl border border-white/5 bg-white/5 overflow-hidden divide-y divide-white/5">

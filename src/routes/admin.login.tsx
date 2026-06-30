@@ -2,7 +2,7 @@ import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { useState } from "react";
 import { Leaf, Eye, EyeOff, Lock, Mail, Loader2 } from "lucide-react";
 import { signIn, getCurrentCmsUser, writeAuditLog } from "@/lib/admin";
-import { friendlyError } from "@/components/admin/Toast";
+import { friendlyError, Alert } from "@/components/admin/Toast";
 
 export const Route = createFileRoute("/admin/login")({
   component: AdminLogin,
@@ -94,9 +94,7 @@ function AdminLogin() {
           </div>
 
           {error && (
-            <div className="rounded-lg bg-red-500/10 border border-red-500/20 px-4 py-3 text-sm text-red-400">
-              {error}
-            </div>
+            <Alert type="error" title="Não foi possível entrar" message={error} onClose={() => setError(null)} />
           )}
 
           <button

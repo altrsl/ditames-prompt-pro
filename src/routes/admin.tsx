@@ -8,6 +8,7 @@ import {
 import { getCurrentCmsUser, signOut, hasPermission } from "@/lib/admin";
 import type { CmsUserRow } from "@/lib/database.types";
 import { getSession } from "@/lib/admin";
+import { useErrorModal, friendlyError } from "@/components/admin/Toast";
 
 export const Route = createFileRoute("/admin")({
   beforeLoad: async ({ location }) => {
@@ -33,14 +34,25 @@ function AdminLayout() {
   const router = useRouter();
   const [user, setUser] = useState<CmsUserRow | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { showError, ErrorModalContainer } = useErrorModal();
 
   useEffect(() => {
-    getCurrentCmsUser().then(setUser);
+    getCurrentCmsUser()
+      .then(setUser)
+      .catch((e) => {
+        const { title, message } = friendlyError(e);
+        showError(title, message);
+      });
   }, []);
 
   const handleLogout = async () => {
-    await signOut();
-    router.navigate({ to: "/admin/login" });
+    try {
+      await signOut();
+      router.navigate({ to: "/admin/login" });
+    } catch (e) {
+      const { title, message } = friendlyError(e);
+      showError(title, message, handleLogout);
+    }
   };
 
   const visibleNav = NAV_ITEMS.filter(
@@ -49,6 +61,7 @@ function AdminLayout() {
 
   return (
     <div className="min-h-screen bg-[#0f1410] flex">
+      <ErrorModalContainer />
       {/* Sidebar */}
       <aside
         className={`fixed inset-y-0 left-0 z-50 w-64 bg-[#1a2118] border-r border-white/5 flex flex-col transition-transform duration-300
