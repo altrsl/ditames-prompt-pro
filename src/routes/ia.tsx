@@ -6,6 +6,7 @@ import { Send, Brain, MessageCircle, Sparkles, ExternalLink } from "lucide-react
 import { PageHero } from "@/components/site/PageHero";
 import { WHATSAPP_URL } from "@/lib/services";
 import { useErrorModal, friendlyError } from "@/components/admin/Toast";
+import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/ia")({
   head: () => ({
@@ -80,6 +81,42 @@ function IAPage() {
   const whatsappUrl = useMemo(() => getWhatsAppUrlWithSummary(messages), [messages]);
   const { showError, ErrorModalContainer } = useErrorModal();
 
+  // Extrai o nome do serviço sugerido da última mensagem da IA, se houver
+  const extractServiceSuggested = () => {
+    const last = [...messages].reverse().find((m) => m.role === "assistant");
+    if (!last) return null;
+    const text = plainText(last.parts);
+    const match = text.match(/\*\*Serviço recomendado:\*\*\s*([^\n]+)/);
+    return match ? match[1].trim() : null;
+  };
+
+  const handleForwardToHuman = async () => {
+    // Grava o lead no banco em segundo plano — não bloqueia a navegação
+    // para o WhatsApp mesmo se falhar (o usuário não deve ser prejudicado
+    // por um erro de persistência)
+    if (messages.length > 0) {
+      const conversationLog = messages.map((m) => ({
+        role: m.role,
+        text: plainText(m.parts),
+      }));
+      const summary = buildWhatsAppSummary(messages);
+      const service_suggested = extractServiceSuggested();
+
+      supabase.from("leads").insert({
+        conversation: conversationLog,
+        summary,
+        service_suggested,
+        forwarded_to_whatsapp: true,
+        status: "new",
+      }).then(({ error }) => {
+        if (error) console.error("[leads] falha ao registrar lead:", error);
+      });
+    }
+
+    // Abre o WhatsApp com o resumo
+    window.open(whatsappUrl, "_blank", "noopener,noreferrer");
+  };
+
   useEffect(() => {
     if (error) {
       const { title, message } = friendlyError(error);
@@ -130,9 +167,9 @@ function IAPage() {
                 <li>4. Vai direto para a página do serviço ou WhatsApp.</li>
               </ol>
             </div>
-            <a href={whatsappUrl} className="btn-outline w-full">
+            <button onClick={handleForwardToHuman} className="btn-outline w-full">
               <MessageCircle size={16} /> Prefiro falar com humano
-            </a>
+            </button>
             {messages.length > 0 && (
               <p className="text-xs text-muted-foreground text-center -mt-2">
                 Sua conversa será resumida e enviada junto.

@@ -216,6 +216,22 @@ export interface Database {
         Relationships: [];
       };
 
+      // ─── LEADS (Recepcionista Ambiental) ───────────────────────
+      leads: {
+        Row: {
+          id: string;
+          created_at: string;
+          conversation: { role: string; text: string }[];
+          summary: string | null;
+          service_suggested: string | null;
+          status: "new" | "contacted" | "closed";
+          forwarded_to_whatsapp: boolean;
+        };
+        Insert: Partial<Omit<Database["public"]["Tables"]["leads"]["Row"], "id" | "created_at">> & Pick<Database["public"]["Tables"]["leads"]["Row"], "conversation">;
+        Update: Partial<Omit<Database["public"]["Tables"]["leads"]["Row"], "id" | "created_at">>;
+        Relationships: [];
+      };
+
       // ─── CONTACTS (Formulário de Contato) ──────────────────────
       contacts: {
         Row: {
@@ -312,6 +328,7 @@ export type ServiceRow = Database["public"]["Tables"]["services"]["Row"];
 export type HomepageContentRow = Database["public"]["Tables"]["homepage_content"]["Row"];
 export type SettingsRow = Database["public"]["Tables"]["settings"]["Row"];
 export type ContactRow = Database["public"]["Tables"]["contacts"]["Row"];
+export type LeadRow = Database["public"]["Tables"]["leads"]["Row"];
 export type CmsUserRow = Database["public"]["Tables"]["cms_users"]["Row"];
 export type AuditLogRow = Database["public"]["Tables"]["audit_logs"]["Row"];
 

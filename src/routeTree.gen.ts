@@ -30,6 +30,7 @@ import { Route as AdminResetPasswordRouteImport } from './routes/admin.reset-pas
 import { Route as AdminNewsRouteImport } from './routes/admin.news_'
 import { Route as AdminMediaRouteImport } from './routes/admin.media'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
+import { Route as AdminLeadsRouteImport } from './routes/admin.leads'
 import { Route as AdminInstagramRouteImport } from './routes/admin.instagram'
 import { Route as AdminImportRouteImport } from './routes/admin.import'
 import { Route as AdminForgotPasswordRouteImport } from './routes/admin.forgot-password'
@@ -146,6 +147,11 @@ const AdminLoginRoute = AdminLoginRouteImport.update({
   path: '/login',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminLeadsRoute = AdminLeadsRouteImport.update({
+  id: '/leads',
+  path: '/leads',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminInstagramRoute = AdminInstagramRouteImport.update({
   id: '/instagram',
   path: '/instagram',
@@ -212,6 +218,7 @@ export interface FileRoutesByFullPath {
   '/admin/forgot-password': typeof AdminForgotPasswordRoute
   '/admin/import': typeof AdminImportRoute
   '/admin/instagram': typeof AdminInstagramRoute
+  '/admin/leads': typeof AdminLeadsRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/media': typeof AdminMediaRoute
   '/admin/news': typeof AdminNewsRoute
@@ -244,6 +251,7 @@ export interface FileRoutesByTo {
   '/admin/forgot-password': typeof AdminForgotPasswordRoute
   '/admin/import': typeof AdminImportRoute
   '/admin/instagram': typeof AdminInstagramRoute
+  '/admin/leads': typeof AdminLeadsRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/media': typeof AdminMediaRoute
   '/admin/news': typeof AdminNewsRoute
@@ -278,6 +286,7 @@ export interface FileRoutesById {
   '/admin/forgot-password': typeof AdminForgotPasswordRoute
   '/admin/import': typeof AdminImportRoute
   '/admin/instagram': typeof AdminInstagramRoute
+  '/admin/leads': typeof AdminLeadsRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/media': typeof AdminMediaRoute
   '/admin/news_': typeof AdminNewsRoute
@@ -313,6 +322,7 @@ export interface FileRouteTypes {
     | '/admin/forgot-password'
     | '/admin/import'
     | '/admin/instagram'
+    | '/admin/leads'
     | '/admin/login'
     | '/admin/media'
     | '/admin/news'
@@ -345,6 +355,7 @@ export interface FileRouteTypes {
     | '/admin/forgot-password'
     | '/admin/import'
     | '/admin/instagram'
+    | '/admin/leads'
     | '/admin/login'
     | '/admin/media'
     | '/admin/news'
@@ -378,6 +389,7 @@ export interface FileRouteTypes {
     | '/admin/forgot-password'
     | '/admin/import'
     | '/admin/instagram'
+    | '/admin/leads'
     | '/admin/login'
     | '/admin/media'
     | '/admin/news_'
@@ -563,6 +575,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminLoginRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/leads': {
+      id: '/admin/leads'
+      path: '/leads'
+      fullPath: '/admin/leads'
+      preLoaderRoute: typeof AdminLeadsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/instagram': {
       id: '/admin/instagram'
       path: '/instagram'
@@ -644,6 +663,7 @@ interface AdminRouteChildren {
   AdminForgotPasswordRoute: typeof AdminForgotPasswordRoute
   AdminImportRoute: typeof AdminImportRoute
   AdminInstagramRoute: typeof AdminInstagramRoute
+  AdminLeadsRoute: typeof AdminLeadsRoute
   AdminLoginRoute: typeof AdminLoginRoute
   AdminMediaRoute: typeof AdminMediaRoute
   AdminNewsRoute: typeof AdminNewsRoute
@@ -664,6 +684,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminForgotPasswordRoute: AdminForgotPasswordRoute,
   AdminImportRoute: AdminImportRoute,
   AdminInstagramRoute: AdminInstagramRoute,
+  AdminLeadsRoute: AdminLeadsRoute,
   AdminLoginRoute: AdminLoginRoute,
   AdminMediaRoute: AdminMediaRoute,
   AdminNewsRoute: AdminNewsRoute,

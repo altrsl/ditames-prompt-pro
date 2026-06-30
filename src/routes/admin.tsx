@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import {
   LayoutDashboard, FileText, Newspaper, Users,
   LogOut, ChevronRight, Menu, X, Shield, History,
-  Leaf, Instagram, Link2, Edit3, HelpCircle, Image, Settings,
+  Leaf, Instagram, Link2, Edit3, HelpCircle, Image, Settings, MessageCircle,
 } from "lucide-react";
 import { getCurrentCmsUser, signOut, hasPermission } from "@/lib/admin";
 import type { CmsUserRow } from "@/lib/database.types";
@@ -30,6 +30,7 @@ const NAV_ITEMS = [
   { label: "Cases",          to: "/admin/cases",       icon: Leaf,            permission: "edit_cases" as const },
   { label: "FAQ",            to: "/admin/faq",         icon: HelpCircle,      permission: "edit_homepage" as const },
   { label: "Mídia",          to: "/admin/media",       icon: Image,           permission: "edit_homepage_images" as const },
+  { label: "Leads",          to: "/admin/leads",       icon: MessageCircle,   permission: "view_audit_log" as const },
   { label: "Instagram",      to: "/admin/instagram",   icon: Instagram,       permission: "create_edit_news" as const },
   { label: "Usuários",       to: "/admin/users",       icon: Users,           permission: "create_users" as const },
   { label: "Configurações",  to: "/admin/settings",    icon: Settings,        permission: "edit_homepage" as const },
