@@ -293,4 +293,6 @@ export const MODULE_LABELS: Record<string, string> = {
   services: "Serviços",
   users: "Usuários",
   homepage: "Homepage",
+  settings: "Configurações",
+  media: "Mídia",
 };
