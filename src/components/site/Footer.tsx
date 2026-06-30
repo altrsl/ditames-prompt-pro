@@ -1,13 +1,16 @@
 import { Link } from "@tanstack/react-router";
 import { Phone, MessageCircle, MapPin, Mail, Instagram, Linkedin, Clock, Sparkles, LayoutDashboard } from "lucide-react";
-import { services, WHATSAPP_URL } from "@/lib/services";
+import { services } from "@/lib/services";
 import { useEditMode } from "@/lib/edit-mode";
+import { useSettings, getWhatsAppUrl } from "@/lib/use-settings";
 
 // Logo servida pelo repositório — independente do Lovable e Supabase
 const LOGO_URL = "/logo-ditames.png";
 
 export function Footer() {
   const { isAuthenticated } = useEditMode();
+  const settings = useSettings();
+  const whatsappUrl = getWhatsAppUrl(settings);
   return (
     <footer className="text-white/80" style={{ background: "oklch(0.20 0.025 140)" }}>
       <div className="container-x py-16">
@@ -29,7 +32,7 @@ export function Footer() {
             </p>
             <div className="mt-6 flex items-center gap-3">
               <a
-                href="https://www.instagram.com/ditamesambiental"
+                href={settings.instagram_url}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Instagram"
@@ -38,7 +41,7 @@ export function Footer() {
                 <Instagram size={16} />
               </a>
               <a
-                href="https://www.linkedin.com/company/ditames-ambiental/"
+                href={settings.linkedin_url}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="LinkedIn"
@@ -78,16 +81,16 @@ export function Footer() {
             <h4 className="font-display uppercase text-sm tracking-widest text-white">Contato</h4>
             <ul className="mt-5 space-y-3 text-sm">
               <li className="flex items-center gap-2">
-                <Phone size={14} className="text-primary shrink-0" /> (47) 3300-3466
+                <Phone size={14} className="text-primary shrink-0" /> {settings.phone}
               </li>
               <li>
-                <a href={WHATSAPP_URL} className="flex items-center gap-2 hover:text-primary transition-colors">
-                  <MessageCircle size={14} className="text-primary shrink-0" /> (47) 9 9691-0055
+                <a href={whatsappUrl} className="flex items-center gap-2 hover:text-primary transition-colors">
+                  <MessageCircle size={14} className="text-primary shrink-0" /> {settings.whatsapp_display ?? "(47) 9 9691-0055"}
                 </a>
               </li>
               <li>
-                <a href="mailto:comercial@ditames.com.br" className="flex items-center gap-2 hover:text-primary transition-colors break-all">
-                  <Mail size={14} className="text-primary shrink-0" /> comercial@ditames.com.br
+                <a href={`mailto:${settings.email}`} className="flex items-center gap-2 hover:text-primary transition-colors break-all">
+                  <Mail size={14} className="text-primary shrink-0" /> {settings.email}
                 </a>
               </li>
               <li className="flex items-start gap-2">

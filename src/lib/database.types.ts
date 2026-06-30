@@ -216,6 +216,22 @@ export interface Database {
         Relationships: [];
       };
 
+      // ─── SETTINGS (Configurações do site) ─────────────────────
+      settings: {
+        Row: {
+          id: string;
+          updated_at: string;
+          updated_by: string | null;
+          key: string;
+          value: string;
+          label: string;
+          group_name: string;
+        };
+        Insert: Partial<Omit<Database["public"]["Tables"]["settings"]["Row"], "id" | "updated_at">> & Pick<Database["public"]["Tables"]["settings"]["Row"], "key" | "value" | "label">;
+        Update: Partial<Omit<Database["public"]["Tables"]["settings"]["Row"], "id" | "updated_at">>;
+        Relationships: [];
+      };
+
       // ─── CMS USERS ───────────────────────────────────────────
       cms_users: {
         Row: {
@@ -275,6 +291,7 @@ export type NewsRow = Database["public"]["Tables"]["news"]["Row"];
 export type FaqRow = Database["public"]["Tables"]["faq"]["Row"];
 export type ServiceRow = Database["public"]["Tables"]["services"]["Row"];
 export type HomepageContentRow = Database["public"]["Tables"]["homepage_content"]["Row"];
+export type SettingsRow = Database["public"]["Tables"]["settings"]["Row"];
 export type CmsUserRow = Database["public"]["Tables"]["cms_users"]["Row"];
 export type AuditLogRow = Database["public"]["Tables"]["audit_logs"]["Row"];
 
