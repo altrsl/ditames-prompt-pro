@@ -31,10 +31,11 @@ import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminInstagramRouteImport } from './routes/admin.instagram'
 import { Route as AdminImportRouteImport } from './routes/admin.import'
 import { Route as AdminFaqRouteImport } from './routes/admin.faq'
-import { Route as AdminCasesRouteImport } from './routes/admin.cases'
+import { Route as AdminCasesRouteImport } from './routes/admin.cases_'
 import { Route as AdminBlogRouteImport } from './routes/admin.blog_'
 import { Route as AdminAuditRouteImport } from './routes/admin.audit'
 import { Route as AdminNewsIdRouteImport } from './routes/admin.news.$id'
+import { Route as AdminCasesIdRouteImport } from './routes/admin.cases.$id'
 import { Route as AdminBlogIdRouteImport } from './routes/admin.blog.$id'
 
 const SobreRoute = SobreRouteImport.update({
@@ -148,7 +149,7 @@ const AdminFaqRoute = AdminFaqRouteImport.update({
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminCasesRoute = AdminCasesRouteImport.update({
-  id: '/cases',
+  id: '/cases_',
   path: '/cases',
   getParentRoute: () => AdminRoute,
 } as any)
@@ -165,6 +166,11 @@ const AdminAuditRoute = AdminAuditRouteImport.update({
 const AdminNewsIdRoute = AdminNewsIdRouteImport.update({
   id: '/news/$id',
   path: '/news/$id',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCasesIdRoute = AdminCasesIdRouteImport.update({
+  id: '/cases/$id',
+  path: '/cases/$id',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminBlogIdRoute = AdminBlogIdRouteImport.update({
@@ -200,6 +206,7 @@ export interface FileRoutesByFullPath {
   '/noticias/': typeof NoticiasIndexRoute
   '/servicos/': typeof ServicosIndexRoute
   '/admin/blog/$id': typeof AdminBlogIdRoute
+  '/admin/cases/$id': typeof AdminCasesIdRoute
   '/admin/news/$id': typeof AdminNewsIdRoute
 }
 export interface FileRoutesByTo {
@@ -228,6 +235,7 @@ export interface FileRoutesByTo {
   '/noticias': typeof NoticiasIndexRoute
   '/servicos': typeof ServicosIndexRoute
   '/admin/blog/$id': typeof AdminBlogIdRoute
+  '/admin/cases/$id': typeof AdminCasesIdRoute
   '/admin/news/$id': typeof AdminNewsIdRoute
 }
 export interface FileRoutesById {
@@ -241,7 +249,7 @@ export interface FileRoutesById {
   '/sobre': typeof SobreRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/blog_': typeof AdminBlogRoute
-  '/admin/cases': typeof AdminCasesRoute
+  '/admin/cases_': typeof AdminCasesRoute
   '/admin/faq': typeof AdminFaqRoute
   '/admin/import': typeof AdminImportRoute
   '/admin/instagram': typeof AdminInstagramRoute
@@ -258,6 +266,7 @@ export interface FileRoutesById {
   '/noticias/': typeof NoticiasIndexRoute
   '/servicos/': typeof ServicosIndexRoute
   '/admin/blog/$id': typeof AdminBlogIdRoute
+  '/admin/cases/$id': typeof AdminCasesIdRoute
   '/admin/news/$id': typeof AdminNewsIdRoute
 }
 export interface FileRouteTypes {
@@ -289,6 +298,7 @@ export interface FileRouteTypes {
     | '/noticias/'
     | '/servicos/'
     | '/admin/blog/$id'
+    | '/admin/cases/$id'
     | '/admin/news/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -317,6 +327,7 @@ export interface FileRouteTypes {
     | '/noticias'
     | '/servicos'
     | '/admin/blog/$id'
+    | '/admin/cases/$id'
     | '/admin/news/$id'
   id:
     | '__root__'
@@ -329,7 +340,7 @@ export interface FileRouteTypes {
     | '/sobre'
     | '/admin/audit'
     | '/admin/blog_'
-    | '/admin/cases'
+    | '/admin/cases_'
     | '/admin/faq'
     | '/admin/import'
     | '/admin/instagram'
@@ -346,6 +357,7 @@ export interface FileRouteTypes {
     | '/noticias/'
     | '/servicos/'
     | '/admin/blog/$id'
+    | '/admin/cases/$id'
     | '/admin/news/$id'
   fileRoutesById: FileRoutesById
 }
@@ -522,8 +534,8 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminFaqRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/cases': {
-      id: '/admin/cases'
+    '/admin/cases_': {
+      id: '/admin/cases_'
       path: '/cases'
       fullPath: '/admin/cases'
       preLoaderRoute: typeof AdminCasesRouteImport
@@ -550,6 +562,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminNewsIdRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/cases/$id': {
+      id: '/admin/cases/$id'
+      path: '/cases/$id'
+      fullPath: '/admin/cases/$id'
+      preLoaderRoute: typeof AdminCasesIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/blog/$id': {
       id: '/admin/blog/$id'
       path: '/blog/$id'
@@ -573,6 +592,7 @@ interface AdminRouteChildren {
   AdminUsersRoute: typeof AdminUsersRoute
   AdminIndexRoute: typeof AdminIndexRoute
   AdminBlogIdRoute: typeof AdminBlogIdRoute
+  AdminCasesIdRoute: typeof AdminCasesIdRoute
   AdminNewsIdRoute: typeof AdminNewsIdRoute
 }
 
@@ -589,6 +609,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminUsersRoute: AdminUsersRoute,
   AdminIndexRoute: AdminIndexRoute,
   AdminBlogIdRoute: AdminBlogIdRoute,
+  AdminCasesIdRoute: AdminCasesIdRoute,
   AdminNewsIdRoute: AdminNewsIdRoute,
 }
 
