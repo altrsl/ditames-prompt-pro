@@ -175,6 +175,14 @@ function IAPage() {
                 Sua conversa será resumida e enviada junto.
               </p>
             )}
+            <div className="text-center">
+              <Link
+                to="/contato"
+                className="text-xs text-muted-foreground hover:text-primary transition-colors underline underline-offset-2"
+              >
+                Outras formas de contato
+              </Link>
+            </div>
           </aside>
 
           {/* Chat */}

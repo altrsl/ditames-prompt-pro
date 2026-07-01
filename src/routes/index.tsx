@@ -855,7 +855,7 @@ function CTAFinal() {
             className="font-display text-5xl md:text-7xl uppercase text-white" multiline />
         </h2>
         <p className="mt-6 text-lg text-white/85 max-w-2xl mx-auto">
-          <E.Text k="cta_desc" fallback="Conte com uma equipe preparada para conduzir seu projeto com segurança, clareza e responsabilidade." multiline />
+          <E.Text k="cta_desc" fallback="Nossa Recepcionista Ambiental ouve sua situação, identifica o que você precisa e indica o caminho certo — antes mesmo de falar com um especialista." multiline />
         </p>
         <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:justify-center">
           <Link to="/ia" className="btn-primary"><Sparkles size={16} /> Conversar com a Recepcionista Ambiental</Link>
