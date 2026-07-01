@@ -69,10 +69,19 @@ function BlogPost() {
             <NewsGallery images={post.images} title={post.title} />
           )}
 
-          <div className="mt-10 space-y-6 text-base text-foreground/85 leading-relaxed">
-            {post.body.map((p: string, i: number) => (
-              <p key={i}>{p}</p>
-            ))}
+          <div className="mt-10 rich-content">
+            {post.body.length === 1 && post.body[0].startsWith("<") ? (
+              <div
+                className="prose-ditames"
+                dangerouslySetInnerHTML={{ __html: post.body[0] }}
+              />
+            ) : (
+              <div className="space-y-6 text-base text-foreground/85 leading-relaxed">
+                {post.body.map((p: string, i: number) => (
+                  <p key={i}>{p}</p>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="mt-12 rounded-2xl bg-secondary/50 p-8">

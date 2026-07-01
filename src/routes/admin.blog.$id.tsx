@@ -4,6 +4,7 @@ import { ArrowLeft, Save, Upload, X, Loader2 } from "lucide-react";
 import { getCurrentCmsUser, writeAuditLog, hasPermission } from "@/lib/admin";
 import { supabase, storageUrl } from "@/lib/supabase";
 import { useToast, useErrorModal, Alert, friendlyError } from "@/components/admin/Toast";
+import { RichTextEditor } from "@/components/admin/RichTextEditor";
 import type { CmsUserRow } from "@/lib/database.types";
 
 export const Route = createFileRoute("/admin/blog/$id")({
@@ -200,10 +201,22 @@ function BlogEditor() {
         </div>
 
         <div>
-          <label className="block text-xs font-semibold uppercase tracking-widest text-white/50 mb-2">Conteúdo *</label>
-          <textarea value={body} onChange={(e) => { setBody(e.target.value); setInlineError(null); }}
-            rows={12} placeholder="Escreva o conteúdo do artigo…"
-            className={`w-full rounded-lg border bg-white/5 px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none transition-colors resize-y ${!body.trim() && inlineError ? "border-red-500/60" : "border-white/10 focus:border-primary/60"}`} />
+          <label className="block text-xs font-semibold uppercase tracking-widest text-white/50 mb-2">
+            Conteúdo *
+            <span className="text-white/20 normal-case font-normal ml-2">
+              Negrito, itálico, subtítulos, listas, imagens e links suportados
+            </span>
+          </label>
+          <div className={!body.trim() && inlineError ? "ring-1 ring-red-500/60 rounded-lg" : ""}>
+            <RichTextEditor
+              value={body}
+              onChange={(html) => { setBody(html); setInlineError(null); }}
+              placeholder="Escreva o conteúdo do artigo…"
+              folder="blog"
+              userId={user?.id}
+              minHeight={360}
+            />
+          </div>
         </div>
 
         <div>

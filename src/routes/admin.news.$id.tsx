@@ -4,6 +4,7 @@ import { ArrowLeft, Save, Upload, X, Eye, Loader2, GripVertical, ImagePlus, Penc
 import { getCurrentCmsUser, writeAuditLog, hasPermission } from "@/lib/admin";
 import { supabase, storageUrl } from "@/lib/supabase";
 import { useToast, useErrorModal, Alert, friendlyError } from "@/components/admin/Toast";
+import { RichTextEditor } from "@/components/admin/RichTextEditor";
 import {
   getNewsImages, addNewsImage, updateNewsImage,
   deleteNewsImage, reorderNewsImages, newsImageUrl,
@@ -304,10 +305,22 @@ function NewsEditor() {
 
         {/* Conteúdo */}
         <div>
-          <label className="block text-xs font-semibold uppercase tracking-widest text-white/50 mb-2">Conteúdo *</label>
-          <textarea value={content} onChange={(e) => { setContent(e.target.value); setInlineError(null); }}
-            rows={10} placeholder="Escreva o conteúdo da notícia…"
-            className={`w-full rounded-lg border bg-white/5 px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none transition-colors resize-y ${!content.trim() && inlineError ? "border-red-500/60" : "border-white/10 focus:border-primary/60"}`} />
+          <label className="block text-xs font-semibold uppercase tracking-widest text-white/50 mb-2">
+            Conteúdo *
+            <span className="text-white/20 normal-case font-normal ml-2">
+              Negrito, itálico, subtítulos, listas, imagens e links suportados
+            </span>
+          </label>
+          <div className={!content.trim() && inlineError ? "ring-1 ring-red-500/60 rounded-lg" : ""}>
+            <RichTextEditor
+              value={content}
+              onChange={(html) => { setContent(html); setInlineError(null); }}
+              placeholder="Escreva o conteúdo da notícia…"
+              folder="noticias"
+              userId={user?.id}
+              minHeight={320}
+            />
+          </div>
         </div>
 
         {/* Resumo */}
