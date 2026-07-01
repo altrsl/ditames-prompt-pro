@@ -4,6 +4,7 @@ import { getNewsPost, getNewsPosts } from "@/lib/data";
 import type { NormalizedPost } from "@/lib/data";
 import { formatDate } from "@/lib/content";
 import { PostCard } from "@/components/site/PostCard";
+import { NewsGallery } from "@/components/site/NewsGallery";
 import { WHATSAPP_URL } from "@/lib/services";
 
 export const Route = createFileRoute("/noticias/$slug")({
@@ -63,6 +64,11 @@ function NoticiaPost() {
             {post.title}
           </h1>
           <p className="mt-6 text-lg text-muted-foreground leading-relaxed">{post.excerpt}</p>
+
+          {/* Galeria de imagens — aparece entre o cabeçalho e o conteúdo */}
+          {post.images && post.images.length > 0 && (
+            <NewsGallery images={post.images} title={post.title} />
+          )}
 
           <div className="mt-10 space-y-6 text-base text-foreground/85 leading-relaxed">
             {post.body.map((p: string, i: number) => (

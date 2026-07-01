@@ -130,6 +130,23 @@ export interface Database {
         Relationships: [];
       };
 
+      // ─── NEWS IMAGES (galeria de imagens de notícias) ──────────
+      news_images: {
+        Row: {
+          id: string;
+          news_id: string;
+          storage_path: string;
+          caption: string | null;
+          alt_text: string | null;
+          display_order: number;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: Partial<Omit<Database["public"]["Tables"]["news_images"]["Row"], "id" | "created_at" | "updated_at">> & Pick<Database["public"]["Tables"]["news_images"]["Row"], "news_id" | "storage_path">;
+        Update: Partial<Omit<Database["public"]["Tables"]["news_images"]["Row"], "id" | "created_at" | "updated_at">>;
+        Relationships: [];
+      };
+
       // ─── NEWS (Notícias) ─────────────────────────────────────
       // Arquitetura definitiva. status: enum controla visibilidade (não boolean).
       // source distingue conteúdo manual de importações (Instagram, link externo).
@@ -323,6 +340,7 @@ export type MediaRow = Database["public"]["Tables"]["media"]["Row"];
 export type CaseRow = Database["public"]["Tables"]["cases"]["Row"];
 export type BlogPostRow = Database["public"]["Tables"]["blog_posts"]["Row"];
 export type NewsRow = Database["public"]["Tables"]["news"]["Row"];
+export type NewsImageRow = Database["public"]["Tables"]["news_images"]["Row"];
 export type FaqRow = Database["public"]["Tables"]["faq"]["Row"];
 export type ServiceRow = Database["public"]["Tables"]["services"]["Row"];
 export type HomepageContentRow = Database["public"]["Tables"]["homepage_content"]["Row"];

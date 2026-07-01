@@ -2,7 +2,8 @@
  * Ditames CMS — News (manual + Instagram)
  */
 
-import { supabase } from "./supabase";
+import { supabase, storageUrl } from "./supabase";
+import type { NewsImageRow } from "./database.types";
 import { writeAuditLog } from "./admin";
 import type { NewsRow, NewsStatus } from "./database.types";
 import type { CmsUserRow } from "./database.types";
@@ -328,4 +329,86 @@ function deriveTitleFromCaption(caption: string): string {
   // Pega a primeira linha não vazia ou os primeiros 80 caracteres
   const firstLine = caption.split("\n").find((l) => l.trim().length > 0) ?? caption;
   return firstLine.length > 80 ? firstLine.slice(0, 80) + "…" : firstLine;
+}
+
+// ─── GALERIA DE IMAGENS ──────────────────────────────────────
+
+/** Retorna todas as imagens de uma notícia, ordenadas por display_order */
+export async function getNewsImages(newsId: string): Promise<NewsImageRow[]> {
+  const { data, error } = await supabase
+    .from("news_images")
+    .select("*")
+    .eq("news_id", newsId)
+    .order("display_order", { ascending: true });
+  if (error) throw error;
+  return (data ?? []) as NewsImageRow[];
+}
+
+/** Retorna a URL pública de uma imagem a partir do storage_path */
+export function newsImageUrl(storagePath: string): string {
+  return storageUrl("media", storagePath);
+}
+
+/** Insere uma nova imagem para uma notícia */
+export async function addNewsImage(
+  newsId: string,
+  storagePath: string,
+  opts: { caption?: string; altText?: string; displayOrder?: number } = {}
+): Promise<NewsImageRow> {
+  // Calcula o próximo display_order se não informado
+  let order = opts.displayOrder;
+  if (order === undefined) {
+    const { data } = await supabase
+      .from("news_images")
+      .select("display_order")
+      .eq("news_id", newsId)
+      .order("display_order", { ascending: false })
+      .limit(1);
+    order = data && data.length > 0 ? (data[0].display_order as number) + 1 : 1;
+  }
+
+  const { data, error } = await supabase
+    .from("news_images")
+    .insert({
+      news_id: newsId,
+      storage_path: storagePath,
+      caption: opts.caption ?? null,
+      alt_text: opts.altText ?? null,
+      display_order: order,
+    })
+    .select()
+    .single();
+  if (error) throw error;
+  return data as NewsImageRow;
+}
+
+/** Atualiza legenda, alt_text ou ordem de uma imagem */
+export async function updateNewsImage(
+  imageId: string,
+  updates: { caption?: string | null; alt_text?: string | null; display_order?: number }
+): Promise<void> {
+  const { error } = await supabase
+    .from("news_images")
+    .update(updates)
+    .eq("id", imageId);
+  if (error) throw error;
+}
+
+/** Remove uma imagem do banco e do Storage */
+export async function deleteNewsImage(image: NewsImageRow): Promise<void> {
+  // Remove do Storage primeiro
+  await supabase.storage.from("media").remove([image.storage_path]);
+  // Remove do banco
+  const { error } = await supabase.from("news_images").delete().eq("id", image.id);
+  if (error) throw error;
+}
+
+/** Reordena um conjunto de imagens (recebe array com ids na nova ordem) */
+export async function reorderNewsImages(orderedIds: string[]): Promise<void> {
+  for (let i = 0; i < orderedIds.length; i++) {
+    await supabase
+      .from("news_images")
+      .update({ display_order: i + 1 })
+      .eq("id", orderedIds[i]);
+  }
 }

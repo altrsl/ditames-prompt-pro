@@ -10,12 +10,15 @@
  */
 
 import { supabase } from "./supabase";
+import { storageUrl } from "./supabase";
 import { blogPosts as fallbackBlog, newsPosts as fallbackNews } from "./content";
 import type { Post } from "./content";
 
 // ─── TIPOS NORMALIZADOS ───────────────────────────────────────
 
-export type NormalizedPost = Post;
+export type NormalizedPost = Post & {
+  images?: { url: string; caption?: string | null; alt_text?: string | null }[];
+};
 
 export type NormalizedCase = {
   id: string;
@@ -183,26 +186,35 @@ export async function getBlogCategories(): Promise<string[]> {
   }
 }
 
-// ─── NOTÍCIAS (tabela: news) ──────────────────────────────────
-// news usa: status ('published'|'draft'|'archived'), content (text), cover_image
+// ─── TIPO AUXILIAR para join news + news_images ───────────────
+type NewsWithImages = {
+  slug: string | null;
+  title: string;
+  excerpt: string;
+  published_at: string | null;
+  category: string;
+  read_time: string;
+  content: string;
+  news_images: { storage_path: string; caption: string | null; alt_text: string | null; display_order: number }[];
+};
+
+// ─── NOTÍCIAS (tabela: news + news_images) ────────────────────
 
 export async function getNewsPosts(limit?: number): Promise<NormalizedPost[]> {
   try {
-    let query = supabase
+    const qb = supabase
       .from("news")
-      .select("slug, title, excerpt, published_at, category, read_time, content")
+      .select("slug, title, excerpt, published_at, category, read_time, content, news_images ( storage_path, caption, alt_text, display_order )")
       .eq("status", "published")
       .order("published_at", { ascending: false });
 
-    if (limit) query = query.limit(limit);
-
-    const { data, error } = await query;
+    const { data, error } = await (limit ? qb.limit(limit) : qb);
 
     if (error || !data || data.length === 0) {
       return limit ? fallbackNews.slice(0, limit) : fallbackNews;
     }
 
-    return data.map((p) => ({
+    return (data as unknown as NewsWithImages[]).map((p) => ({
       slug: p.slug ?? "",
       title: p.title,
       excerpt: p.excerpt,
@@ -210,6 +222,13 @@ export async function getNewsPosts(limit?: number): Promise<NormalizedPost[]> {
       category: p.category,
       readTime: p.read_time,
       body: [p.content ?? ""],
+      images: (p.news_images ?? [])
+        .sort((a, b) => a.display_order - b.display_order)
+        .map((img) => ({
+          url: storageUrl("media", img.storage_path),
+          caption: img.caption,
+          alt_text: img.alt_text,
+        })),
     }));
   } catch {
     return limit ? fallbackNews.slice(0, limit) : fallbackNews;
@@ -220,7 +239,7 @@ export async function getNewsPost(slug: string): Promise<NormalizedPost | null> 
   try {
     const { data, error } = await supabase
       .from("news")
-      .select("slug, title, excerpt, published_at, category, read_time, content")
+      .select("slug, title, excerpt, published_at, category, read_time, content, news_images ( storage_path, caption, alt_text, display_order )")
       .eq("slug", slug)
       .eq("status", "published")
       .single();
@@ -229,14 +248,22 @@ export async function getNewsPost(slug: string): Promise<NormalizedPost | null> 
       return fallbackNews.find((p) => p.slug === slug) ?? null;
     }
 
+    const p = data as unknown as NewsWithImages;
     return {
-      slug: data.slug ?? slug,
-      title: data.title,
-      excerpt: data.excerpt,
-      date: isoToDate(data.published_at),
-      category: data.category,
-      readTime: data.read_time,
-      body: [data.content ?? ""],
+      slug: p.slug ?? slug,
+      title: p.title,
+      excerpt: p.excerpt,
+      date: isoToDate(p.published_at),
+      category: p.category,
+      readTime: p.read_time,
+      body: [p.content ?? ""],
+      images: (p.news_images ?? [])
+        .sort((a, b) => a.display_order - b.display_order)
+        .map((img) => ({
+          url: storageUrl("media", img.storage_path),
+          caption: img.caption,
+          alt_text: img.alt_text,
+        })),
     };
   } catch {
     return fallbackNews.find((p) => p.slug === slug) ?? null;
