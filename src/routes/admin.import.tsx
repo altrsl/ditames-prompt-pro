@@ -424,7 +424,21 @@ function AdminImport() {
                 className="w-full rounded-lg border border-white/10 bg-[#1a2118] px-4 py-3 text-sm text-white focus:outline-none focus:border-primary/60">
                 {postType === "news"
                   ? ["Institucional", "Projeto", "Evento", "Regulatório", "Instagram"].map((c) => <option key={c}>{c}</option>)
-                  : ["Educação Ambiental", "Rural", "Tecnologia", "Hidrologia", "Florestal"].map((c) => <option key={c}>{c}</option>)
+                  : [
+                      "Educação Ambiental",
+                      "Impacto Ambiental",
+                      "Legislação Ambiental",
+                      "Licenciamento",
+                      "Recursos Hídricos",
+                      "Hidrologia",
+                      "Fauna e Flora",
+                      "Florestal",
+                      "Geotecnologia",
+                      "Geoprocessamento",
+                      "Rural",
+                      "Tecnologia",
+                      "Casos de Sucesso",
+                    ].map((c) => <option key={c}>{c}</option>)
                 }
               </select>
             </div>
