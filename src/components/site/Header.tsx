@@ -14,6 +14,7 @@ const nav = [
   { to: "/blog", label: "Blog" },
   { to: "/noticias", label: "Notícias" },
   { to: "/cases", label: "Cases" },
+  { to: "/cultura", label: "Cultura" },
   { to: "/contato", label: "Contato" },
 ] as const;
 
