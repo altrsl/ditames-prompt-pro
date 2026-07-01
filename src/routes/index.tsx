@@ -2,8 +2,6 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import {
   ArrowRight,
-  MessageCircle,
-  Phone,
   Trees,
   Factory,
   HardHat,
@@ -36,7 +34,7 @@ import {
 import heroImg from "@/assets/hero-ditames.jpg";
 import quemSomosImg from "@/assets/quem-somos.jpg";
 import tecnologiaImg from "@/assets/tecnologia.jpg";
-import { services, WHATSAPP_URL } from "@/lib/services";
+import { services } from "@/lib/services";
 import { formatDate } from "@/lib/content";
 import type { NormalizedCase, NormalizedFaqItem, NormalizedPost } from "@/lib/data";
 import * as E from "@/components/admin/InlineEditable";
@@ -149,8 +147,7 @@ function Hero() {
           <E.Text k="hero_subtitle" fallback="Fortalecemos pessoas, propriedades e empresas por meio de soluções ambientais completas, promovendo segurança, conformidade legal e crescimento sustentável." multiline />
         </p>
         <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-          <Link to="/contato" className="btn-primary">Solicitar Atendimento <ArrowRight size={16} /></Link>
-          <a href={WHATSAPP_URL} className="btn-on-dark">Falar com Especialista</a>
+          <Link to="/ia" className="btn-primary"><Sparkles size={16} /> Solicitar Atendimento</Link>
         </div>
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-[10px] tracking-[0.3em] text-white/60">ROLE PARA EXPLORAR</div>
       </div>
@@ -861,8 +858,7 @@ function CTAFinal() {
           <E.Text k="cta_desc" fallback="Conte com uma equipe preparada para conduzir seu projeto com segurança, clareza e responsabilidade." multiline />
         </p>
         <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:justify-center">
-          <Link to="/contato" className="btn-primary"><Phone size={16} /> Solicitar Atendimento</Link>
-          <a href={WHATSAPP_URL} className="btn-on-dark"><MessageCircle size={16} /> WhatsApp</a>
+          <Link to="/ia" className="btn-primary"><Sparkles size={16} /> Conversar com a Recepcionista Ambiental</Link>
         </div>
       </div>
     </section>
