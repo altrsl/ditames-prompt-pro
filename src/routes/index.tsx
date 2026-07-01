@@ -38,19 +38,12 @@ import quemSomosImg from "@/assets/quem-somos.jpg";
 import tecnologiaImg from "@/assets/tecnologia.jpg";
 import { services, WHATSAPP_URL } from "@/lib/services";
 import { formatDate } from "@/lib/content";
-import { getCases, getFaq, getBlogPosts, getNewsPosts } from "@/lib/data";
 import type { NormalizedCase, NormalizedFaqItem, NormalizedPost } from "@/lib/data";
 import * as E from "@/components/admin/InlineEditable";
 
 export const Route = createFileRoute("/")({
   loader: async () => {
-    const [cases, faq, blog, news] = await Promise.all([
-      getCases(),
-      getFaq(),
-      getBlogPosts(3),
-      getNewsPosts(3),
-    ]);
-    return { cases, faq, blog, news };
+    return {};
   },
   head: () => ({
     meta: [
@@ -879,23 +872,15 @@ function CTAFinal() {
 /* ---------- page ---------- */
 
 function Home() {
-  const { cases, faq, blog, news } = Route.useLoaderData();
+  Route.useLoaderData(); // loader limpo — seções removidas da Home
   return (
     <div className="bg-background">
       <Hero />
       <NotificacaoAmbiental />
       <PublicoAlvo />
       <Numeros />
-      <Crescimento />
-      <QuemSomos />
-      <Servicos />
       <Metodo />
       <Diferenciais />
-      <Tecnologia />
-      <IA />
-      <FAQ items={faq} />
-      <Cases items={cases} />
-      <ConteudoAtualizacoes blog={blog} news={news} />
       <Cultura />
       <CTAFinal />
     </div>
