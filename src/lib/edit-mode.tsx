@@ -51,9 +51,19 @@ export function EditModeProvider({ children }: { children: ReactNode }) {
 
   // Carrega todo o conteúdo editável do banco uma vez
   const loadContent = useCallback(async () => {
-    const { data } = await supabase.from("homepage_content").select("key, value");
-    if (data?.length) {
-      setContent(Object.fromEntries(data.map((r) => [r.key, r.value])));
+    try {
+      const { data, error } = await supabase.from("homepage_content").select("key, value");
+      if (error) {
+        console.error("[EditMode] falha ao carregar conteúdo:", error);
+        return;
+      }
+      if (data?.length) {
+        setContent(Object.fromEntries(data.map((r) => [r.key, r.value])));
+      }
+    } catch (e) {
+      // Nunca propagar — loadContent é chamado dentro de useEffect e
+      // uma rejeição não capturada pode acionar o ErrorBoundary do router
+      console.error("[EditMode] erro inesperado ao carregar conteúdo:", e);
     }
   }, []);
 
@@ -80,18 +90,22 @@ export function EditModeProvider({ children }: { children: ReactNode }) {
     // Verifica sessão atual
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (!session) return;
-      setIsAuthenticated(true);
-      const user = await getCmsUser(session.user.id);
-      setCmsUser(user);
-      await loadContent();
+      try {
+        setIsAuthenticated(true);
+        const user = await getCmsUser(session.user.id);
+        setCmsUser(user);
+        await loadContent();
 
-      // Ativa modo edição se ?edit=true
-      const params = new URLSearchParams(window.location.search);
-      if (params.get("edit") === "true") {
-        setEditMode(true);
-        const url = new URL(window.location.href);
-        url.searchParams.delete("edit");
-        window.history.replaceState({}, "", url.toString());
+        // Ativa modo edição se ?edit=true
+        const params = new URLSearchParams(window.location.search);
+        if (params.get("edit") === "true") {
+          setEditMode(true);
+          const url = new URL(window.location.href);
+          url.searchParams.delete("edit");
+          window.history.replaceState({}, "", url.toString());
+        }
+      } catch (e) {
+        console.error("[EditMode] erro na inicialização de sessão:", e);
       }
     });
 
@@ -99,10 +113,14 @@ export function EditModeProvider({ children }: { children: ReactNode }) {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         if (session) {
-          setIsAuthenticated(true);
-          const user = await getCmsUser(session.user.id);
-          setCmsUser(user);
-          await loadContent();
+          try {
+            setIsAuthenticated(true);
+            const user = await getCmsUser(session.user.id);
+            setCmsUser(user);
+            await loadContent();
+          } catch (e) {
+            console.error("[EditMode] erro ao atualizar sessão:", e);
+          }
         } else {
           setIsAuthenticated(false);
           setCmsUser(null);
