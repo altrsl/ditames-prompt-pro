@@ -52,6 +52,7 @@ function BlogEditor() {
           setSeoDesc(data.seo_description ?? "");
         }
       } catch (e) {
+        console.error("[blog editor] erro ao carregar:", e);
         const { title, message } = friendlyError(e);
         showError(title, message);
       }
@@ -80,15 +81,19 @@ function BlogEditor() {
       if (error) throw error;
       const url = storageUrl("media", path);
       setCoverUrl(url);
-      if (user) {
-        await supabase.from("media").insert({
-          filename: file.name, storage_path: path, public_url: url,
-          category: "blog", size_bytes: file.size, mime_type: file.type,
-          uploaded_by: user.id,
-        });
+      if (!user) {
+        showError("Sessão expirada", "Faça login novamente para continuar.");
+        return;
       }
+      const { error: mediaErr } = await supabase.from("media").insert({
+        filename: file.name, storage_path: path, public_url: url,
+        category: "blog", size_bytes: file.size, mime_type: file.type,
+        uploaded_by: user.id,
+      });
+      if (mediaErr) throw mediaErr;
       toast.success("Imagem enviada com sucesso!");
     } catch (e) {
+      console.error("[blog editor] erro ao fazer upload:", e);
       const { title, message } = friendlyError(e);
       showError(title, message, () => fileRef.current?.click());
     } finally {
@@ -136,8 +141,8 @@ function BlogEditor() {
           read_time: readTime,
           seo_title: seoTitle || null,
           seo_description: seoDesc || null,
-          created_by: user?.id ?? null,
-          updated_by: user?.id ?? null,
+          // created_by e updated_by requerem finalize-publications.sql
+          ...(user?.id ? { created_by: user.id, updated_by: user.id } : {}),
         });
         if (error) throw error;
       } else {
@@ -149,7 +154,8 @@ function BlogEditor() {
           read_time: readTime,
           seo_title: seoTitle || null,
           seo_description: seoDesc || null,
-          updated_by: user?.id ?? null,
+          // updated_by requer finalize-publications.sql
+          ...(user?.id ? { updated_by: user.id } : {}),
         }).eq("id", id);
         if (error) throw error;
       }
@@ -167,6 +173,7 @@ function BlogEditor() {
       );
       setTimeout(() => router.navigate({ to: "/admin/blog" }), 1500);
     } catch (e) {
+      console.error("[blog editor] erro ao salvar:", e);
       const { title, message } = friendlyError(e);
       showError(title, message, handleSave);
     } finally {

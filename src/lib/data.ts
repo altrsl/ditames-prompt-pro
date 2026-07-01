@@ -115,15 +115,13 @@ export async function getFaq(): Promise<NormalizedFaqItem[]> {
 
 export async function getBlogPosts(limit?: number): Promise<NormalizedPost[]> {
   try {
-    let query = supabase
+    const qb = supabase
       .from("blog_posts")
-      .select("slug, title, excerpt, published_at, category, read_time, body")
+      .select("slug, title, excerpt, published_at, category, read_time, body, cover_url")
       .eq("published", true)
       .order("published_at", { ascending: false });
 
-    if (limit) query = query.limit(limit);
-
-    const { data, error } = await query;
+    const { data, error } = await (limit ? qb.limit(limit) : qb);
 
     if (error || !data || data.length === 0) {
       return limit ? fallbackBlog.slice(0, limit) : fallbackBlog;
@@ -137,6 +135,7 @@ export async function getBlogPosts(limit?: number): Promise<NormalizedPost[]> {
       category: p.category,
       readTime: p.read_time,
       body: [p.body ?? ""],
+      images: p.cover_url ? [{ url: p.cover_url, caption: null, alt_text: p.title }] : [],
     }));
   } catch {
     return limit ? fallbackBlog.slice(0, limit) : fallbackBlog;
@@ -147,7 +146,7 @@ export async function getBlogPost(slug: string): Promise<NormalizedPost | null> 
   try {
     const { data, error } = await supabase
       .from("blog_posts")
-      .select("slug, title, excerpt, published_at, category, read_time, body")
+      .select("slug, title, excerpt, published_at, category, read_time, body, cover_url")
       .eq("slug", slug)
       .eq("published", true)
       .single();
@@ -164,6 +163,7 @@ export async function getBlogPost(slug: string): Promise<NormalizedPost | null> 
       category: data.category,
       readTime: data.read_time,
       body: [data.body ?? ""],
+      images: data.cover_url ? [{ url: data.cover_url, caption: null, alt_text: data.title }] : [],
     };
   } catch {
     return fallbackBlog.find((p) => p.slug === slug) ?? null;
