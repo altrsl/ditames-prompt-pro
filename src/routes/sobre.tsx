@@ -95,7 +95,6 @@ function SobrePage() {
               </div>
             ))}
           </div>
-          <Link to="/contato" className="btn-primary mt-10">Falar com a equipe <ArrowRight size={16} /></Link>
         </div>
       </section>
     </>

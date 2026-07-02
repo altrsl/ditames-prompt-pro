@@ -75,16 +75,13 @@ export function Header() {
         <div className="hidden xl:flex items-center gap-3">
           <Link
             to="/ia"
-            className={`inline-flex flex-col items-center gap-0 rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-widest transition-all ${
+            className={`inline-flex items-center gap-2 rounded-full px-5 py-2 text-xs font-bold uppercase tracking-widest transition-all ${
               transparent
-                ? "border border-white/30 text-white hover:border-white hover:bg-white/10"
-                : "border border-primary/30 text-primary hover:border-primary hover:bg-primary/5"
+                ? "bg-white/15 text-white border border-white/40 hover:bg-white/25"
+                : "bg-primary text-white hover:opacity-90"
             }`}
           >
-            <span className={`text-[9px] font-normal lowercase tracking-normal leading-none mb-0.5 ${transparent ? "text-white/50" : "text-ink/40"}`}>
-              Dúvidas?
-            </span>
-            <span className="flex items-center gap-1"><Sparkles size={11} /> Recepcionista Ambiental</span>
+            <Sparkles size={13} /> Recepcionista Ambiental
           </Link>
         </div>
 

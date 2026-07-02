@@ -24,11 +24,7 @@ export function Footer() {
               />
             </Link>
             <p className="mt-5 text-sm leading-relaxed text-white/65">
-
-              Fortalecer clientes por meio de soluções ambientais integradas, unindo tecnologia,
-              conhecimento técnico e desenvolvimento humano contínuo, para que cada desafio se
-              torne um passo de evolução organizacional e pessoal, promovendo sustentabilidade,
-              responsabilidade e propósito em todas as entregas.
+              Fortalecer clientes através de soluções ambientais, unindo tecnologia ao desenvolvimento contínuo para que cada desafio seja um degrau na evolução de todos.
             </p>
             <div className="mt-6 flex items-center gap-3">
               <a
@@ -84,14 +80,14 @@ export function Footer() {
                 <Phone size={14} className="text-primary shrink-0" /> {settings.phone}
               </li>
               <li>
-                <a href={whatsappUrl} className="flex items-center gap-2 hover:text-primary transition-colors">
+                <span className="flex items-center gap-2">
                   <MessageCircle size={14} className="text-primary shrink-0" /> {settings.whatsapp_display ?? "(47) 9 9691-0055"}
-                </a>
+                </span>
               </li>
               <li>
-                <a href={`mailto:${settings.email}`} className="flex items-center gap-2 hover:text-primary transition-colors break-all">
+                <span className="flex items-center gap-2 break-all">
                   <Mail size={14} className="text-primary shrink-0" /> {settings.email}
-                </a>
+                </span>
               </li>
               <li className="flex items-start gap-2">
                 <MapPin size={14} className="text-primary shrink-0 mt-1" />

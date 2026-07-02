@@ -125,15 +125,28 @@ function Counter({ to, suffix = "", prefix = "" }: { to: number; suffix?: string
 
 
 function Hero() {
-  const [bg, setBg] = useState(heroImg);
+  const imgRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!imgRef.current) return;
+      imgRef.current.style.transform = `translateY(${window.scrollY * 0.4}px)`;
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
     <section id="top" className="relative min-h-[100svh] w-full overflow-hidden">
-      <E.Image
-        k="hero_image" fallback={heroImg}
-        alt="Drone sobrevoando área verde com equipe técnica em operação"
-        className="absolute inset-0 h-full w-full object-cover"
-        folder="homepage"
-      />
+      {/* Imagem com parallax — move mais devagar que o conteúdo */}
+      <div ref={imgRef} className="absolute will-change-transform" style={{ inset: 0, top: "-20%", bottom: "-20%" }}>
+        <E.Image
+          k="hero_image" fallback={heroImg}
+          alt="Drone sobrevoando área verde com equipe técnica em operação"
+          className="h-full w-full object-cover"
+          folder="homepage"
+        />
+      </div>
       <div className="absolute inset-0 bg-gradient-to-b from-black/65 via-black/45 to-black/80" />
       <div className="absolute inset-0 opacity-30" style={{ backgroundImage: "repeating-linear-gradient(115deg, transparent 0 80px, rgba(219,231,211,.08) 80px 81px)" }} />
 
