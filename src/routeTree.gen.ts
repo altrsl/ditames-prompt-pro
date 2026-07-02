@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SobreRouteImport } from './routes/sobre'
+import { Route as PrivacidadeRouteImport } from './routes/privacidade'
 import { Route as IaRouteImport } from './routes/ia'
 import { Route as CulturaRouteImport } from './routes/cultura'
 import { Route as ContatoRouteImport } from './routes/contato'
@@ -46,6 +47,11 @@ import { Route as AdminBlogIdRouteImport } from './routes/admin.blog.$id'
 const SobreRoute = SobreRouteImport.update({
   id: '/sobre',
   path: '/sobre',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacidadeRoute = PrivacidadeRouteImport.update({
+  id: '/privacidade',
+  path: '/privacidade',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IaRoute = IaRouteImport.update({
@@ -216,6 +222,7 @@ export interface FileRoutesByFullPath {
   '/contato': typeof ContatoRoute
   '/cultura': typeof CulturaRoute
   '/ia': typeof IaRoute
+  '/privacidade': typeof PrivacidadeRoute
   '/sobre': typeof SobreRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/blog': typeof AdminBlogRoute
@@ -250,6 +257,7 @@ export interface FileRoutesByTo {
   '/contato': typeof ContatoRoute
   '/cultura': typeof CulturaRoute
   '/ia': typeof IaRoute
+  '/privacidade': typeof PrivacidadeRoute
   '/sobre': typeof SobreRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/blog': typeof AdminBlogRoute
@@ -286,6 +294,7 @@ export interface FileRoutesById {
   '/contato': typeof ContatoRoute
   '/cultura': typeof CulturaRoute
   '/ia': typeof IaRoute
+  '/privacidade': typeof PrivacidadeRoute
   '/sobre': typeof SobreRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/blog_': typeof AdminBlogRoute
@@ -323,6 +332,7 @@ export interface FileRouteTypes {
     | '/contato'
     | '/cultura'
     | '/ia'
+    | '/privacidade'
     | '/sobre'
     | '/admin/audit'
     | '/admin/blog'
@@ -357,6 +367,7 @@ export interface FileRouteTypes {
     | '/contato'
     | '/cultura'
     | '/ia'
+    | '/privacidade'
     | '/sobre'
     | '/admin/audit'
     | '/admin/blog'
@@ -392,6 +403,7 @@ export interface FileRouteTypes {
     | '/contato'
     | '/cultura'
     | '/ia'
+    | '/privacidade'
     | '/sobre'
     | '/admin/audit'
     | '/admin/blog_'
@@ -428,6 +440,7 @@ export interface RootRouteChildren {
   ContatoRoute: typeof ContatoRoute
   CulturaRoute: typeof CulturaRoute
   IaRoute: typeof IaRoute
+  PrivacidadeRoute: typeof PrivacidadeRoute
   SobreRoute: typeof SobreRoute
   ApiChatRoute: typeof ApiChatRoute
   BlogSlugRoute: typeof BlogSlugRoute
@@ -445,6 +458,13 @@ declare module '@tanstack/react-router' {
       path: '/sobre'
       fullPath: '/sobre'
       preLoaderRoute: typeof SobreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacidade': {
+      id: '/privacidade'
+      path: '/privacidade'
+      fullPath: '/privacidade'
+      preLoaderRoute: typeof PrivacidadeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/ia': {
@@ -727,6 +747,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContatoRoute: ContatoRoute,
   CulturaRoute: CulturaRoute,
   IaRoute: IaRoute,
+  PrivacidadeRoute: PrivacidadeRoute,
   SobreRoute: SobreRoute,
   ApiChatRoute: ApiChatRoute,
   BlogSlugRoute: BlogSlugRoute,

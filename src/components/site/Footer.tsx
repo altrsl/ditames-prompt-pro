@@ -122,8 +122,14 @@ export function Footer() {
         </div>
 
         <div className="mt-8 flex flex-col items-start justify-between gap-3 border-t border-white/10 pt-6 text-xs text-white/50 md:flex-row md:items-center">
-          <p>© {new Date().getFullYear()} Ditames Ambiental. Todos os direitos reservados.</p>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-col gap-1">
+            <p>© {new Date().getFullYear()} Ditames Ambiental. Todos os direitos reservados.</p>
+            <p className="text-white/30">CNPJ 47.591.981/0001-52</p>
+          </div>
+          <div className="flex items-center gap-4">
+            <Link to="/privacidade" className="hover:text-white/80 transition-colors">
+              Política de Privacidade
+            </Link>
             {isAuthenticated && (
               <Link
                 to="/admin"
