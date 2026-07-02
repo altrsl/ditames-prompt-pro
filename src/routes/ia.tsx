@@ -20,6 +20,23 @@ export const Route = createFileRoute("/ia")({
   component: IAPage,
 });
 
+const SESSION_KEY = "ditames-ra-conversa";
+
+function saveConversation(messages: unknown[]) {
+  try {
+    sessionStorage.setItem(SESSION_KEY, JSON.stringify(messages));
+  } catch {}
+}
+
+function loadConversation() {
+  try {
+    const saved = sessionStorage.getItem(SESSION_KEY);
+    return saved ? JSON.parse(saved) : [];
+  } catch {
+    return [];
+  }
+}
+
 const suggestions = [
   "Quero abrir uma indústria",
   "Preciso regularizar minha propriedade rural",
@@ -107,7 +124,18 @@ function getWhatsAppUrlWithSummary(messages: { role: string; parts: { type: stri
 
 function IAPage() {
   const [transport] = useState(() => new DefaultChatTransport({ api: "/api/chat" }));
-  const { messages, sendMessage, status, error } = useChat({ transport });
+  const { messages, sendMessage, status, error, setMessages } = useChat({ transport });
+
+  // Restaura conversa salva ao montar o componente
+  useEffect(() => {
+    const saved = loadConversation();
+    if (saved.length > 0) setMessages(saved);
+  }, []);
+
+  // Salva conversa no sessionStorage a cada atualização
+  useEffect(() => {
+    if (messages.length > 0) saveConversation(messages);
+  }, [messages]);
   const [input, setInput] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -162,18 +190,24 @@ function IAPage() {
 
   const chatRef = useRef<HTMLDivElement>(null);
 
-  // Scroll ancorado: só desce automaticamente se o usuário já estiver
-  // perto do final — se rolou para cima para ler, não interfere.
+  // Scroll ancorado: desce automaticamente quando nova mensagem chega
   useEffect(() => {
     const container = chatRef.current;
     if (!container) return;
     const { scrollTop, scrollHeight, clientHeight } = container;
     const distanceFromBottom = scrollHeight - scrollTop - clientHeight;
-    // Só rola automaticamente se estiver a menos de 120px do final
-    if (distanceFromBottom < 120) {
+    // Scroll automático se estiver a menos de 300px do final
+    if (distanceFromBottom < 300) {
       container.scrollTop = container.scrollHeight;
     }
   }, [messages]);
+
+  // Foco automático: recoloca o cursor no input assim que a RA termina de responder
+  useEffect(() => {
+    if (status === "ready") {
+      inputRef.current?.focus();
+    }
+  }, [status]);
 
   useEffect(() => {
     inputRef.current?.focus();
