@@ -130,11 +130,8 @@ function Hero() {
   useEffect(() => {
     const handleScroll = () => {
       if (!imgRef.current) return;
-      // Negativo: imagem sobe mais devagar que o conteúdo → efeito de profundidade
-      // 0.25 = imagem move 25% da velocidade do scroll, texto move 100%
-      imgRef.current.style.transform = `translateY(${window.scrollY * -0.25}px)`;
+      imgRef.current.style.transform = `translateY(${window.scrollY * -0.15}px)`;
     };
-    // Executa uma vez ao montar para posição inicial correta
     handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
@@ -142,11 +139,18 @@ function Hero() {
 
   return (
     <section id="top" className="relative min-h-[100svh] w-full overflow-hidden">
-      {/* Imagem com parallax — posicionada com folga extra para o movimento não expor bordas */}
+      {/* Imagem com parallax suave — transition CSS elimina o jitter de frames */}
       <div
         ref={imgRef}
-        className="will-change-transform"
-        style={{ position: "absolute", left: 0, right: 0, top: "-30%", bottom: "-30%" }}
+        style={{
+          position: "absolute",
+          left: 0,
+          right: 0,
+          top: "-40%",
+          bottom: "-40%",
+          transition: "transform 0.12s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+          willChange: "transform",
+        }}
       >
         <E.Image
           k="hero_image" fallback={heroImg}
