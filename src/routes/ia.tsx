@@ -29,40 +29,74 @@ const suggestions = [
   "Não sei qual serviço preciso",
 ];
 
-// Extrai texto puro de uma mensagem do useChat (remove markdown de links/negrito)
+// Extrai texto puro de uma mensagem do useChat
 function plainText(parts: { type: string; text?: string }[]): string {
   return parts
     .map((p) => (p.type === "text" ? p.text ?? "" : ""))
     .join("")
-    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1") // [label](url) → label
-    .replace(/\*\*([^*]+)\*\*/g, "$1");       // **bold** → bold
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+    .replace(/\*\*([^*]+)\*\*/g, "$1");
 }
 
-// Gera um resumo curto da conversa para encaminhar ao especialista via WhatsApp
+// Tenta extrair informações de triagem da conversa
+function extractTriagem(messages: { role: string; parts: { type: string; text?: string }[] }[]) {
+  const fullText = messages.map((m) => plainText(m.parts)).join(" ").toLowerCase();
+
+  // Tipo de imóvel
+  let tipo = "";
+  if (/rural|fazenda|sítio|chácara|propriedade rural|imóvel rural/.test(fullText)) tipo = "Propriedade rural";
+  else if (/empresa|indústria|fábrica|comércio|empreendimento|negócio/.test(fullText)) tipo = "Empreendimento/empresa";
+  else if (/urbano|lote|terreno urbano|construção/.test(fullText)) tipo = "Área urbana";
+
+  // Serviço identificado — pega da última mensagem da RA
+  let servico = "";
+  const lastRA = [...messages].reverse().find((m) => m.role === "assistant");
+  if (lastRA) {
+    const text = plainText(lastRA.parts);
+    const match = text.match(/Serviço recomendado[:\s]+([^\n.]+)/i);
+    if (match) servico = match[1].trim();
+  }
+
+  // Urgência
+  const urgente = /embargo|autuação|notificação|multa|prazo|urgente/.test(fullText);
+
+  // Situação
+  let situacao = "";
+  if (/regularizar|irregular|regularização/.test(fullText)) situacao = "Quer regularizar";
+  else if (/licenciar|licenciamento|licença/.test(fullText)) situacao = "Quer licenciar";
+  else if (/vender|comprar|transferir/.test(fullText)) situacao = "Compra/venda de imóvel";
+  else if (/notificação|autuação|embargo|multa/.test(fullText)) situacao = "Recebeu notificação/autuação";
+  else if (/novo|planejar|planejamento|futuro/.test(fullText)) situacao = "Projeto novo";
+
+  return { tipo, servico, urgente, situacao };
+}
+
+// Gera resumo estruturado da conversa para o WhatsApp do sucesso
 function buildWhatsAppSummary(messages: { role: string; parts: { type: string; text?: string }[] }[]): string {
   if (messages.length === 0) {
     return "Olá, vim pelo site da Ditames e gostaria de falar com um especialista.";
   }
+
+  const { tipo, servico, urgente, situacao } = extractTriagem(messages);
 
   const userMessages = messages
     .filter((m) => m.role === "user")
     .map((m) => plainText(m.parts))
     .filter(Boolean);
 
-  const lastAssistant = [...messages].reverse().find((m) => m.role === "assistant");
-  const assistantSummary = lastAssistant ? plainText(lastAssistant.parts) : "";
+  let resumo = "Olá! Conversei com a Recepcionista Ambiental da Ditames e gostaria de continuar com um especialista.\n\n";
+  resumo += "📋 *TRIAGEM — Recepcionista Ambiental*\n";
 
-  let summary = "Olá! Conversei com a Recepcionista Ambiental do site e gostaria de continuar com um especialista.\n\n";
+  if (urgente) resumo += "⚠️ *URGENTE*\n";
+  if (tipo) resumo += `Tipo: ${tipo}\n`;
+  if (situacao) resumo += `Situação: ${situacao}\n`;
+  if (servico) resumo += `Serviço identificado: ${servico}\n`;
 
   if (userMessages.length > 0) {
-    summary += `Minha situação: ${userMessages[0].slice(0, 200)}\n\n`;
-  }
-  if (assistantSummary) {
-    summary += `Última orientação recebida: ${assistantSummary.slice(0, 300)}`;
+    resumo += `\n💬 *Resumo da conversa:*\n${userMessages.slice(0, 3).map((m) => `• ${m.slice(0, 120)}`).join("\n")}`;
   }
 
-  // WhatsApp tem limite prático de URL — garante uma mensagem segura
-  return summary.slice(0, 700);
+  return resumo.slice(0, 1000);
 }
 
 function getWhatsAppUrlWithSummary(messages: { role: string; parts: { type: string; text?: string }[] }[]): string {
