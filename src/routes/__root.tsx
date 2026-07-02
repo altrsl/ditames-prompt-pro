@@ -15,6 +15,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppFab } from "@/components/site/WhatsAppFab";
+import { CookieBanner } from "@/components/site/CookieBanner";
 import { EditModeProvider } from "@/lib/edit-mode";
 import { EditModeToolbar } from "@/components/admin/EditModeToolbar";
 import logoAsset from "@/assets/logo-ditames.asset.json";
@@ -160,6 +161,7 @@ function RootComponent() {
         </main>
         {!isAdmin && <Footer />}
         {!isAdmin && <WhatsAppFab />}
+        {!isAdmin && <CookieBanner />}
       </EditModeProvider>
     </QueryClientProvider>
   );
