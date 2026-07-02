@@ -21,6 +21,7 @@ export const Route = createFileRoute("/contato")({
 function ContatoPage() {
   const [sent, setSent] = useState(false);
   const [sending, setSending] = useState(false);
+  const [consent, setConsent] = useState(false);
   const { showError, ErrorModalContainer } = useErrorModal();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -35,6 +36,10 @@ function ContatoPage() {
 
     if (!nome || !email || !mensagem) {
       showError("Campos obrigatórios", "Preencha nome, e-mail e mensagem antes de enviar.");
+      return;
+    }
+    if (!consent) {
+      showError("Consentimento necessário", "Para enviar sua mensagem, aceite a Política de Privacidade.");
       return;
     }
 
@@ -196,7 +201,23 @@ function ContatoPage() {
                 className="mt-2 w-full rounded-lg border border-border bg-background px-4 py-3 text-sm focus:border-primary focus:outline-none resize-none"
               />
             </div>
-            <button type="submit" disabled={sending} className="btn-primary w-full disabled:opacity-50">
+            <label className="flex items-start gap-3 cursor-pointer group">
+              <input
+                type="checkbox"
+                checked={consent}
+                onChange={(e) => setConsent(e.target.checked)}
+                className="mt-0.5 h-4 w-4 shrink-0 rounded border-white/20 accent-primary cursor-pointer"
+              />
+              <span className="text-xs text-muted-foreground leading-relaxed">
+                Li e concordo com a{" "}
+                <a href="/privacidade" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                  Política de Privacidade
+                </a>
+                {" "}e autorizo o uso dos meus dados para retorno de contato.
+              </span>
+            </label>
+
+            <button type="submit" disabled={sending || !consent} className="btn-primary w-full disabled:opacity-50">
               {sending ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
               {sending ? "Enviando…" : "Enviar via WhatsApp"}
             </button>

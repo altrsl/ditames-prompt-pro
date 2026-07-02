@@ -292,6 +292,13 @@ function IAPage() {
                 <Send size={18} />
               </button>
             </form>
+            <p className="px-4 pb-2 text-center text-[11px] text-muted-foreground">
+              Ao enviar, você concorda com nossa{" "}
+              <a href="/privacidade" target="_blank" rel="noopener noreferrer" className="underline hover:text-primary">
+                Política de Privacidade
+              </a>
+              . Conversas encaminhadas a especialistas podem ser registradas.
+            </p>
           </div>
         </div>
 
