@@ -130,16 +130,24 @@ function Hero() {
   useEffect(() => {
     const handleScroll = () => {
       if (!imgRef.current) return;
-      imgRef.current.style.transform = `translateY(${window.scrollY * 0.4}px)`;
+      // Negativo: imagem sobe mais devagar que o conteúdo → efeito de profundidade
+      // 0.25 = imagem move 25% da velocidade do scroll, texto move 100%
+      imgRef.current.style.transform = `translateY(${window.scrollY * -0.25}px)`;
     };
+    // Executa uma vez ao montar para posição inicial correta
+    handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
     <section id="top" className="relative min-h-[100svh] w-full overflow-hidden">
-      {/* Imagem com parallax — move mais devagar que o conteúdo */}
-      <div ref={imgRef} className="absolute will-change-transform" style={{ inset: 0, top: "-20%", bottom: "-20%" }}>
+      {/* Imagem com parallax — posicionada com folga extra para o movimento não expor bordas */}
+      <div
+        ref={imgRef}
+        className="will-change-transform"
+        style={{ position: "absolute", left: 0, right: 0, top: "-30%", bottom: "-30%" }}
+      >
         <E.Image
           k="hero_image" fallback={heroImg}
           alt="Drone sobrevoando área verde com equipe técnica em operação"
