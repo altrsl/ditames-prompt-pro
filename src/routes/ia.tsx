@@ -145,6 +145,18 @@ function IAPage() {
     inputRef.current?.focus();
   }, []);
 
+  // Scroll até o chat ao carregar a página — evita que o usuário
+  // chegue no PageHero e precise rolar para encontrar a caixa de chat
+  useEffect(() => {
+    const chatSection = document.getElementById("chat");
+    if (!chatSection) return;
+    // Pequeno delay para garantir que o layout já renderizou
+    const timer = setTimeout(() => {
+      chatSection.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 100);
+    return () => clearTimeout(timer);
+  }, []);
+
   const send = (text: string) => {
     if (!text.trim() || status === "submitted" || status === "streaming") return;
     sendMessage({ text });
@@ -161,7 +173,7 @@ function IAPage() {
       />
 
 
-      <section className="bg-background pb-24">
+      <section id="chat" className="bg-background pb-24">
         <div className="container-x grid lg:grid-cols-[1fr_2fr] gap-8">
           {/* Sidebar */}
           <aside className="space-y-6">
