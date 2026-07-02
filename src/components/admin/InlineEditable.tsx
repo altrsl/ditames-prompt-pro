@@ -186,6 +186,7 @@ export function Image({
   const [showUrl, setShowUrl] = useState(false);
   const [urlDraft, setUrlDraft] = useState("");
   const [uploading, setUploading] = useState(false);
+  const [downloadingUrl, setDownloadingUrl] = useState(false);
   const [hover, setHover] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const { toast, ToastContainer } = useToast();
@@ -238,8 +239,6 @@ export function Image({
       if (fileRef.current) fileRef.current.value = "";
     }
   };
-
-  const [downloadingUrl, setDownloadingUrl] = useState(false);
 
   const handleUrl = async () => {
     if (!urlDraft.trim()) {

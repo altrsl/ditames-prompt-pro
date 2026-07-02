@@ -5,7 +5,17 @@ const SUPABASE_URL = "https://tgnljwvuilmeubgjypzq.supabase.co";
 const SUPABASE_ANON_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRnbmxqd3Z1aWxtZXViZ2p5cHpxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0ODMwODksImV4cCI6MjA5ODA1OTA4OX0.qYnT08mSJ4jpPt0wuzMXYW7qlX3ua1_pQ4c697QwTS0";
 
-export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_ANON_KEY);
+export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    // Usa localStorage explicitamente — garante que a sessão sobrevive
+    // a navegações e recarregamentos de página no ambiente SSR/SPA
+    storage: typeof window !== "undefined" ? window.localStorage : undefined,
+    storageKey: "ditames-cms-session",
+    detectSessionInUrl: true,
+  },
+});
 
 // Helper: gera URL pública de um arquivo no storage
 export function storageUrl(bucket: string, path: string): string {
