@@ -142,7 +142,7 @@ export function Footer() {
               Login
             </Link>
           </div>
-          <p>Engenharia · Meio Ambiente · Geotecnologia · Desde 2022</p>
+          <p>Consultoria ambiental · Geotecnologia · Engenharia · Agrimensura</p>
         </div>
       </div>
     </footer>
