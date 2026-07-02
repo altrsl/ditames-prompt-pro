@@ -75,7 +75,6 @@ function IAPage() {
   const [transport] = useState(() => new DefaultChatTransport({ api: "/api/chat" }));
   const { messages, sendMessage, status, error } = useChat({ transport });
   const [input, setInput] = useState("");
-  const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const whatsappUrl = useMemo(() => getWhatsAppUrlWithSummary(messages), [messages]);
@@ -127,8 +126,19 @@ function IAPage() {
     }
   }, [error]);
 
+  const chatRef = useRef<HTMLDivElement>(null);
+
+  // Scroll ancorado: só desce automaticamente se o usuário já estiver
+  // perto do final — se rolou para cima para ler, não interfere.
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    const container = chatRef.current;
+    if (!container) return;
+    const { scrollTop, scrollHeight, clientHeight } = container;
+    const distanceFromBottom = scrollHeight - scrollTop - clientHeight;
+    // Só rola automaticamente se estiver a menos de 120px do final
+    if (distanceFromBottom < 120) {
+      container.scrollTop = container.scrollHeight;
+    }
   }, [messages]);
 
   useEffect(() => {
@@ -201,7 +211,7 @@ function IAPage() {
               </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto px-6 py-6 space-y-4">
+            <div ref={chatRef} className="flex-1 overflow-y-auto px-6 py-6 space-y-4">
               {messages.length === 0 && (
                 <div className="space-y-5">
                   <div className="rounded-xl bg-secondary/50 p-4 text-sm text-ink leading-relaxed">
@@ -265,7 +275,7 @@ function IAPage() {
                 </div>
               )}
 
-              <div ref={bottomRef} />
+
             </div>
 
             <form
