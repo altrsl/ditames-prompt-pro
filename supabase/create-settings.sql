@@ -41,7 +41,7 @@ insert into settings (key, value, label, group_name) values
   ('whatsapp_number',  '5547996910055',                                                            'Número do WhatsApp',     'contato'),
   ('whatsapp_display', '(47) 9 9691-0055',                                                         'WhatsApp (exibição)',    'contato'),
   ('whatsapp_message', 'Olá, vim pelo site da Ditames',                                            'Mensagem inicial WhatsApp', 'contato'),
-  ('email',            'comercial@ditames.com.br',                                                 'E-mail comercial',       'contato'),
+  ('email',            'ambiental@ditames.com.br',                                                'E-mail comercial',       'contato'),
   ('address',          'Rua Brasil, 22 — Sumaré, Rio do Sul, SC — CEP 89165-613',                  'Endereço',               'contato'),
   ('instagram_url',    'https://www.instagram.com/ditamesambiental',                               'Instagram',              'redes_sociais'),
   ('linkedin_url',     'https://www.linkedin.com/company/ditames-ambiental/',                      'LinkedIn',               'redes_sociais'),

@@ -15,7 +15,7 @@ export const SETTINGS_FALLBACK: Record<string, string> = {
   whatsapp_number: "5547996910055",
   whatsapp_display: "(47) 9 9691-0055",
   whatsapp_message: "Olá, vim pelo site da Ditames",
-  email: "comercial@ditames.com.br",
+  email: "ambiental@ditames.com.br",
   address: "Rua Brasil, 22 — Sumaré, Rio do Sul, SC — CEP 89165-613",
   instagram_url: "https://www.instagram.com/ditamesambiental",
   linkedin_url: "https://www.linkedin.com/company/ditames-ambiental/",

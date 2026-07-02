@@ -120,8 +120,8 @@ function ContatoPage() {
             <div className="rounded-2xl border border-border bg-card p-7">
               <Mail size={22} className="text-primary" />
               <div className="mt-4 font-display uppercase text-lg text-ink">E-mail</div>
-              <a href="mailto:comercial@ditames.com.br" className="mt-1 block text-sm text-muted-foreground hover:text-primary">
-                comercial@ditames.com.br
+              <a href="mailto:ambiental@ditames.com.br" className="mt-1 block text-sm text-muted-foreground hover:text-primary">
+                ambiental@ditames.com.br
               </a>
             </div>
             <a
