@@ -43,9 +43,7 @@ function AdminLogin() {
       <div className="w-full max-w-sm">
         {/* Logo */}
         <div className="flex flex-col items-center mb-8">
-          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary mb-4">
-            <Leaf size={28} className="text-white" />
-          </div>
+          <img src="/logo-ditames.png" alt="Ditames" className="h-14 w-auto object-contain mb-4" />
           <h1 className="text-xl font-bold text-white">Ditames CMS</h1>
           <p className="text-sm text-white/40 mt-1">Painel administrativo</p>
         </div>

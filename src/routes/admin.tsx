@@ -48,19 +48,22 @@ function AdminLayout() {
     router.state.location.pathname
   );
 
+  const pathname = router.state.location.pathname;
+
   useEffect(() => {
-    if (isPublicAuthRoute) return; // sem sessão obrigatória nessas rotas
+    if (isPublicAuthRoute) return;
     getCurrentCmsUser()
       .then(setUser)
       .catch((e) => {
         const { title, message } = friendlyError(e);
         showError(title, message);
       });
-  }, [isPublicAuthRoute]);
+  }, [pathname]);
 
   const handleLogout = async () => {
     try {
       await signOut();
+      setUser(null);
       router.navigate({ to: "/admin/login" });
     } catch (e) {
       const { title, message } = friendlyError(e);
@@ -91,14 +94,8 @@ function AdminLayout() {
           ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0 lg:static lg:flex`}
       >
         {/* Logo */}
-        <div className="flex items-center gap-3 px-5 py-5 border-b border-white/5">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-            <Leaf size={16} className="text-white" />
-          </div>
-          <div>
-            <div className="text-xs font-bold uppercase tracking-widest text-white">Ditames</div>
-            <div className="text-[10px] text-white/40 uppercase tracking-wider">CMS Admin</div>
-          </div>
+        <div className="flex items-center gap-3 px-5 py-4 border-b border-white/5">
+          <img src="/logo-ditames.png" alt="Ditames" className="h-8 w-auto object-contain" />
           <button
             onClick={() => setSidebarOpen(false)}
             className="ml-auto lg:hidden text-white/40 hover:text-white"

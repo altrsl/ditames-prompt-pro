@@ -169,7 +169,7 @@ function AdminDashboard() {
       <div className="mb-6 flex items-start justify-between gap-4 flex-wrap">
         <div>
           <h1 className="text-2xl font-bold text-white">
-            Olá{user ? `, ${user.name.split(" ")[0]}` : ""}! 👋
+            Olá{user ? `, ${user.name.split(" ")[0]}` : ""}!
           </h1>
           <p className="text-sm text-white/40 mt-1">Painel de controle — Ditames Ambiental</p>
         </div>

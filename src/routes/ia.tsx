@@ -254,7 +254,7 @@ function IAPage() {
                 <li>1. Descreva sua situação em linguagem simples.</li>
                 <li>2. A IA faz 1-2 perguntas para entender o contexto.</li>
                 <li>3. Recebe o serviço Ditames recomendado.</li>
-                <li>4. Vai direto para a página do serviço ou WhatsApp.</li>
+                <li>4. Recebe o contato direto com o especialista ou continua tirando dúvidas.</li>
               </ol>
             </div>
             <button onClick={handleForwardToHuman} className="btn-outline w-full">
