@@ -6,6 +6,7 @@ import {
   Leaf, Instagram, Link2, Edit3, HelpCircle, Image, Settings, MessageCircle, Mail,
 } from "lucide-react";
 import { getCurrentCmsUser, signOut, hasPermission } from "@/lib/admin";
+import { supabase } from "@/lib/supabase";
 import type { CmsUserRow } from "@/lib/database.types";
 import { getSession } from "@/lib/admin";
 import { useErrorModal, friendlyError } from "@/components/admin/Toast";
@@ -48,17 +49,24 @@ function AdminLayout() {
     router.state.location.pathname
   );
 
-  const pathname = router.state.location.pathname;
-
   useEffect(() => {
     if (isPublicAuthRoute) return;
-    getCurrentCmsUser()
-      .then(setUser)
-      .catch((e) => {
-        const { title, message } = friendlyError(e);
-        showError(title, message);
-      });
-  }, [pathname]);
+
+    // Carrega o usuário imediatamente
+    getCurrentCmsUser().then(setUser).catch(console.error);
+
+    // Escuta mudanças de sessão em tempo real (login/logout)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event) => {
+      if (event === "SIGNED_IN") {
+        const u = await getCurrentCmsUser().catch(() => null);
+        setUser(u);
+      } else if (event === "SIGNED_OUT") {
+        setUser(null);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [isPublicAuthRoute]);
 
   const handleLogout = async () => {
     try {
